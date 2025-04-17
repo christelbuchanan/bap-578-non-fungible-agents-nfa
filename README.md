@@ -1,20 +1,28 @@
 # BEP-007: Non-Fungible Agent (NFA) Token Standard
 
+![BEP-007 Non-Fungible Agents](https://github.com/christelbuchanan/bep007-non-fungible-agents-nfa/blob/e72d12896ae8a2afced541c962011801a144dbdf/Frame%2010.png)
+
 ## Overview
 
-BEP-007 is a new token standard for the BNB Chain that extends ERC-721 to create Non-Fungible Agent (NFA) tokens. These tokens represent autonomous agents capable of executing programmable logic, interacting with other smart contracts, and maintaining their own state.
+BEP-007 introduces Non-Fungible Agents (NFAs)—programmable, autonomous tokens that act as on-chain "agents" capable of executing tasks, evolving, and interacting with other contracts. Inspired by the iconic "007" designation for elite agents, this standard merges the uniqueness of NFTs with autonomous functionality, positioning BNB Chain as the home for decentralized automation.
 
 This implementation provides a complete framework for creating, managing, and governing autonomous agent tokens on the BNB Chain.
 
 ## Key Features
 
-- **Autonomous Behavior**: Agents can execute actions based on their programmed logic
-- **Statefulness**: Agents maintain their own state and balance
-- **Interoperability**: Agents can interact with any smart contract on the BNB Chain
-- **Upgradability**: Agent logic can be upgraded by their owners
+- **Autonomous Behavior**: Agents execute predefined logic (e.g., trading, interacting with contracts) without manual intervention
+- **Statefulness**: Each agent maintains mutable state variables stored on-chain
+- **Interoperability**: Agents can interact with any smart contract on the BNB Chain, including BEP-20 and BEP-721 tokens
+- **Upgradability**: Agent logic can be upgraded by their owners via proxy patterns or modular logic
 - **Governance**: Protocol-level governance for parameter updates and improvements
-- **Security**: Circuit breaker pattern for emergency pauses
+- **Security**: Robust circuit breaker system for emergency pauses at both global and contract-specific levels
 - **Extensibility**: Template system for creating specialized agent types
+
+## Token Structure
+
+- **Inheritance**: Extends BEP-721 (NFT standard) with additional agent-specific functions
+- **Metadata**: Includes static attributes, dynamic metadata, and state variables
+- **Smart Contract Design**: Implements key functions like executeAction(), setLogicAddress(), fundAgent(), and getState()
 
 ## Architecture
 
@@ -23,8 +31,8 @@ The BEP-007 standard consists of the following components:
 ### Core Contracts
 
 - **BEP007.sol**: The main NFT contract that implements the agent token standard
-- **CircuitBreaker.sol**: Emergency pause mechanism for security
-- **AgentFactory.sol**: Factory contract for deploying new agent tokens
+- **CircuitBreaker.sol**: Emergency shutdown mechanism with global and targeted pause capabilities, controlled by governance and multi-sig for rapid response to security incidents
+- **AgentFactory.sol**: Factory contract for deploying new agent tokens with customizable templates
 - **BEP007Governance.sol**: Governance contract for protocol-level decisions
 - **BEP007Treasury.sol**: Treasury management for fee collection and distribution
 
@@ -34,9 +42,16 @@ The BEP-007 standard consists of the following components:
 
 ### Agent Templates
 
-- **DeFiAgent.sol**: Template for DeFi-focused agents
-- **GameAgent.sol**: Template for gaming-focused agents
-- **DAOAgent.sol**: Template for DAO-focused agents
+- **DeFiAgent.sol**: Template for DeFi-focused agents (trading, liquidity provision)
+- **GameAgent.sol**: Template for gaming-focused agents (NPCs, item management)
+- **DAOAgent.sol**: Template for DAO-focused agents (voting, proposal execution)
+
+## Use Cases
+
+- **DeFi Agents**: Autonomous portfolio managers, liquidity providers, or arbitrage bots
+- **Gaming**: NPCs that evolve, trade items, or interact with players
+- **DAO Participants**: Agents voting or executing proposals based on predefined rules
+- **IoT Integration**: Agents acting as digital twins for physical devices
 
 ## Getting Started
 
@@ -179,7 +194,10 @@ await governance.createProposal(
 
 ## Security Considerations
 
-- **Circuit Breaker**: The protocol includes a global pause mechanism for emergency situations
+- **Circuit Breaker**: The protocol includes a dual-layer pause mechanism:
+  - Global pause for system-wide emergencies
+  - Contract-specific pauses for targeted intervention
+  - Controlled by both governance and emergency multi-sig for rapid response
 - **Reentrancy Protection**: All fund-handling functions are protected against reentrancy attacks
 - **Gas Limits**: Delegatecall operations have gas limits to prevent out-of-gas attacks
 - **Access Control**: Strict access control for sensitive operations
