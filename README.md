@@ -8,6 +8,8 @@ BEP-007 introduces Non-Fungible Agents (NFAs)—programmable, autonomous tokens 
 
 This implementation provides a complete framework for creating, managing, and governing autonomous agent tokens on the BNB Chain.
 
+For a comprehensive technical breakdown, read the [BEP-007 Extended White Paper: License to Automate](https://github.com/christelbuchanan/bep007-non-fungible-agents-nfa/blob/7313da87ecd24eff91850764106ad8b5a7072287/BEP-007%20_%20License%20to%20Automate.pdf).
+
 ## Key Features
 
 - **Autonomous Behavior**: Agents execute predefined logic (e.g., trading, interacting with contracts) without manual intervention
