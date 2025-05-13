@@ -5,6 +5,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "./BEP007.sol";
+import "./interfaces/IBEP007.sol";
 
 /**
  * @title AgentFactory
@@ -53,7 +54,42 @@ contract AgentFactory is Initializable, OwnableUpgradeable {
     }
     
     /**
-     * @dev Creates a new agent
+     * @dev Creates a new agent with extended metadata
+     * @param name The name of the agent token collection
+     * @param symbol The symbol of the agent token collection
+     * @param logicAddress The address of the logic contract
+     * @param metadataURI The URI for the agent's metadata
+     * @param extendedMetadata The extended metadata for the agent
+     * @return agent The address of the new agent contract
+     */
+    function createAgent(
+        string memory name,
+        string memory symbol,
+        address logicAddress,
+        string memory metadataURI,
+        IBEP007.AgentMetadata memory extendedMetadata
+    ) 
+        external 
+        returns (address agent) 
+    {
+        require(approvedTemplates[logicAddress], "AgentFactory: logic template not approved");
+        
+        // Create a new clone of the implementation
+        agent = ClonesUpgradeable.clone(implementation);
+        
+        // Initialize the new agent
+        BEP007(agent).initialize(name, symbol, governance);
+        
+        // Create the agent token with extended metadata
+        BEP007(agent).createAgent(msg.sender, logicAddress, metadataURI, extendedMetadata);
+        
+        emit AgentCreated(agent, msg.sender, logicAddress);
+        
+        return agent;
+    }
+    
+    /**
+     * @dev Creates a new agent with basic metadata
      * @param name The name of the agent token collection
      * @param symbol The symbol of the agent token collection
      * @param logicAddress The address of the logic contract
@@ -69,20 +105,17 @@ contract AgentFactory is Initializable, OwnableUpgradeable {
         external 
         returns (address agent) 
     {
-        require(approvedTemplates[logicAddress], "AgentFactory: logic template not approved");
+        // Create empty extended metadata
+        IBEP007.AgentMetadata memory emptyMetadata = IBEP007.AgentMetadata({
+            persona: "",
+            memory: "",
+            voiceHash: "",
+            animationURI: "",
+            vaultURI: "",
+            vaultHash: bytes32(0)
+        });
         
-        // Create a new clone of the implementation
-        agent = ClonesUpgradeable.clone(implementation);
-        
-        // Initialize the new agent
-        BEP007(agent).initialize(name, symbol, governance);
-        
-        // Create the agent token
-        BEP007(agent).createAgent(msg.sender, logicAddress, metadataURI);
-        
-        emit AgentCreated(agent, msg.sender, logicAddress);
-        
-        return agent;
+        return this.createAgent(name, symbol, logicAddress, metadataURI, emptyMetadata);
     }
     
     /**

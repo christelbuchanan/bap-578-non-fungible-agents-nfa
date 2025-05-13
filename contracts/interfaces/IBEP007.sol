@@ -21,6 +21,18 @@ interface IBEP007 {
         address logicAddress;
         uint256 lastActionTimestamp;
     }
+
+    /**
+     * @dev Struct representing the extended metadata of an agent
+     */
+    struct AgentMetadata {
+        string persona;       // JSON-encoded string for character traits, style, tone
+        string memory;        // Short summary string for agent's role/purpose
+        string voiceHash;     // Reference ID to stored audio profile
+        string animationURI;  // URI to video or animation file
+        string vaultURI;      // URI to the agent's vault (extended data storage)
+        bytes32 vaultHash;    // Hash of the vault contents for verification
+    }
     
     /**
      * @dev Emitted when an agent executes an action
@@ -41,6 +53,16 @@ interface IBEP007 {
      * @dev Emitted when an agent's status changes
      */
     event StatusChanged(address indexed agent, Status newStatus);
+
+    /**
+     * @dev Emitted when an agent's metadata is updated
+     */
+    event MetadataUpdated(uint256 indexed tokenId, string metadataURI);
+
+    /**
+     * @dev Emitted when a memory module is registered
+     */
+    event MemoryModuleRegistered(uint256 indexed tokenId, address indexed moduleAddress);
     
     /**
      * @dev Executes an action using the agent's logic
@@ -79,4 +101,18 @@ interface IBEP007 {
      * @dev Terminates the agent permanently
      */
     function terminate() external;
+
+    /**
+     * @dev Gets the agent's extended metadata
+     * @param tokenId The ID of the agent token
+     * @return The agent's extended metadata
+     */
+    function getAgentMetadata(uint256 tokenId) external view returns (AgentMetadata memory);
+
+    /**
+     * @dev Updates the agent's extended metadata
+     * @param tokenId The ID of the agent token
+     * @param metadata The new metadata
+     */
+    function updateAgentMetadata(uint256 tokenId, AgentMetadata memory metadata) external;
 }

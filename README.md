@@ -19,12 +19,16 @@ For a comprehensive technical breakdown, read the [BEP-007 Extended White Paper:
 - **Governance**: Protocol-level governance for parameter updates and improvements
 - **Security**: Robust circuit breaker system for emergency pauses at both global and contract-specific levels
 - **Extensibility**: Template system for creating specialized agent types
+- **Enhanced Metadata**: Rich metadata structure with persona, memory, voice, and animation capabilities
+- **Memory Modules**: Support for external memory sources with cryptographic verification
+- **Vault System**: Secure access control for off-chain data with delegated permissions
 
 ## Token Structure
 
 - **Inheritance**: Extends BEP-721 (NFT standard) with additional agent-specific functions
 - **Metadata**: Includes static attributes, dynamic metadata, and state variables
 - **Smart Contract Design**: Implements key functions like executeAction(), setLogicAddress(), fundAgent(), and getState()
+- **Hybrid Storage**: Essential data on-chain, extended data off-chain with secure references
 
 ## Architecture
 
@@ -37,6 +41,8 @@ The BEP-007 standard consists of the following components:
 - **AgentFactory.sol**: Factory contract for deploying new agent tokens with customizable templates
 - **BEP007Governance.sol**: Governance contract for protocol-level decisions
 - **BEP007Treasury.sol**: Treasury management for fee collection and distribution
+- **MemoryModuleRegistry.sol**: Registry for managing external memory modules with cryptographic verification
+- **VaultPermissionManager.sol**: Manages secure access to off-chain data vaults with time-based delegation
 
 ### Interfaces
 
@@ -47,6 +53,17 @@ The BEP-007 standard consists of the following components:
 - **DeFiAgent.sol**: Template for DeFi-focused agents (trading, liquidity provision)
 - **GameAgent.sol**: Template for gaming-focused agents (NPCs, item management)
 - **DAOAgent.sol**: Template for DAO-focused agents (voting, proposal execution)
+
+## Extended Metadata
+
+BEP-007 tokens include an enhanced metadata structure with:
+
+- **persona**: JSON-encoded string representing character traits, style, tone, and behavioral intent
+- **memory**: Short summary string describing the agent's default role or purpose
+- **voiceHash**: Reference ID to a stored audio profile (e.g., via IPFS or Arweave)
+- **animationURI**: URI to a video or Lottie-compatible animation file
+- **vaultURI**: URI to the agent's vault (extended data storage)
+- **vaultHash**: Hash of the vault contents for verification
 
 ## Use Cases
 
@@ -123,12 +140,22 @@ await defiAgent.deployed();
 // Get the AgentFactory
 const agentFactory = await ethers.getContractAt("AgentFactory", FACTORY_ADDRESS);
 
-// Create a new agent
+// Create a new agent with extended metadata
+const extendedMetadata = {
+  persona: "Strategic crypto analyst",
+  memory: "crypto intelligence, FUD scanner",
+  voiceHash: "bafkreigh2akiscaildc...",
+  animationURI: "ipfs://Qm.../nfa007_intro.mp4",
+  vaultURI: "ipfs://Qm.../nfa007_vault.json",
+  vaultHash: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("vault_content"))
+};
+
 const tx = await agentFactory.createAgent(
   "My DeFi Agent",
   "MDA",
   defiAgent.address,
-  "ipfs://metadata-uri"
+  "ipfs://metadata-uri",
+  extendedMetadata
 );
 const receipt = await tx.wait();
 
@@ -171,26 +198,56 @@ await newDefiAgent.deployed();
 await agent.setLogicAddress(newDefiAgent.address);
 ```
 
-### Governance
+### Working with Memory Modules
 
-To create a governance proposal:
+To register a memory module:
 
 ```javascript
-// Get the governance contract
-const governance = await ethers.getContractAt("BEP007Governance", GOVERNANCE_ADDRESS);
+// Create module metadata
+const moduleMetadata = JSON.stringify({
+  context_id: "nfa007-memory-001",
+  owner: ownerAddress,
+  created: new Date().toISOString(),
+  persona: "Strategic crypto analyst"
+});
 
-// Encode the function call for the proposal
-const targetContract = TREASURY_ADDRESS;
-const callData = treasuryInterface.encodeFunctionData("updateFeePercentages", [
-  500, // 5% treasury fee
-  300  // 3% owner fee
-]);
+// Sign the registration
+const messageHash = ethers.utils.solidityKeccak256(
+  ["uint256", "address", "string"],
+  [tokenId, moduleAddress, moduleMetadata]
+);
+const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
 
-// Create the proposal
-await governance.createProposal(
-  "Update fee percentages",
-  callData,
-  targetContract
+// Register the module
+await memoryRegistry.registerModule(
+  tokenId,
+  moduleAddress,
+  moduleMetadata,
+  signature
+);
+```
+
+### Managing Vault Permissions
+
+To delegate vault access:
+
+```javascript
+// Set expiry time (1 day from now)
+const expiryTime = Math.floor(Date.now() / 1000) + 86400;
+
+// Sign the delegation
+const messageHash = ethers.utils.solidityKeccak256(
+  ["uint256", "address", "uint256"],
+  [tokenId, delegateAddress, expiryTime]
+);
+const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
+
+// Delegate access
+await vaultManager.delegateAccess(
+  tokenId,
+  delegateAddress,
+  expiryTime,
+  signature
 );
 ```
 
@@ -204,6 +261,8 @@ await governance.createProposal(
 - **Gas Limits**: Delegatecall operations have gas limits to prevent out-of-gas attacks
 - **Access Control**: Strict access control for sensitive operations
 - **Balance Management**: Agents maintain their own balance for gas fees
+- **Cryptographic Verification**: Signature-based verification for memory module registration and vault access
+- **Time-based Permissions**: Delegated vault access with expiry times
 
 ## License
 

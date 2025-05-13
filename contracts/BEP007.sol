@@ -31,11 +31,17 @@ contract BEP007 is
     // Governance contract address
     address public governance;
     
+    // Memory module registry address
+    address public memoryModuleRegistry;
+    
     // Mapping from token ID to agent state
     mapping(uint256 => State) private _agentStates;
     
     // Mapping from token ID to agent metadata URI
     mapping(uint256 => string) private _agentMetadataURIs;
+    
+    // Mapping from token ID to extended agent metadata
+    mapping(uint256 => AgentMetadata) private _agentExtendedMetadata;
     
     // Circuit breaker for emergency pause
     bool public globalPause;
@@ -88,16 +94,18 @@ contract BEP007 is
     }
     
     /**
-     * @dev Creates a new agent token
+     * @dev Creates a new agent token with extended metadata
      * @param to The address that will own the agent
      * @param logicAddress The address of the logic contract
      * @param metadataURI The URI for the agent's metadata
+     * @param extendedMetadata The extended metadata for the agent
      * @return tokenId The ID of the new agent token
      */
     function createAgent(
         address to, 
         address logicAddress, 
-        string memory metadataURI
+        string memory metadataURI,
+        AgentMetadata memory extendedMetadata
     ) 
         external 
         returns (uint256 tokenId) 
@@ -119,8 +127,37 @@ contract BEP007 is
         });
         
         _agentMetadataURIs[tokenId] = metadataURI;
+        _agentExtendedMetadata[tokenId] = extendedMetadata;
         
         return tokenId;
+    }
+    
+    /**
+     * @dev Creates a new agent token with basic metadata
+     * @param to The address that will own the agent
+     * @param logicAddress The address of the logic contract
+     * @param metadataURI The URI for the agent's metadata
+     * @return tokenId The ID of the new agent token
+     */
+    function createAgent(
+        address to, 
+        address logicAddress, 
+        string memory metadataURI
+    ) 
+        external 
+        returns (uint256 tokenId) 
+    {
+        // Create empty extended metadata
+        AgentMetadata memory emptyMetadata = AgentMetadata({
+            persona: "",
+            memory: "",
+            voiceHash: "",
+            animationURI: "",
+            vaultURI: "",
+            vaultHash: bytes32(0)
+        });
+        
+        return this.createAgent(to, logicAddress, metadataURI, emptyMetadata);
     }
     
     /**
@@ -208,6 +245,54 @@ contract BEP007 is
     }
     
     /**
+     * @dev Gets the agent's extended metadata
+     * @param tokenId The ID of the agent token
+     * @return The agent's extended metadata
+     */
+    function getAgentMetadata(uint256 tokenId) 
+        external 
+        view 
+        returns (AgentMetadata memory) 
+    {
+        require(_exists(tokenId), "BEP007: agent does not exist");
+        return _agentExtendedMetadata[tokenId];
+    }
+    
+    /**
+     * @dev Updates the agent's extended metadata
+     * @param tokenId The ID of the agent token
+     * @param metadata The new metadata
+     */
+    function updateAgentMetadata(
+        uint256 tokenId, 
+        AgentMetadata memory metadata
+    ) 
+        external 
+        onlyAgentOwner(tokenId) 
+    {
+        _agentExtendedMetadata[tokenId] = metadata;
+        
+        emit MetadataUpdated(tokenId, _agentMetadataURIs[tokenId]);
+    }
+    
+    /**
+     * @dev Registers a memory module for the agent
+     * @param tokenId The ID of the agent token
+     * @param moduleAddress The address of the memory module
+     */
+    function registerMemoryModule(
+        uint256 tokenId, 
+        address moduleAddress
+    ) 
+        external 
+        onlyAgentOwner(tokenId) 
+    {
+        require(memoryModuleRegistry != address(0), "BEP007: memory module registry not set");
+        
+        emit MemoryModuleRegistered(tokenId, moduleAddress);
+    }
+    
+    /**
      * @dev Pauses the agent
      * @param tokenId The ID of the agent token
      */
@@ -283,6 +368,18 @@ contract BEP007 is
     }
     
     /**
+     * @dev Sets the memory module registry address
+     * @param registry The address of the memory module registry
+     */
+    function setMemoryModuleRegistry(address registry) 
+        external 
+        onlyGovernance 
+    {
+        require(registry != address(0), "BEP007: registry is zero address");
+        memoryModuleRegistry = registry;
+    }
+    
+    /**
      * @dev Withdraws BNB from the agent
      * @param tokenId The ID of the agent token
      * @param amount The amount to withdraw
@@ -314,6 +411,8 @@ contract BEP007 is
     {
         _agentMetadataURIs[tokenId] = newMetadataURI;
         _setTokenURI(tokenId, newMetadataURI);
+        
+        emit MetadataUpdated(tokenId, newMetadataURI);
     }
     
     /**
