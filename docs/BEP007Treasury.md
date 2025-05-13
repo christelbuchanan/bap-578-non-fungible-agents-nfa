@@ -1,102 +1,84 @@
-# BEP007Treasury
+# BEP007 Treasury
 
 ## Overview
-The BEP007Treasury contract manages the financial aspects of the BEP-007 ecosystem, handling fee collection and distribution between the protocol treasury and agent owners. It provides a transparent and configurable fee structure for ecosystem sustainability.
+The BEP007Treasury contract manages the collection, storage, and distribution of protocol fees and funds. It serves as the financial backbone of the BEP007 ecosystem, handling revenue from agent creation, upgrades, and transactions.
 
 ## Key Features
-- Fee collection and distribution mechanism
-- Configurable fee percentages
-- Secure fund management
-- Governance-controlled withdrawals
+- **Fee Collection**: Collects fees from various protocol operations
+- **Revenue Distribution**: Distributes revenue to stakeholders based on governance parameters
+- **Fund Management**: Securely stores and manages protocol funds
+- **Staking Rewards**: Calculates and distributes staking rewards
+- **Governance Integration**: Configurable parameters controlled by governance
 
-## Contract Structure
+## Core Functions
 
-### State Variables
-- `governance`: Address of the governance contract
-- `treasuryFeePercentage`: Percentage of fees kept by treasury (in basis points)
-- `ownerFeePercentage`: Percentage of fees distributed to agent owners (in basis points)
-- `totalBnbBalance`: Total BNB balance held by the treasury
+### Fee Management
+- `collectFee(FeeType feeType)`: Collects a fee of the specified type
+- `setFeeAmount(FeeType feeType, uint256 amount)`: Updates the fee amount for a specific fee type
+- `getFeeAmount(FeeType feeType)`: Returns the current fee amount for a specific fee type
 
-### Events
-- `FeesDistributed`: Emitted when fees are distributed
-- `FeePercentagesUpdated`: Emitted when fee percentages are updated
-- `FundsWithdrawn`: Emitted when funds are withdrawn from the treasury
+### Revenue Distribution
+- `distributeRevenue()`: Distributes accumulated revenue according to distribution parameters
+- `setDistributionParameters(DistributionParams memory params)`: Updates revenue distribution parameters
+- `getDistributionParameters()`: Returns current distribution parameters
 
-### Functions
+### Fund Management
+- `withdrawFunds(address recipient, uint256 amount)`: Withdraws funds to a specified recipient
+- `depositFunds()`: Accepts deposits to the treasury
+- `getTreasuryBalance()`: Returns the current treasury balance
 
-#### Initialization
+### Staking Rewards
+- `calculateRewards(address staker)`: Calculates rewards for a specific staker
+- `distributeStakingRewards()`: Distributes rewards to all stakers
+- `updateRewardRate(uint256 newRate)`: Updates the reward rate for staking
+
+### Governance Controls
+- `updateGovernanceAddress(address newGovernance)`: Updates the governance contract address
+- `executeGovernanceProposal(bytes memory data)`: Executes a proposal approved by governance
+- `pause()`: Pauses treasury operations in emergency situations
+- `unpause()`: Resumes treasury operations
+
+## Fee Types
 ```solidity
-function initialize(
-    address _governance,
-    uint256 _treasuryFeePercentage,
-    uint256 _ownerFeePercentage
-) public initializer
-```
-Initializes the contract with governance address and fee percentages.
-
-#### Fee Management
-```solidity
-function distributeFees(address agentOwner) external payable nonReentrant
-```
-Distributes incoming fees between the treasury and the agent owner.
-
-```solidity
-function updateFeePercentages(
-    uint256 _treasuryFeePercentage,
-    uint256 _ownerFeePercentage
-) external onlyOwner
-```
-Updates the fee percentages for treasury and agent owners.
-
-#### Fund Management
-```solidity
-function withdrawFunds(address recipient, uint256 amount) external onlyGovernance nonReentrant
-```
-Withdraws funds from the treasury to a specified recipient.
-
-#### Configuration
-```solidity
-function setGovernance(address _governance) external onlyOwner
-```
-Updates the governance address.
-
-## Security Considerations
-- Reentrancy protection for all fund transfers
-- Strict validation of fee percentages (must sum to ≤ 100%)
-- Governance-controlled withdrawals
-- Balance tracking to prevent overdrafts
-
-## Integration Points
-- Receives fees from agent operations
-- Distributes portions to agent owners
-- Controlled by BEP007Governance for fund management
-
-## Fee Structure
-The treasury uses a basis point system for fee calculation:
-- 10,000 basis points = 100%
-- Fee percentages are configurable but must sum to ≤ 100%
-- Default distribution typically allocates:
-  - A portion to the protocol treasury for ongoing development and maintenance
-  - A portion to agent owners as incentive for creating valuable agents
-
-## Use Cases
-1. **Protocol Sustainability**: Collect fees to fund ongoing development and maintenance
-2. **Creator Incentives**: Reward agent creators with a portion of the fees generated by their agents
-3. **Ecosystem Growth**: Fund grants, hackathons, and other initiatives to grow the ecosystem
-4. **Governance Rewards**: Distribute rewards to governance participants
-
-## Example Configuration
-```
-Treasury Configuration {
-  treasuryFeePercentage: 2000,  // 20% to protocol treasury
-  ownerFeePercentage: 8000      // 80% to agent owners
+enum FeeType {
+    CREATION,       // Fee for creating a new agent
+    UPGRADE,        // Fee for upgrading agent logic
+    TRANSACTION,    // Fee for agent transactions
+    MEMORY_MODULE,  // Fee for registering memory modules
+    CUSTOM          // Custom fee type defined by governance
 }
 ```
 
-## Governance Controls
-The treasury is controlled by the governance contract, which can:
-- Update fee percentages
-- Withdraw funds for approved purposes
-- Change the governance address
+## Distribution Parameters
+```solidity
+struct DistributionParams {
+    uint256 stakingRewardPercentage;    // Percentage allocated to stakers
+    uint256 developmentFundPercentage;  // Percentage allocated to development
+    uint256 communityTreasuryPercentage; // Percentage allocated to community treasury
+    uint256 burnPercentage;             // Percentage of tokens to burn
+}
+```
 
-This ensures that treasury management is transparent and controlled by the community through the governance process.
+## Events
+- `FeeCollected(FeeType indexed feeType, address indexed payer, uint256 amount)`
+- `RevenueDistributed(uint256 stakingAmount, uint256 developmentAmount, uint256 communityAmount, uint256 burnAmount)`
+- `FeeUpdated(FeeType indexed feeType, uint256 oldAmount, uint256 newAmount)`
+- `DistributionParametersUpdated()`
+- `FundsWithdrawn(address indexed recipient, uint256 amount)`
+- `FundsDeposited(address indexed depositor, uint256 amount)`
+- `RewardRateUpdated(uint256 oldRate, uint256 newRate)`
+- `GovernanceAddressUpdated(address indexed oldGovernance, address indexed newGovernance)`
+
+## Security Considerations
+- Access control ensures only authorized addresses can withdraw funds or update parameters
+- Integration with circuit breaker for emergency pauses
+- Reentrancy protection on all fund-handling functions
+- Checks-Effects-Interactions pattern to prevent reentrancy attacks
+- Governance timelock for sensitive parameter changes
+
+## Integration with BEP007 Ecosystem
+- Collects fees from AgentFactory for agent creation
+- Receives transaction fees from agent operations
+- Distributes rewards to $NFA token stakers
+- Funds development initiatives based on governance decisions
+- Manages community treasury for ecosystem growth
