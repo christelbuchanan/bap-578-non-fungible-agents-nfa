@@ -21,6 +21,36 @@ Upgrade paths have also been designed for forward compatibility. Agents minted t
 
 The contract architecture enables seamless coordination between on-chain trust and off-chain intelligence. Every NFA minted is not only a unique identity, but a programmable interface for intelligent, user-owned computation.
 
+## Standardized Contract Components
+
+The BEP-007 standard consists of the following core components:
+
+### Core Contracts
+
+- **BEP007.sol**: The main NFT contract that implements the agent token standard
+- **CircuitBreaker.sol**: Emergency shutdown mechanism with global and targeted pause capabilities
+- **AgentFactory.sol**: Factory contract for deploying new agent tokens with customizable templates
+- **BEP007Governance.sol**: Governance contract for protocol-level decisions
+- **BEP007Treasury.sol**: Treasury management for fee collection and distribution
+- **MemoryModuleRegistry.sol**: Registry for managing external memory modules with cryptographic verification
+- **VaultPermissionManager.sol**: Manages secure access to off-chain data vaults with time-based delegation
+
+### Interfaces
+
+- **IBEP007.sol**: Interface defining the core functionality for BEP-007 compliant tokens
+
+### Agent Templates
+
+The standard includes template implementations for common agent types:
+
+- **DeFiAgent.sol**: Template for DeFi-focused agents (trading, liquidity provision)
+- **GameAgent.sol**: Template for gaming-focused agents (NPCs, item management)
+- **DAOAgent.sol**: Template for DAO-focused agents (voting, proposal execution)
+- **CreatorAgent.sol**: Template for creator-focused agents (content management, royalties)
+- **StrategicAgent.sol**: Template for strategy-focused agents (market analysis, intelligence)
+
+This standardized architecture ensures that all BEP-007 tokens share common interfaces and behaviors, enabling seamless interoperability across the ecosystem.
+
 ## Sample BEP-007 Metadata
 
 ```json

@@ -1,15 +1,57 @@
-# Agent Lifecycle and User Flow
+# Agent Lifecycle
 
-Users begin by creating their NFA via a no-code interface at NFA.xyz, using media uploads and persona builders. Once created, the agent can be previewed in real time, with voice and animation rendered before the agent is minted on-chain. The agent is then minted as a BEP-007 token and linked to the user's off-chain memory vault.
+The BEP-007 standard defines a standardized lifecycle for Non-Fungible Agents, ensuring consistent behavior across implementations.
 
-Users may then choose to activate the agent in different environments. Strategic agents can be connected to the ChatAndBuild MCP backend to filter and respond to social media FUD or trend alerts. Lifestyle agents can be authorized to schedule meetings, track deliveries, or summarize research. With each interaction, new memory context is stored in the vault and can be permissioned for continuity or purged for privacy.
+## Creation and Minting
 
-Existing NFTs can also be upgraded into NFAs via an NFT-to-NFA bridge. This generates a twin token — the original remains intact — while the new NFA inherits its visual identity and gains agentic capabilities.
+Agents are created through a standardized factory pattern:
 
-## NFA Categories
+1. **Template Selection**: Creators choose from standardized agent templates (DeFi, Game, DAO, etc.) or deploy custom logic.
 
-1. **Creator Agents**: Personalized brand assistants or digital twins for creators
-2. **Strategic Agents**: Monitor trends, detect mentions (e.g., for Binance or CZ)
-3. **Lifestyle Agents**: Handle travel, scheduling, reminders — your agent, your way
-4. **Fan Collectibles**: Anime/game characters with real AI conversation
-5. **DAO Ambassadors**: Autonomous agents that speak and post for communities
+2. **Metadata Configuration**: Creators define the agent's persona, memory, and media assets.
+
+3. **Minting Process**: The AgentFactory contract creates a new BEP-007 token with the specified metadata and logic.
+
+## Execution and Operation
+
+Agents operate through standardized interfaces:
+
+1. **Action Execution**: Owners or authorized delegates can trigger agent actions through the executeAction() method.
+
+2. **State Management**: Agents maintain state variables that can be accessed through the getState() method.
+
+3. **Logic Execution**: Actions are forwarded to the agent's logic contract through a delegatecall pattern.
+
+## Evolution and Upgrades
+
+Agents can evolve through standardized upgrade patterns:
+
+1. **Logic Upgrades**: Owners can update the agent's logic address to change its behavior.
+
+2. **Metadata Updates**: Certain metadata fields can be updated to reflect the agent's evolution.
+
+3. **Memory Extensions**: New memory modules can be registered to expand the agent's capabilities.
+
+## Security and Governance
+
+The standard includes built-in security mechanisms:
+
+1. **Circuit Breaker**: A dual-layer pause mechanism for emergency situations.
+
+2. **Access Control**: Strict permissions for sensitive operations.
+
+3. **Governance**: Protocol-level governance for parameter updates and improvements.
+
+## Standardized Lifecycle Events
+
+The BEP-007 standard defines events for key lifecycle moments:
+
+1. **AgentCreated**: Emitted when a new agent is created.
+
+2. **ActionExecuted**: Emitted when an agent executes an action.
+
+3. **LogicUpdated**: Emitted when an agent's logic is updated.
+
+4. **MetadataUpdated**: Emitted when an agent's metadata is updated.
+
+This standardized lifecycle ensures that all BEP-007 tokens behave consistently across their entire lifespan, from creation to evolution and beyond. It also enables ecosystem participants to build tools and services that can interact with any BEP-007 token, regardless of its specific implementation.
