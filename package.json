@@ -1,26 +1,37 @@
 {
-  "name": "bep007-contracts",
-  "version": "1.0.0",
-  "description": "BEP-007 Non-Fungible Agent (NFA) Token Standard",
+  "name": "bep007-non-fungible-agents",
+  "version": "0.1.0",
+  "description": "BEP-007 Non-Fungible Agent (NFA) Token Standard Implementation",
   "main": "index.js",
   "scripts": {
-    "compile": "hardhat compile",
-    "test": "hardhat test",
-    "deploy:testnet": "hardhat run scripts/deploy.js --network bscTestnet",
-    "deploy:mainnet": "hardhat run scripts/deploy.js --network bscMainnet"
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:testnet": "npx hardhat run scripts/deploy.js --network testnet",
+    "deploy:mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "format": "prettier --write 'contracts/**/*.sol'"
   },
   "keywords": [
     "blockchain",
-    "smart-contracts",
     "nft",
-    "agents",
-    "bep007",
+    "agent",
     "bnb-chain",
-    "bsc"
+    "smart-contract",
+    "token-standard"
   ],
-  "author": "BEP-007 Team",
+  "author": "",
   "license": "MIT",
   "devDependencies": {
-    "hardhat": "^2.12.4"
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.0",
+    "@openzeppelin/contracts": "^4.8.0",
+    "chai": "^4.3.4",
+    "dotenv": "^16.0.0",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.6.0",
+    "hardhat": "^2.9.0",
+    "prettier": "^2.5.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint": "^3.3.6"
   }
 }

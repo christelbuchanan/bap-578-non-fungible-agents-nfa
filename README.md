@@ -10,6 +10,53 @@ This implementation provides a complete framework for creating, managing, and go
 
 For a comprehensive technical breakdown, read the [BEP-007 Extended White Paper: License to Automate](https://github.com/christelbuchanan/bep007-non-fungible-agents-nfa/blob/7313da87ecd24eff91850764106ad8b5a7072287/BEP-007%20_%20License%20to%20Automate.pdf).
 
+## Why a Token Standard?
+
+### The Need for Standardization
+
+While traditional NFTs (BEP-721) provide uniqueness and ownership, they lack the standardized interfaces needed for autonomous behavior and cross-platform agent interactions. BEP-007 addresses this gap by defining:
+
+1. **Consistent Agent Interfaces**: Standardized methods for action execution, state management, and logic upgrades that enable predictable interactions across platforms.
+
+2. **Interoperability Framework**: Common patterns for how agents interact with other contracts, services, and each other, creating an ecosystem where agents from different developers can work together.
+
+3. **Hybrid On-Chain/Off-Chain Architecture**: Clear separation between on-chain identity and permissions versus off-chain extended memory and complex behaviors, optimizing for both gas efficiency and rich functionality.
+
+4. **Security Boundaries**: Standardized circuit breaker patterns, permission systems, and access controls that protect users and their assets.
+
+### On-Chain vs. Off-Chain Components
+
+BEP-007 carefully balances which components belong on-chain versus off-chain:
+
+| Component | Storage | Rationale |
+|-----------|---------|-----------|
+| Agent Identity | On-chain | Core identity must be immutable and universally accessible |
+| Ownership & Permissions | On-chain | Security and access control require consensus verification |
+| Basic Metadata | On-chain | Essential for marketplace display and basic interactions |
+| Logic Address | On-chain | Determines how the agent behaves when actions are executed |
+| Extended Memory | Off-chain (with hash verification) | Rich memory would be prohibitively expensive on-chain |
+| Complex Behaviors | Off-chain | Advanced AI behaviors require off-chain computation |
+| Voice/Animation | Off-chain (with URI reference) | Media assets are too large for on-chain storage |
+
+This hybrid approach ensures that:
+- Critical security and identity information is secured by blockchain consensus
+- Gas costs remain reasonable for agent operations
+- Rich agent experiences can evolve without blockchain limitations
+
+### Ecosystem Benefits
+
+Standardization through BEP-007 enables:
+
+1. **Developer Ecosystem**: Common interfaces allow developers to build agent-compatible applications without custom integration for each agent implementation.
+
+2. **Marketplace Integration**: Platforms can display, trade, and interact with agents using standardized methods, regardless of the agent's specific purpose.
+
+3. **Cross-Platform Compatibility**: Agents can move between applications while maintaining their identity, memory, and capabilities.
+
+4. **User Ownership**: Clear separation of on-chain and off-chain components ensures users maintain control of their agents' data and behavior.
+
+5. **Innovation Acceleration**: Developers can focus on creating unique agent behaviors rather than reinventing infrastructure patterns.
+
 ## Key Features
 
 - **Autonomous Behavior**: Agents execute predefined logic (e.g., trading, interacting with contracts) without manual intervention
