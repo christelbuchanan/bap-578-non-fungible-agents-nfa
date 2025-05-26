@@ -11,7 +11,7 @@ The protocol implements a dual-tier fee structure that accommodates both simple 
 **Fixed Protocol Minting Fee**: 0.01 BNB per agent minted (applies to all BEP-007 agents)
 - Automatically split across three beneficiaries:
   - **60% → NFA/ChatAndBuild Foundation** (for ongoing R&D + grants)
-  - **25% → BNB Chain** (to align with core ecosystem growth)
+  - **25% → Community Treasury** (to align with core ecosystem growth)
   - **15% → $NFA staking reward pool** (to reward long-term holders)
 
 This structure ensures that every BEP-007 agent minted (including third-party implementations) generates protocol revenue for the ecosystem, creating sustainable funding for development and rewarding stakeholders.
