@@ -4,7 +4,7 @@
 
 ## Overview
 
-BEP-007 introduces Non-Fungible Agents (NFAs)—programmable, autonomous tokens that act as on-chain "agents" capable of executing tasks, evolving, and interacting with other contracts. Inspired by the iconic "007" designation for elite agents, this standard merges the uniqueness of NFTs with autonomous functionality, positioning BNB Chain as the home for decentralized automation.
+BEP-007 introduces Non-Fungible Agents (NFAs) - programmable, autonomous tokens that act as on-chain "agents" capable of executing tasks, evolving, and interacting with other contracts. Inspired by the iconic "007" designation for elite agents, this standard merges the uniqueness of NFTs with autonomous functionality, positioning BNB Chain as the home for decentralized automation.
 
 This implementation provides a complete framework for creating, managing, and governing autonomous agent tokens on the BNB Chain with **optional learning capabilities** that allow agents to evolve and improve over time.
 
