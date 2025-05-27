@@ -4,7 +4,7 @@
 
 ## Overview
 
-BEP-007 introduces Non-Fungible Agents (NFAs) - programmable, autonomous tokens that act as on-chain "agents" capable of executing tasks, evolving, and interacting with other contracts. Inspired by the iconic "007" designation for elite agents, this standard merges the uniqueness of NFTs with autonomous functionality, positioning BNB Chain as the home for decentralized automation.
+BEP-007 introduces Non-Fungible Agents (NFAs)—programmable, autonomous tokens that act as on-chain "agents" capable of executing tasks, evolving, and interacting with other contracts. Inspired by the iconic "007" designation for elite agents, this standard merges the uniqueness of NFTs with autonomous functionality, positioning BNB Chain as the home for decentralized automation.
 
 This implementation provides a complete framework for creating, managing, and governing autonomous agent tokens on the BNB Chain with **optional learning capabilities** that allow agents to evolve and improve over time.
 
@@ -118,31 +118,36 @@ The BEP-007 standard consists of the following components:
 
 ### Core Contracts
 
-- **BEP007Enhanced.sol**: The enhanced NFT contract that implements the agent token standard with optional learning
-- **BEP007.sol**: The original NFT contract for backward compatibility
-- **CircuitBreaker.sol**: Emergency shutdown mechanism with global and targeted pause capabilities
-- **AgentFactory.sol**: Factory contract for deploying new agent tokens with customizable templates
-- **BEP007Governance.sol**: Governance contract for protocol-level decisions
-- **BEP007Treasury.sol**: Treasury management for fee collection and distribution
-- **MemoryModuleRegistry.sol**: Registry for managing external memory modules with cryptographic verification
-- **VaultPermissionManager.sol**: Manages secure access to off-chain data vaults with time-based delegation
+- **`BEP007Enhanced.sol`**: The enhanced NFA contract that implements the agent token standard with optional learning
+- **`BEP007.sol`**: The original NFA contract for backward compatibility
+- **`CircuitBreaker.sol`**: Emergency shutdown mechanism with global and targeted pause capabilities
+- **`AgentFactory.sol`**: Factory contract for deploying new agent tokens with customizable templates
+- **`BEP007Governance.sol`**: Governance contract for protocol-level decisions
+- **`BEP007Treasury.sol`**: Treasury management for fee collection and distribution
+- **`MemoryModuleRegistry.sol`**: Registry for managing external memory modules with cryptographic verification
+- **`VaultPermissionManager.sol`**: Manages secure access to off-chain data vaults with time-based delegation
 
 ### Learning System
 
-- **ILearningModule.sol**: Interface defining the standard for pluggable learning systems
-- **MerkleTreeLearning.sol**: Implementation of Merkle tree-based learning with cryptographic verification
-- **LearningMetrics**: Comprehensive tracking of agent learning progress and milestones
+- **`MerkleTreeLearning.sol`**: Implementation of Merkle tree-based learning with cryptographic verification
 
-### Interfaces
+### Interfaces and Examples
 
-- **IBEP007.sol**: Interface defining the core functionality for BEP-007 compliant tokens
+- **`IBEP007.sol`**: Interface defining the core functionality for BEP-007 compliant tokens
+- **`ILearningModule.sol`**: Interface defining the standard for pluggable learning systems
+- **`learning-integration.js`**: Demonstrates how to use the enhanced BEP007 standard with optional learning capabilities from day 1
 
 ### Agent Templates
 
-- **DeFiAgent.sol**: Template for DeFi-focused agents (trading, liquidity provision)
-- **GameAgent.sol**: Template for gaming-focused agents (NPCs, item management)
-- **DAOAgent.sol**: Template for DAO-focused agents (voting, proposal execution)
-- **CreatorAgent.sol**: Template for content creator agents (brand management, content scheduling)
+- **`StrategicAgent.sol`**: Template for agents to monitor trends, detect mentions, and analyze sentiment across various platforms
+- **`DeFiAgent.sol`**: Template for DeFi-focused agents (trading, liquidity provision)
+- **`GameAgent.sol`**: Template for gaming-focused agents (NPCs, item management)
+- **`DAOAgent.sol`**: Template for DAO-focused agents (voting, proposal execution)
+- **`CreatorAgent.sol`**: Template for content creator agents (brand management, content scheduling)
+- **`MockAgentLogic.sol`**: Template for basic functionality to validate the agent interaction model without complex business logic
+- **`DAOAmbassadorAgent.sol`**: Alternative template for DAO-focused agents with optional learning capability
+- **`LifestyleAgent.sol`**: Template for travel and personal assistant focused agents
+- **`FanCollectibleAgent.sol`**: Template for agents for anime, game, or fictional characters with AI conversation capabilities
 
 ## Extended Metadata
 
