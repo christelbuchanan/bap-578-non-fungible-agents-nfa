@@ -1,6 +1,6 @@
 # BEP-007: Non-Fungible Agent (NFA) Token Standard
 
-![BEP-007 Non-Fungible Agents](https://github.com/christelbuchanan/bep007-non-fungible-agents-nfa/blob/e72d12896ae8a2afced541c962011801a144dbdf/Frame%2010.png)
+![BEP-007 Non-Fungible Agents](https://github.com/christelbuchanan/bep007-non-fungible-agents-nfa/blob/main/NFA-ReadMe-Header.png)
 
 ## Overview
 
