@@ -45,7 +45,7 @@ The DeFi Agent is a specialized BEP007 agent template designed for decentralized
 
 ## Learning Capabilities
 
-### Traditional DeFi Agent (JSON Light Memory)
+### Traditional DeFi Agent (JSON Light Imprint)
 ```javascript
 // Static strategy configuration
 const strategy = {

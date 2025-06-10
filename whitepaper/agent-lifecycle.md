@@ -18,10 +18,10 @@ The BEP-007 standard extends traditional NFT metadata to include agent-specific 
 ```solidity
 struct AgentMetadata {
     string persona;           // Agent personality and role description
-    string imprint;           // Memory system description and capabilities
+    string imprint;           // Imprint system description and capabilities
     string voiceHash;        // Voice/audio identity hash
     string animationURI;     // Agent avatar/animation
-    string vaultURI;         // Off-chain memory vault location
+    string vaultURI;         // Off-chain imprint vault location
     bytes32 vaultHash;       // Vault content integrity hash
     
     // Learning capabilities (optional)
@@ -64,7 +64,7 @@ Agents maintain state through a hybrid approach:
 - Security parameters
 
 **Off-Chain State**: Rich data stored in secure vaults
-- Detailed memory and conversation history
+- Detailed imprint and conversation history
 - Learning tree structures and proofs
 - Media assets and personality data
 - Performance metrics and analytics

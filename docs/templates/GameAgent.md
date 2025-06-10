@@ -159,7 +159,7 @@ const tx = await bep007Enhanced.createAgent(
         "formality": { current: 0.3, growth: -0.08, triggers: ["casual-conversation"] }
       },
       "adaptability": 0.7,
-      "memoryRetention": 0.85,
+      "imprintRetention": 0.85,
       "confidence": 0.82
     },
     "gameKnowledge": {

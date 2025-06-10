@@ -8,7 +8,7 @@ The introduction of optional Merkle tree-based learning creates unprecedented op
 
 ### 1. Dual-Path Development Strategy
 
-**Simple Agent Path (JSON Light Memory)**
+**Simple Agent Path (JSON Light Imprint)**
 - Immediate deployment for basic use cases
 - Minimal gas costs and familiar development patterns
 - Perfect for static agents, simple automation, and traditional NFT applications

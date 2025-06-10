@@ -1,18 +1,18 @@
-# Memory Module Registry
+# Imprint Module Registry
 
 ## Overview
 
-The Memory Module Registry is a critical component of the BEP-007 Non-Fungible Agent (NFA) ecosystem that allows agents to register and manage external memory sources. This registry provides a secure and flexible way to extend an agent's capabilities without modifying the core contract.
+The Imprint Module Registry is a critical component of the BEP-007 Non-Fungible Agent (NFA) ecosystem that allows agents to register and manage external imprint sources. This registry provides a secure and flexible way to extend an agent's capabilities without modifying the core contract.
 
 ## Purpose
 
 The primary purpose of the ImprintModuleRegistry is to:
 
-1. Allow agent owners to register approved external memory modules
+1. Allow agent owners to register approved external imprint modules
 2. Provide cryptographic verification for module registration
 3. Manage approval status for registered modules
-4. Store and retrieve metadata for memory modules
-5. Enable agents to access a network of specialized memory services
+4. Store and retrieve metadata for imprint modules
+5. Enable agents to access a network of specialized imprint services
 
 ## Contract Architecture
 
@@ -23,7 +23,7 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
     // BEP007 token contract
     BEP007 public bep007Token;
     
-    // Mapping from token ID to registered memory modules
+    // Mapping from token ID to registered imprint modules
     mapping(uint256 => address[]) private _registeredModules;
     
     // Mapping from token ID to module address to approval status
@@ -104,15 +104,15 @@ function updateModuleMetadata(
 
 ## Memory Module Schema
 
-Memory modules are structured as JSON documents that include structured memory layers, custom prompts, and modular behaviors:
+Memory modules are structured as JSON documents that include structured imprint layers, custom prompts, and modular behaviors:
 
 ```json
 {
-  "context_id": "nfa007-memory-001",
+  "context_id": "nfa007-imprint-001",
   "owner": "0xUserWalletAddress",
   "created": "2025-05-12T10:00:00Z",
   "persona": "Strategic crypto analyst",
-  "memory_slots": [
+  "imprint_slots": [
     {
       "type": "alert_keywords",
       "data": ["FUD", "rugpull", "hack", "$BNB", "scam"]
@@ -136,16 +136,16 @@ Memory modules are structured as JSON documents that include structured memory l
 
 ## Usage Examples
 
-### Registering a Memory Module
+### Registering a Imprint Module
 
 ```javascript
 // Create module metadata
 const moduleMetadata = JSON.stringify({
-  context_id: "nfa007-memory-001",
+  context_id: "nfa007-imprint-001",
   owner: ownerAddress,
   created: new Date().toISOString(),
   persona: "Strategic crypto analyst",
-  memory_slots: [
+  imprint_slots: [
     {
       type: "alert_keywords",
       data: ["FUD", "rugpull", "hack", "$BNB", "scam"]
@@ -163,7 +163,7 @@ const messageHash = ethers.utils.solidityKeccak256(
 const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
 
 // Register the module
-await memoryRegistry.registerModule(
+await imprintRegistry.registerModule(
   tokenId,
   moduleAddress,
   moduleMetadata,
@@ -175,7 +175,7 @@ await memoryRegistry.registerModule(
 
 ```javascript
 // Check if a module is approved
-const isApproved = await memoryRegistry.isModuleApproved(tokenId, moduleAddress);
+const isApproved = await imprintRegistry.isModuleApproved(tokenId, moduleAddress);
 
 if (isApproved) {
   console.log("Module is approved");
@@ -188,11 +188,11 @@ if (isApproved) {
 
 ```javascript
 // Get module metadata
-const metadata = await memoryRegistry.getModuleMetadata(tokenId, moduleAddress);
+const metadata = await imprintRegistry.getModuleMetadata(tokenId, moduleAddress);
 const parsedMetadata = JSON.parse(metadata);
 
 console.log("Module persona:", parsedMetadata.persona);
-console.log("Alert keywords:", parsedMetadata.memory_slots[0].data);
+console.log("Alert keywords:", parsedMetadata.imprint_slots[0].data);
 ```
 
 ## Security Considerations
@@ -211,22 +211,22 @@ The registry uses OpenZeppelin's ReentrancyGuard to protect against reentrancy a
 
 ## Integration with BEP-007 Ecosystem
 
-The Memory Module Registry integrates with the BEP-007 ecosystem in the following ways:
+The Imprint Module Registry integrates with the BEP-007 ecosystem in the following ways:
 
-1. **Agent Creation**: When an agent is created, it can register memory modules to extend its capabilities.
+1. **Agent Creation**: When an agent is created, it can register imprint modules to extend its capabilities.
 2. **Agent Logic**: Agent logic contracts can query the registry to access registered modules.
 3. **Agent Upgrades**: When an agent's logic is upgraded, it can register new modules to support new functionality.
 4. **Agent Governance**: The governance system can approve or revoke modules based on community decisions.
 
 ## Future Extensions
 
-The Memory Module Registry is designed to be extensible and can be enhanced in the following ways:
+The Imprint Module Registry is designed to be extensible and can be enhanced in the following ways:
 
 1. **Module Categories**: Adding support for categorizing modules by functionality.
 2. **Module Versioning**: Adding support for versioning modules to track updates.
 3. **Module Reputation**: Adding a reputation system for modules based on usage and feedback.
-4. **Module Marketplace**: Creating a marketplace for memory modules where developers can offer specialized modules.
+4. **Module Marketplace**: Creating a marketplace for imprint modules where developers can offer specialized modules.
 
 ## Conclusion
 
-The Memory Module Registry is a powerful component of the BEP-007 ecosystem that enables agents to extend their capabilities through external memory sources. By providing a secure and flexible way to register and manage memory modules, the registry enables agents to evolve and adapt to new use cases without requiring changes to the core contract.
+The Imprint Module Registry is a powerful component of the BEP-007 ecosystem that enables agents to extend their capabilities through external imprint sources. By providing a secure and flexible way to register and manage imprint modules, the registry enables agents to evolve and adapt to new use cases without requiring changes to the core contract.

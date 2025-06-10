@@ -15,7 +15,7 @@ The enhanced standard maintains 100% backward compatibility with existing BEP-00
 
 ### 2. Optional Adoption
 Learning capabilities are entirely optional. Developers can choose to:
-- Create simple agents with JSON light memory (default behavior)
+- Create simple agents with JSON light imprint (default behavior)
 - Enable learning from day 1 for new agents
 - Upgrade existing agents to support learning
 - Mix both approaches within the same application
@@ -40,11 +40,11 @@ All learning claims are cryptographically verifiable through:
 
 The enhanced BEP-007 standard provides two distinct development paths:
 
-#### Path 1: JSON Light Memory (Default)
+#### Path 1: JSON Light Imprint (Default)
 ```
 Agent Creation → Static Metadata → Traditional NFT Behavior
      ↓
-JSON-based persona, memory, and attributes
+JSON-based persona, imprint, and attributes
      ↓
 Familiar development patterns
 ```
@@ -62,21 +62,21 @@ Cryptographically verifiable evolution
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    BEP007Enhanced Contract                   │
+│                    BEP007Enhanced Contract                  │
 ├─────────────────────────────────────────────────────────────┤
-│  Core NFT Functionality (ERC721 + BEP007 extensions)       │
+│  Core NFT Functionality (ERC721 + BEP007 extensions)        │
 │  ├── Token Management                                       │
 │  ├── Agent State Management                                 │
 │  ├── Action Execution                                       │
 │  └── Metadata Management                                    │
 ├─────────────────────────────────────────────────────────────┤
 │  Enhanced Metadata Structure                                │
-│  ├── Basic Fields (persona, memory, voice, animation)      │
-│  ├── Learning Flags (learningEnabled, learningModule)      │
-│  └── Learning Data (learningTreeRoot, learningVersion)     │
+│  ├── Basic Fields (persona, imprint, voice, animation)      │
+│  ├── Learning Flags (learningEnabled, learningModule)       │
+│  └── Learning Data (learningTreeRoot, learningVersion)      │
 ├─────────────────────────────────────────────────────────────┤
 │  Learning Integration Layer                                 │
-│  ├── Learning Module Interface                             │
+│  ├── Learning Module Interface                              │
 │  ├── Interaction Recording                                  │
 │  ├── Metrics Tracking                                       │
 │  └── Verification System                                    │
@@ -87,10 +87,10 @@ Cryptographically verifiable evolution
 │                  ILearningModule Interface                  │
 ├─────────────────────────────────────────────────────────────┤
 │  Standard Learning Operations                               │
-│  ├── updateLearning()                                      │
-│  ├── verifyLearning()                                      │
-│  ├── getLearningMetrics()                                  │
-│  └── recordInteraction()                                   │
+│  ├── updateLearning()                                       │
+│  ├── verifyLearning()                                       │
+│  ├── getLearningMetrics()                                   │
+│  └── recordInteraction()                                    │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -132,7 +132,7 @@ struct AgentMetadata {
 
 #### Original Fields
 - **persona**: JSON-encoded string containing character traits, communication style, and behavioral patterns
-- **memory**: Short summary describing the agent's primary role or purpose
+- **imprint**: Short summary describing the agent's primary role or purpose
 - **voiceHash**: Reference to stored audio profile for voice synthesis
 - **animationURI**: URI pointing to avatar animation or video content
 - **vaultURI**: URI to the agent's extended data vault
@@ -352,7 +352,7 @@ await bep007Enhanced.enableLearning(
 
 ## Gas Cost Analysis
 
-### Simple Agents (JSON Light Memory)
+### Simple Agents (JSON Light Imprint)
 - **Creation**: ~200,000 gas (standard ERC721 + metadata)
 - **Action Execution**: ~100,000 gas (delegatecall + state updates)
 - **Metadata Updates**: ~50,000 gas (storage updates)
@@ -365,11 +365,11 @@ await bep007Enhanced.enableLearning(
 
 ### Cost Comparison
 
-| Operation | Simple Agent | Learning Agent | Overhead |
-|-----------|--------------|----------------|----------|
-| Creation | 200k gas | 250k gas | +25% |
-| Action Execution | 100k gas | 120k gas | +20% |
-| Metadata Update | 50k gas | 80k gas | +60% |
+| Operation        | Simple Agent | Learning Agent | Overhead |
+| ---------------- | ------------ | -------------- | -------- |
+| Creation         | 200k gas     | 250k gas       | +25%     |
+| Action Execution | 100k gas     | 120k gas       | +20%     |
+| Metadata Update  | 50k gas      | 80k gas        | +60%     |
 
 The learning overhead is minimal for most operations, with the largest impact on metadata updates due to the additional learning data processing.
 

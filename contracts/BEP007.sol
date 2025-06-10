@@ -248,17 +248,17 @@ abstract contract BEP007 is
     }
 
     /**
-     * @dev Registers a memory module for the agent
+     * @dev Registers a imprint module for the agent
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the memory module
+     * @param moduleAddress The address of the imprint module
      */
-    function registerMemoryModule(
+    function registerImprintModule(
         uint256 tokenId,
         address moduleAddress
     ) external onlyAgentOwner(tokenId) {
-        require(imprintModuleRegistry != address(0), "BEP007: memory module registry not set");
+        require(imprintModuleRegistry != address(0), "BEP007: imprint module registry not set");
 
-        emit MemoryModuleRegistered(tokenId, moduleAddress);
+        emit ImprintModuleRegistered(tokenId, moduleAddress);
     }
 
     /**
@@ -325,10 +325,10 @@ abstract contract BEP007 is
     }
 
     /**
-     * @dev Sets the memory module registry address
-     * @param registry The address of the memory module registry
+     * @dev Sets the imprint module registry address
+     * @param registry The address of the imprint module registry
      */
-    function setMemoryModuleRegistry(address registry) external onlyGovernance {
+    function setImprintModuleRegistry(address registry) external onlyGovernance {
         require(registry != address(0), "BEP007: registry is zero address");
         imprintModuleRegistry = registry;
     }

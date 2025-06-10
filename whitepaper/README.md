@@ -8,7 +8,7 @@ This directory contains the complete whitepaper for the BEP-007 Non-Fungible Age
 2. [Introduction](./introduction.md)
 3. [Token Standard Architecture](./token-standard-architecture.md)
 4. [Smart Contract Architecture](./smart-contract-architecture.md)
-5. [Memory Modules](./memory-modules.md)
+5. [Imprint Modules](./imprint-modules.md)
 6. [Agent Lifecycle](./agent-lifecycle.md)
 7. [Governance Model](./governance-model.md)
 8. [Tokenomics](./tokenomics.md)
@@ -22,10 +22,10 @@ This directory contains the complete whitepaper for the BEP-007 Non-Fungible Age
 The whitepaper emphasizes several key themes, enhanced with the new learning capabilities:
 
 ### 1. **Dual-Path Standardization**
-The importance of standardized interfaces, behaviors, and security patterns for creating an interoperable agent ecosystem, now supporting both simple agents (JSON light memory) and sophisticated learning agents (Merkle tree learning).
+The importance of standardized interfaces, behaviors, and security patterns for creating an interoperable agent ecosystem, now supporting both simple agents (JSON light imprint) and sophisticated learning agents (Merkle tree learning).
 
 ### 2. **Enhanced Hybrid Architecture**
-The balance between on-chain identity and security versus off-chain memory and intelligence, now extended with cryptographically verifiable learning capabilities through Merkle trees.
+The balance between on-chain identity and security versus off-chain imprint and intelligence, now extended with cryptographically verifiable learning capabilities through Merkle trees.
 
 ### 3. **User Sovereignty with Learning Control**
 The preservation of user control over agent data, behavior, and learning progression, with cryptographic verification ensuring learning integrity.
@@ -38,10 +38,10 @@ The introduction of tamper-proof learning history and verifiable intelligence pr
 
 ## Enhanced Architecture Overview
 
-### Simple Agents (JSON Light Memory)
+### Simple Agents (JSON Light Imprint)
 - **Use Case**: Basic automation, static NFTs, simple interactions
 - **Benefits**: Low gas costs, familiar development patterns, immediate deployment
-- **Architecture**: Traditional JSON metadata with persona, memory, and voice
+- **Architecture**: Traditional JSON metadata with persona, imprint, and voice
 - **Target Audience**: Developers seeking quick deployment and minimal complexity
 
 ### Learning Agents (Merkle Tree Learning)
@@ -59,7 +59,7 @@ Start with the [Abstract](./abstract.md) and [Introduction](./introduction.md) t
 Focus on:
 - [Token Standard Architecture](./token-standard-architecture.md) - Core NFT implementation
 - [Smart Contract Architecture](./smart-contract-architecture.md) - Contract design patterns
-- [Memory Modules](./memory-modules.md) - Data storage and retrieval
+- [Imprint Modules](./imprint-modules.md) - Data storage and retrieval
 - [Enhanced Learning Architecture](./enhanced-learning-architecture.md) - **NEW** Learning capabilities
 
 ### For Business and Strategy
@@ -151,12 +151,12 @@ const learningAgent = await agentFactory.createAgent(
 
 ## Gas Cost Comparison
 
-| Operation | Simple Agent | Learning Agent | Overhead |
-|-----------|--------------|----------------|----------|
-| Creation | ~200k gas | ~250k gas | +25% |
-| Action Execution | ~100k gas | ~120k gas | +20% |
-| Learning Update | N/A | ~80k gas | New Feature |
-| Interaction Recording | N/A | ~30k gas | New Feature |
+| Operation             | Simple Agent | Learning Agent | Overhead    |
+| --------------------- | ------------ | -------------- | ----------- |
+| Creation              | ~200k gas    | ~250k gas      | +25%        |
+| Action Execution      | ~100k gas    | ~120k gas      | +20%        |
+| Learning Update       | N/A          | ~80k gas       | New Feature |
+| Interaction Recording | N/A          | ~30k gas       | New Feature |
 
 ## Security and Trust
 

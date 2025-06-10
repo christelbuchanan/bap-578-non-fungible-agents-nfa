@@ -1,6 +1,6 @@
 # Smart Contract Architecture
 
-The BEP-007 token standard builds upon ERC-721 to introduce a composable framework for intelligent, evolving agents with enhanced learning capabilities. The smart contract architecture has been designed to accommodate both static NFT functionality and dynamic extensions critical for agent behavior, media, memory, and cryptographically verifiable learning progression.
+The BEP-007 token standard builds upon ERC-721 to introduce a composable framework for intelligent, evolving agents with enhanced learning capabilities. The smart contract architecture has been designed to accommodate both static NFT functionality and dynamic extensions critical for agent behavior, media, imprint, and cryptographically verifiable learning progression.
 
 ## Enhanced Architecture Overview
 
@@ -8,10 +8,10 @@ BEP-007 maintains ERC-721 compatibility by inheriting core functionality: unique
 
 The enhanced architecture provides two distinct development paths:
 
-### 1. Simple Agent Architecture (JSON Light Memory)
+### 1. Simple Agent Architecture (JSON Light Imprint)
 Traditional NFT functionality with agent-specific extensions:
 - Core persona description and behavioral parameters
-- Static memory and voice hash references
+- Static imprint and voice hash references
 - Animation URI for avatar representation
 - Vault URI for extended off-chain data storage
 
@@ -28,7 +28,7 @@ The extended metadata schema includes both original and learning-specific fields
 
 ### Core BEP-007 Fields
 - **persona**: a JSON-encoded string representing character traits, style, tone, and behavioral intent.
-- **memory**: a short summary string describing the agent's default role or purpose.
+- **imprint**: a short summary string describing the agent's default role or purpose.
 - **voiceHash**: a reference ID to a stored audio profile (e.g., via IPFS or Arweave).
 - **animationURI**: a URI to a video or Lottie-compatible animation file.
 
@@ -215,7 +215,7 @@ contract BEP007Treasury {
 ```
 
 #### **ImprintModuleRegistry.sol**: Enhanced Registry with Learning Module Support
-Registry for managing external memory modules with cryptographic verification and learning module registration:
+Registry for managing external imprint modules with cryptographic verification and learning module registration:
 
 ```solidity
 contract ImprintModuleRegistry {
@@ -232,8 +232,8 @@ contract ImprintModuleRegistry {
     }
     
     enum LearningType {
-        STATIC,          // Traditional static memory
-        ADAPTIVE,        // Basic adaptive memory
+        STATIC,          // Traditional static imprint
+        ADAPTIVE,        // Basic adaptive imprint
         MERKLE_TREE,     // Merkle tree-based learning
         FEDERATED       // Cross-agent learning support
     }
@@ -355,7 +355,7 @@ Template for DeFi-focused agents with adaptive trading strategies:
 
 ```solidity
 contract DeFiAgent is BEP007Enhanced {
-    struct TradingMemory {
+    struct TradingImprint {
         mapping(address => uint256) tokenPerformance;
         mapping(bytes32 => uint256) strategySuccess;
         uint256 totalTrades;
@@ -363,7 +363,7 @@ contract DeFiAgent is BEP007Enhanced {
         uint256 learningConfidence;
     }
     
-    mapping(uint256 => TradingMemory) public tradingMemory;
+    mapping(uint256 => TradingImprint) public tradingImprint;
     
     function executeTrade(
         uint256 tokenId,
@@ -385,7 +385,7 @@ Template for gaming-focused agents with evolving NPCs and adaptive behavior:
 
 ```solidity
 contract GameAgent is BEP007Enhanced {
-    struct GameMemory {
+    struct GameImprint {
         mapping(bytes32 => uint256) skillLevels;
         mapping(address => uint256) playerInteractions;
         uint256 experiencePoints;
@@ -393,7 +393,7 @@ contract GameAgent is BEP007Enhanced {
         bytes32 personalityEvolution;
     }
     
-    mapping(uint256 => GameMemory) public gameMemory;
+    mapping(uint256 => GameImprint) public gameImprint;
     
     function levelUpSkill(uint256 tokenId, bytes32 skillId) external;
     function adaptToPlayer(uint256 tokenId, address player, bytes calldata behaviorData) external;
@@ -406,7 +406,7 @@ Template for DAO-focused agents with adaptive governance participation:
 
 ```solidity
 contract DAOAgent is BEP007Enhanced {
-    struct GovernanceMemory {
+    struct GovernanceImprint {
         mapping(uint256 => bool) proposalVotes;
         mapping(bytes32 => uint256) topicExpertise;
         uint256 participationScore;
@@ -414,7 +414,7 @@ contract DAOAgent is BEP007Enhanced {
         bytes32 votingPatternHash;
     }
     
-    mapping(uint256 => GovernanceMemory) public governanceMemory;
+    mapping(uint256 => GovernanceImprint) public governanceImprint;
     
     function voteOnProposal(uint256 tokenId, uint256 proposalId, bool support) external;
     function updateExpertise(uint256 tokenId, bytes32 topic, uint256 expertiseLevel) external;
@@ -427,7 +427,7 @@ Template for creator-focused agents with adaptive content management:
 
 ```solidity
 contract CreatorAgent is BEP007Enhanced {
-    struct CreativeMemory {
+    struct CreativeImprint {
         mapping(bytes32 => uint256) contentPerformance;
         mapping(address => uint256) audienceEngagement;
         uint256 creativityScore;
@@ -435,7 +435,7 @@ contract CreatorAgent is BEP007Enhanced {
         bytes32 styleEvolution;
     }
     
-    mapping(uint256 => CreativeMemory) public creativeMemory;
+    mapping(uint256 => CreativeImprint) public creativeImprint;
     
     function createContent(uint256 tokenId, bytes32 contentHash, bytes calldata metadata) external;
     function adaptStyle(uint256 tokenId, bytes32 newStyleHash) external;
@@ -448,7 +448,7 @@ Template for strategy-focused agents with adaptive market analysis:
 
 ```solidity
 contract StrategicAgent is BEP007Enhanced {
-    struct StrategicMemory {
+    struct StrategicImprint {
         mapping(bytes32 => uint256) marketPredictions;
         mapping(address => uint256) assetAnalysis;
         uint256 predictionAccuracy;
@@ -456,7 +456,7 @@ contract StrategicAgent is BEP007Enhanced {
         bytes32 analysisEvolution;
     }
     
-    mapping(uint256 => StrategicMemory) public strategicMemory;
+    mapping(uint256 => StrategicImprint) public strategicImprint;
     
     function analyzeMarket(uint256 tokenId, bytes32 marketId, bytes calldata analysisData) external;
     function updatePrediction(uint256 tokenId, bytes32 predictionId, uint256 confidence) external;
@@ -860,7 +860,7 @@ function prepareCrossChainMigration(
       "value": "tactical, focused, neutral tone"
     },
     {
-      "trait_type": "memory",
+      "trait_type": "imprint",
       "value": "crypto intelligence, FUD scanner"
     },
     {
@@ -888,7 +888,7 @@ function prepareCrossChainMigration(
       "value": "adaptive, intelligent, personalized"
     },
     {
-      "trait_type": "memory",
+      "trait_type": "imprint",
       "value": "AI companion with learning capabilities"
     },
     {

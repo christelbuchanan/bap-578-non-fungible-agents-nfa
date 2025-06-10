@@ -46,7 +46,7 @@ The DAO Agent is a specialized BEP007 agent template designed for decentralized 
 
 ## Learning Capabilities
 
-### Traditional DAO Agent (JSON Light Memory)
+### Traditional DAO Agent (JSON Light Imprint)
 ```javascript
 // Static governance configuration
 const daoConfig = {

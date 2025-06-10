@@ -378,7 +378,7 @@ contract BEP007GovernanceEnhanced is
         emit AgentTypeMigrated(tokenId, currentType, newType);
     }
 
-    // ==================== MEMORY MODEL GOVERNANCE ====================
+    // ==================== IMPRINT MODEL GOVERNANCE ====================
 
     /**
      * @dev Approves or removes a imprint provider
@@ -418,7 +418,7 @@ contract BEP007GovernanceEnhanced is
     /**
      * @dev Migrates agent imprint to a new provider
      */
-    function migrateAgentMemory(uint256 tokenId, address newProvider) external {
+    function migrateAgentImprint(uint256 tokenId, address newProvider) external {
         address owner = bep007Token.ownerOf(tokenId);
         require(msg.sender == owner, "BEP007Governance: not token owner");
         require(

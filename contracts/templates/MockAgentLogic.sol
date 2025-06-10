@@ -29,10 +29,10 @@ contract MockAgentLogic is Ownable {
     // The agent's profile
     AgentProfile public profile;
 
-    // Learning and memory system
-    struct Memory {
+    // Learning and imprint system
+    struct Imprint {
         uint256 id;
-        string memoryType; // "interaction", "pattern", "preference", "knowledge"
+        string imprintType; // "interaction", "pattern", "preference", "knowledge"
         string content;
         string context;
         uint256 importance; // 1-10 scale
@@ -41,8 +41,8 @@ contract MockAgentLogic is Ownable {
         bool isActive;
     }
 
-    // Memory storage
-    mapping(uint256 => Memory) public imprints;
+    // Imprint storage
+    mapping(uint256 => Imprint) public imprints;
     uint256 public imprintCount;
 
     // Interaction patterns
@@ -124,7 +124,7 @@ contract MockAgentLogic is Ownable {
 
     // Events for learning and interaction tracking
     event InteractionRecorded(address indexed user, string interactionType, uint256 timestamp);
-    event MemoryCreated(uint256 indexed memoryId, string memoryType, uint256 importance);
+    event ImprintCreated(uint256 indexed imprintId, string imprintType, uint256 importance);
     event PatternLearned(uint256 indexed patternId, string patternType, uint256 frequency);
     event KnowledgeUpdated(uint256 indexed knowledgeId, string category, uint256 confidence);
     event RelationshipUpdated(address indexed user, string relationshipType, int256 sentimentScore);
@@ -212,8 +212,8 @@ contract MockAgentLogic is Ownable {
         // Update or create user relationship
         _updateUserRelationship(_user, _interactionType, _sentiment);
 
-        // Create memory from interaction
-        _createMemory("interaction", _content, _interactionType, _success ? 8 : 5);
+        // Create imprint from interaction
+        _createImprint("interaction", _content, _interactionType, _success ? 8 : 5);
 
         // Learn patterns from interaction
         _learnPattern(_interactionType, _content, _success);
@@ -225,31 +225,31 @@ contract MockAgentLogic is Ownable {
     }
 
     /**
-     * @dev Creates a new memory
-     * @param _memoryType The type of memory
-     * @param _content The content of the memory
-     * @param _context The context of the memory
+     * @dev Creates a new imprint
+     * @param _imprintType The type of imprint
+     * @param _content The content of the imprint
+     * @param _context The context of the imprint
      * @param _importance The importance level (1-10)
      */
-    function createMemory(
-        string memory _memoryType,
+    function createImprint(
+        string memory _imprintType,
         string memory _content,
         string memory _context,
         uint256 _importance
-    ) external onlyOwner returns (uint256 memoryId) {
+    ) external onlyOwner returns (uint256 imprintId) {
         require(
             _importance >= 1 && _importance <= 10,
             "MockAgentLogic: importance must be between 1 and 10"
         );
 
-        return _createMemory(_memoryType, _content, _context, _importance);
+        return _createImprint(_imprintType, _content, _context, _importance);
     }
 
     /**
-     * @dev Internal function to create memory
+     * @dev Internal function to create imprint
      */
-    function _createMemory(
-        string memory _memoryType,
+    function _createImprint(
+        string memory _imprintType,
         string memory _content,
         string memory _context,
         uint256 _importance
@@ -257,9 +257,9 @@ contract MockAgentLogic is Ownable {
         imprintCount += 1;
         imprintId = imprintCount;
 
-        imprints[imprintId] = Memory({
+        imprints[imprintId] = Imprint({
             id: imprintId,
-            memoryType: _memoryType,
+            imprintType: _imprintType,
             content: _content,
             context: _context,
             importance: _importance,
@@ -268,7 +268,7 @@ contract MockAgentLogic is Ownable {
             isActive: true
         });
 
-        emit MemoryCreated(imprintId, _memoryType, _importance);
+        emit ImprintCreated(imprintId, _imprintType, _importance);
 
         return imprintId;
     }
@@ -482,7 +482,7 @@ contract MockAgentLogic is Ownable {
         // Factor 1: Interaction diversity (number of known users)
         adaptationFactors += knownUsers.length * 5;
 
-        // Factor 2: Memory retention (active memories)
+        // Factor 2: Imprint retention (active imprints)
         uint256 activeMemories = 0;
         for (uint256 i = 1; i <= imprintCount; i++) {
             if (imprints[i].isActive) {
@@ -512,37 +512,37 @@ contract MockAgentLogic is Ownable {
     }
 
     /**
-     * @dev Retrieves relevant memories based on context
+     * @dev Retrieves relevant imprints based on context
      * @param _context The context to search for
-     * @param _limit The maximum number of memories to return
-     * @return An array of relevant memories
+     * @param _limit The maximum number of imprints to return
+     * @return An array of relevant imprints
      */
     function getRelevantMemories(
         string memory _context,
         uint256 _limit
-    ) external view returns (Memory[] memory) {
+    ) external view returns (Imprint[] memory) {
         uint256 relevantCount = 0;
 
-        // Count relevant memories
+        // Count relevant imprints
         for (uint256 i = 1; i <= imprintCount; i++) {
             if (
                 imprints[i].isActive &&
                 (keccak256(bytes(imprints[i].context)) == keccak256(bytes(_context)) ||
-                    keccak256(bytes(imprints[i].memoryType)) == keccak256(bytes(_context)))
+                    keccak256(bytes(imprints[i].imprintType)) == keccak256(bytes(_context)))
             ) {
                 relevantCount++;
             }
         }
 
         uint256 resultCount = _limit > relevantCount ? relevantCount : _limit;
-        Memory[] memory relevantMemories = new Memory[](resultCount);
+        Imprint[] memory relevantMemories = new Imprint[](resultCount);
 
         uint256 index = 0;
         for (uint256 i = imprintCount; i > 0 && index < resultCount; i--) {
             if (
                 imprints[i].isActive &&
                 (keccak256(bytes(imprints[i].context)) == keccak256(bytes(_context)) ||
-                    keccak256(bytes(imprints[i].memoryType)) == keccak256(bytes(_context)))
+                    keccak256(bytes(imprints[i].imprintType)) == keccak256(bytes(_context)))
             ) {
                 relevantMemories[index] = imprints[i];
                 index++;

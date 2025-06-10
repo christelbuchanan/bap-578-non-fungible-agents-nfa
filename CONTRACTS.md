@@ -7,7 +7,7 @@ This document provides detailed documentation for the key contracts in the BEP-0
 1. [BEP007.sol](#bep007sol)
 2. [AgentFactory.sol](#agentfactorysol)
 3. [BEP007Governance.sol](#bep007governancesol)
-4. [ImprintModuleRegistry.sol](#memorymoduleregistrysol)
+4. [ImprintModuleRegistry.sol](#imprintmoduleregistrysol)
 5. [VaultPermissionManager.sol](#vaultpermissionmanagersol)
 6. [CircuitBreaker.sol](#circuitbreakersol)
 7. [BEP007Treasury.sol](#bep007treasurysol)
@@ -141,10 +141,10 @@ await governance.executeProposal(proposalId);
 
 ## ImprintModuleRegistry.sol
 
-Registry for agent memory modules.
+Registry for agent imprint modules.
 
 ### Purpose
-ImprintModuleRegistry.sol allows agents to register approved external memory sources, providing a way to extend an agent's capabilities without modifying the core contract.
+ImprintModuleRegistry.sol allows agents to register approved external imprint sources, providing a way to extend an agent's capabilities without modifying the core contract.
 
 ### Key Features
 - Cryptographic verification for module registration
@@ -152,8 +152,8 @@ ImprintModuleRegistry.sol allows agents to register approved external memory sou
 - Metadata management for modules
 
 ### Key Functions
-- `registerModule(uint256 tokenId, address moduleAddress, string memory metadata, bytes memory signature)`: Registers a memory module
-- `revokeModule(uint256 tokenId, address moduleAddress)`: Revokes a memory module
+- `registerModule(uint256 tokenId, address moduleAddress, string memory metadata, bytes memory signature)`: Registers a imprint module
+- `revokeModule(uint256 tokenId, address moduleAddress)`: Revokes a imprint module
 - `isModuleApproved(uint256 tokenId, address moduleAddress)`: Checks if a module is approved
 - `getModuleMetadata(uint256 tokenId, address moduleAddress)`: Gets the metadata for a module
 
@@ -161,7 +161,7 @@ ImprintModuleRegistry.sol allows agents to register approved external memory sou
 ```javascript
 // Create module metadata
 const moduleMetadata = JSON.stringify({
-  context_id: "nfa007-memory-001",
+  context_id: "nfa007-imprint-001",
   owner: ownerAddress,
   created: new Date().toISOString(),
   persona: "Strategic crypto analyst"
@@ -175,7 +175,7 @@ const messageHash = ethers.utils.solidityKeccak256(
 const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
 
 // Register the module
-await memoryRegistry.registerModule(
+await imprintRegistry.registerModule(
   tokenId,
   moduleAddress,
   moduleMetadata,

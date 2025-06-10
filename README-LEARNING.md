@@ -6,12 +6,12 @@ This document explains how the enhanced BEP007 standard incorporates optional Me
 
 The enhanced BEP007 standard provides **two paths** for agent development:
 
-### 🚀 **Path 1: JSON Light Memory (Default)**
+### 🚀 **Path 1: JSON Light Imprint (Default)**
 
 - **Perfect for**: Most developers and use cases
 - **Benefits**: Simple, familiar, immediate deployment
 - **Storage**: Traditional JSON metadata (like standard NFTs)
-- **Learning**: Static persona and memory
+- **Learning**: Static persona and imprint
 - **Gas Cost**: Minimal (standard ERC721 operations)
 
 ### 🧠 **Path 2: Merkle Tree Learning (Optional)**
@@ -50,7 +50,7 @@ The enhanced BEP007 standard provides **two paths** for agent development:
 
 ## Usage Examples
 
-### Creating a Simple Agent (JSON Light Memory)
+### Creating a Simple Agent (JSON Light Imprint)
 
 ```javascript
 // Traditional approach - learning disabled by default

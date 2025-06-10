@@ -64,9 +64,9 @@ interface IBEP007 {
     event MetadataUpdated(uint256 indexed tokenId, string metadataURI);
 
     /**
-     * @dev Emitted when a memory module is registered
+     * @dev Emitted when a imprint module is registered
      */
-    event MemoryModuleRegistered(uint256 indexed tokenId, address indexed moduleAddress);
+    event ImprintModuleRegistered(uint256 indexed tokenId, address indexed moduleAddress);
 
     /**
      * @dev Executes an action using the agent's logic
