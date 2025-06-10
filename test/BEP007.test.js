@@ -57,7 +57,7 @@ describe("BEP007 Non-Fungible Agent", function () {
       const metadataURI = "ipfs://QmTest";
       const extendedMetadata = {
         persona: "Test Persona",
-        memory: "Test Memory",
+        imprint: "Test Memory",
         voiceHash: "Test Voice Hash",
         animationURI: "ipfs://QmTestAnimation",
         vaultURI: "ipfs://QmTestVault",
@@ -97,7 +97,7 @@ describe("BEP007 Non-Fungible Agent", function () {
       const metadataURI = "ipfs://QmTest";
       const extendedMetadata = {
         persona: "Test Persona",
-        memory: "Test Memory",
+        imprint: "Test Memory",
         voiceHash: "Test Voice Hash",
         animationURI: "ipfs://QmTestAnimation",
         vaultURI: "ipfs://QmTestVault",
@@ -149,7 +149,7 @@ describe("BEP007 Non-Fungible Agent", function () {
     it("Should update agent metadata", async function () {
       const newMetadata = {
         persona: "Updated Persona",
-        memory: "Updated Memory",
+        imprint: "Updated Memory",
         voiceHash: "Updated Voice Hash",
         animationURI: "ipfs://QmUpdatedAnimation",
         vaultURI: "ipfs://QmUpdatedVault",
@@ -178,7 +178,7 @@ describe("BEP007 Non-Fungible Agent", function () {
       const metadataURI = "ipfs://QmTest";
       const extendedMetadata = {
         persona: "Test Persona",
-        memory: "Test Memory",
+        imprint: "Test Memory",
         voiceHash: "Test Voice Hash",
         animationURI: "ipfs://QmTestAnimation",
         vaultURI: "ipfs://QmTestVault",

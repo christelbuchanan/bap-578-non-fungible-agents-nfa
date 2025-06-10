@@ -12,11 +12,11 @@ import "../BEP007.sol";
  * @title MerkleTreeLearning
  * @dev Implementation of Merkle tree-based learning for BEP007 agents
  */
-contract MerkleTreeLearning is 
-    ILearningModule, 
-    Initializable, 
-    OwnableUpgradeable, 
-    ReentrancyGuardUpgradeable 
+contract MerkleTreeLearning is
+    ILearningModule,
+    Initializable,
+    OwnableUpgradeable,
+    ReentrancyGuardUpgradeable
 {
     using MerkleProofUpgradeable for bytes32[];
 
@@ -82,17 +82,14 @@ contract MerkleTreeLearning is
      * @param tokenId The ID of the agent token
      * @param initialRoot The initial learning tree root
      */
-    function enableLearning(
-        uint256 tokenId,
-        bytes32 initialRoot
-    ) external {
+    function enableLearning(uint256 tokenId, bytes32 initialRoot) external {
         address owner = bep007Token.ownerOf(tokenId);
         require(msg.sender == owner, "MerkleTreeLearning: not token owner");
         require(!_learningEnabled[tokenId], "MerkleTreeLearning: already enabled");
 
         _learningEnabled[tokenId] = true;
         _learningRoots[tokenId] = initialRoot;
-        
+
         // Initialize learning metrics
         _learningMetrics[tokenId] = LearningMetrics({
             totalInteractions: 0,
@@ -113,12 +110,7 @@ contract MerkleTreeLearning is
     function updateLearning(
         uint256 tokenId,
         LearningUpdate calldata update
-    ) 
-        external 
-        nonReentrant 
-        onlyAuthorized(tokenId) 
-        whenLearningEnabled(tokenId) 
-    {
+    ) external nonReentrant onlyAuthorized(tokenId) whenLearningEnabled(tokenId) {
         // Check daily update limit
         uint256 today = block.timestamp / 86400; // Days since epoch
         require(
@@ -138,14 +130,15 @@ contract MerkleTreeLearning is
         // Update metrics
         LearningMetrics storage metrics = _learningMetrics[tokenId];
         metrics.learningEvents++;
-        
+
         // Calculate learning velocity (events per day)
         uint256 timeDiff = block.timestamp - metrics.lastUpdateTimestamp;
         if (timeDiff > 0) {
-            metrics.learningVelocity = (metrics.learningEvents * 86400 * 1e18) / 
+            metrics.learningVelocity =
+                (metrics.learningEvents * 86400 * 1e18) /
                 (block.timestamp - metrics.lastUpdateTimestamp + timeDiff);
         }
-        
+
         metrics.lastUpdateTimestamp = block.timestamp;
 
         // Increment daily update count
@@ -167,11 +160,7 @@ contract MerkleTreeLearning is
         uint256 tokenId,
         string calldata interactionType,
         bool success
-    ) 
-        external 
-        onlyAuthorized(tokenId) 
-        whenLearningEnabled(tokenId) 
-    {
+    ) external onlyAuthorized(tokenId) whenLearningEnabled(tokenId) {
         LearningMetrics storage metrics = _learningMetrics[tokenId];
         metrics.totalInteractions++;
 
@@ -203,12 +192,7 @@ contract MerkleTreeLearning is
         uint256 tokenId,
         bytes32 claim,
         bytes32[] calldata proof
-    ) 
-        external 
-        view 
-        override 
-        returns (bool) 
-    {
+    ) external view override returns (bool) {
         bytes32 root = _learningRoots[tokenId];
         return proof.verify(root, claim);
     }
@@ -218,12 +202,9 @@ contract MerkleTreeLearning is
      * @param tokenId The ID of the agent token
      * @return The learning metrics
      */
-    function getLearningMetrics(uint256 tokenId) 
-        external 
-        view 
-        override 
-        returns (LearningMetrics memory) 
-    {
+    function getLearningMetrics(
+        uint256 tokenId
+    ) external view override returns (LearningMetrics memory) {
         return _learningMetrics[tokenId];
     }
 
@@ -232,12 +213,7 @@ contract MerkleTreeLearning is
      * @param tokenId The ID of the agent token
      * @return The Merkle root of the learning tree
      */
-    function getLearningRoot(uint256 tokenId) 
-        external 
-        view 
-        override 
-        returns (bytes32) 
-    {
+    function getLearningRoot(uint256 tokenId) external view override returns (bytes32) {
         return _learningRoots[tokenId];
     }
 
@@ -246,12 +222,7 @@ contract MerkleTreeLearning is
      * @param tokenId The ID of the agent token
      * @return Whether learning is enabled
      */
-    function isLearningEnabled(uint256 tokenId) 
-        external 
-        view 
-        override 
-        returns (bool) 
-    {
+    function isLearningEnabled(uint256 tokenId) external view override returns (bool) {
         return _learningEnabled[tokenId];
     }
 
@@ -269,11 +240,7 @@ contract MerkleTreeLearning is
      * @param updater The address to authorize
      * @param authorized Whether to authorize or revoke
      */
-    function setAuthorizedUpdater(
-        uint256 tokenId,
-        address updater,
-        bool authorized
-    ) external {
+    function setAuthorizedUpdater(uint256 tokenId, address updater, bool authorized) external {
         address owner = bep007Token.ownerOf(tokenId);
         require(msg.sender == owner, "MerkleTreeLearning: not token owner");
 
@@ -286,11 +253,7 @@ contract MerkleTreeLearning is
      * @param updater The address to check
      * @return Whether the address is authorized
      */
-    function isAuthorizedUpdater(uint256 tokenId, address updater) 
-        external 
-        view 
-        returns (bool) 
-    {
+    function isAuthorizedUpdater(uint256 tokenId, address updater) external view returns (bool) {
         return _authorizedUpdaters[tokenId][updater];
     }
 
@@ -300,11 +263,7 @@ contract MerkleTreeLearning is
      * @param success Whether the interaction was successful
      * @return The updated confidence score
      */
-    function _updateConfidence(uint256 currentScore, bool success) 
-        internal 
-        pure 
-        returns (uint256) 
-    {
+    function _updateConfidence(uint256 currentScore, bool success) internal pure returns (uint256) {
         if (success) {
             // Increase confidence by 1% of remaining confidence gap
             uint256 gap = 1e18 - currentScore;
@@ -323,11 +282,15 @@ contract MerkleTreeLearning is
      */
     function _checkMilestones(uint256 tokenId, LearningMetrics memory metrics) internal {
         // Check confidence milestones
-        if (metrics.confidenceScore >= MILESTONE_CONFIDENCE_80 && 
-            metrics.confidenceScore < MILESTONE_CONFIDENCE_80 + 1e16) {
+        if (
+            metrics.confidenceScore >= MILESTONE_CONFIDENCE_80 &&
+            metrics.confidenceScore < MILESTONE_CONFIDENCE_80 + 1e16
+        ) {
             emit LearningMilestone(tokenId, "confidence_80", 80, block.timestamp);
-        } else if (metrics.confidenceScore >= MILESTONE_CONFIDENCE_95 && 
-                   metrics.confidenceScore < MILESTONE_CONFIDENCE_95 + 1e16) {
+        } else if (
+            metrics.confidenceScore >= MILESTONE_CONFIDENCE_95 &&
+            metrics.confidenceScore < MILESTONE_CONFIDENCE_95 + 1e16
+        ) {
             emit LearningMilestone(tokenId, "confidence_95", 95, block.timestamp);
         }
     }

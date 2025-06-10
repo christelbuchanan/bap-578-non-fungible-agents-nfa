@@ -73,7 +73,7 @@ The Creator Agent is a specialized BEP007 agent template designed to serve as a 
 // Basic creator agent setup
 const creatorMetadata = {
   persona: "Tech content creator focused on blockchain education",
-  memory: "Specializes in making complex topics accessible",
+  imprint: "Specializes in making complex topics accessible",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../creator-vault.json",
@@ -99,7 +99,7 @@ const tx = await bep007Enhanced.createAgent(
 // Advanced learning creator agent
 const learningCreatorMetadata = {
   persona: "AI-powered tech educator that adapts to audience preferences",
-  memory: "Learns optimal content strategies and audience engagement patterns",
+  imprint: "Learns optimal content strategies and audience engagement patterns",
   voiceHash: "bafkreigh2akiscaild...",
   animationURI: "ipfs://Qm.../creator-avatar.mp4",
   vaultURI: "ipfs://Qm.../learning-vault.json",

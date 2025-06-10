@@ -165,7 +165,7 @@ const enhancedMetadata = {
     style: "conservative-aggressive",
     specialization: "defi-portfolio-management"
   }),
-  memory: "DeFi portfolio manager specialized in yield optimization and risk management",
+  imprint: "DeFi portfolio manager specialized in yield optimization and risk management",
   voiceHash: "bafkreidefi...",
   animationURI: "ipfs://Qm.../defi_agent.mp4",
   vaultURI: "ipfs://Qm.../defi_vault.json",

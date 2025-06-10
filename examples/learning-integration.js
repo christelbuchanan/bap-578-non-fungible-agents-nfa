@@ -61,7 +61,7 @@ async function createLearningAgent(agentFactory, merkleTreeLearning, owner) {
       style: "professional",
       tone: "friendly"
     }),
-    memory: "AI coding assistant specialized in blockchain development",
+    imprint: "AI coding assistant specialized in blockchain development",
     voiceHash: "bafkreigh2akiscaild...", // IPFS hash for voice profile
     animationURI: "ipfs://Qm.../agent_avatar.mp4",
     vaultURI: "ipfs://Qm.../agent_vault.json",

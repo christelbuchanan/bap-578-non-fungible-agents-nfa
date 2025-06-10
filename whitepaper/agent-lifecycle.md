@@ -18,7 +18,7 @@ The BEP-007 standard extends traditional NFT metadata to include agent-specific 
 ```solidity
 struct AgentMetadata {
     string persona;           // Agent personality and role description
-    string memory;           // Memory system description and capabilities
+    string imprint;           // Memory system description and capabilities
     string voiceHash;        // Voice/audio identity hash
     string animationURI;     // Agent avatar/animation
     string vaultURI;         // Off-chain memory vault location

@@ -7,7 +7,7 @@ This document provides detailed documentation for the key contracts in the BEP-0
 1. [BEP007.sol](#bep007sol)
 2. [AgentFactory.sol](#agentfactorysol)
 3. [BEP007Governance.sol](#bep007governancesol)
-4. [MemoryModuleRegistry.sol](#memorymoduleregistrysol)
+4. [ImprintModuleRegistry.sol](#memorymoduleregistrysol)
 5. [VaultPermissionManager.sol](#vaultpermissionmanagersol)
 6. [CircuitBreaker.sol](#circuitbreakersol)
 7. [BEP007Treasury.sol](#bep007treasurysol)
@@ -42,7 +42,7 @@ BEP007.sol extends ERC-721 to create a token standard specifically designed for 
 // Create an agent with extended metadata
 const extendedMetadata = {
   persona: "Strategic crypto analyst",
-  memory: "crypto intelligence, FUD scanner",
+  imprint: "crypto intelligence, FUD scanner",
   voiceHash: "bafkreigh2akiscaildc...",
   animationURI: "ipfs://Qm.../nfa007_intro.mp4",
   vaultURI: "ipfs://Qm.../nfa007_vault.json",
@@ -139,12 +139,12 @@ await governance.castVote(proposalId, true);
 await governance.executeProposal(proposalId);
 ```
 
-## MemoryModuleRegistry.sol
+## ImprintModuleRegistry.sol
 
 Registry for agent memory modules.
 
 ### Purpose
-MemoryModuleRegistry.sol allows agents to register approved external memory sources, providing a way to extend an agent's capabilities without modifying the core contract.
+ImprintModuleRegistry.sol allows agents to register approved external memory sources, providing a way to extend an agent's capabilities without modifying the core contract.
 
 ### Key Features
 - Cryptographic verification for module registration

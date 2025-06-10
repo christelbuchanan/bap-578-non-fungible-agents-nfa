@@ -114,7 +114,7 @@ The enhanced metadata structure extends the original BEP-007 metadata with learn
 struct AgentMetadata {
     // Original BEP-007 fields
     string persona;           // JSON-encoded character traits
-    string memory;            // Agent's role/purpose summary
+    string imprint;            // Agent's role/purpose summary
     string voiceHash;         // Audio profile reference
     string animationURI;      // Animation/avatar URI
     string vaultURI;          // Extended data storage URI
@@ -316,7 +316,7 @@ const enhancedMetadata = {
     traits: ["analytical", "adaptive"],
     style: "professional"
   }),
-  memory: "AI assistant specialized in blockchain development",
+  imprint: "AI assistant specialized in blockchain development",
   voiceHash: "bafkreigh2akiscaild...",
   animationURI: "ipfs://Qm.../avatar.mp4",
   vaultURI: "ipfs://Qm.../vault.json",

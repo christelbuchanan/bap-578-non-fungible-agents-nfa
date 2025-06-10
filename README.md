@@ -15,20 +15,25 @@ For a comprehensive technical breakdown, read the [Whitepaper](https://github.co
 BEP-007 now offers **two development paths** to accommodate different use cases and developer preferences:
 
 ### **Path 1: JSON Light Memory (Default)**
+
 Perfect for most developers and immediate deployment:
+
 - ✅ **Simple**: Familiar JSON metadata approach (like standard NFTs)
 - ✅ **Fast**: Deploy agents immediately with no complexity
 - ✅ **Compatible**: Works with all existing NFT infrastructure
 - ✅ **Cost-effective**: Minimal gas costs for basic operations
 
 ### **Path 2: Merkle Tree Learning (Optional)**
+
 For advanced developers wanting truly evolving agents:
+
 - 🧠 **Evolving**: Agents that genuinely learn and improve over time
 - 🔒 **Provable**: Cryptographically verifiable learning history
 - ⚡ **Efficient**: Only 32-byte Merkle roots stored on-chain
 - 🚀 **Advanced**: Cutting-edge AI agent capabilities from day 1
 
 ### **Key Benefits**
+
 - **Backward Compatibility**: All existing agents continue working unchanged
 - **Optional Adoption**: Choose your complexity level
 - **Upgrade Path**: Simple agents can enable learning later
@@ -68,6 +73,7 @@ BEP-007 carefully balances which components belong on-chain versus off-chain:
 | Voice/Animation | Off-chain (with URI reference) | Media assets are too large for on-chain storage |
 
 This hybrid approach ensures that:
+
 - Critical security and identity information is secured by blockchain consensus
 - Gas costs remain reasonable for agent operations
 - Rich agent experiences can evolve without blockchain limitations
@@ -124,7 +130,7 @@ The BEP-007 standard consists of the following components:
 - **`AgentFactory.sol`**: Factory contract for deploying new agent tokens with customizable templates
 - **`BEP007Governance.sol`**: Governance contract for protocol-level decisions
 - **`BEP007Treasury.sol`**: Treasury management for fee collection and distribution
-- **`MemoryModuleRegistry.sol`**: Registry for managing external memory modules with cryptographic verification
+- **`ImprintModuleRegistry.sol`**: Registry for managing external memory modules with cryptographic verification
 - **`VaultPermissionManager.sol`**: Manages secure access to off-chain data vaults with time-based delegation
 
 ### Learning System
@@ -154,6 +160,7 @@ The BEP-007 standard consists of the following components:
 BEP-007 tokens include an enhanced metadata structure with:
 
 ### Basic Metadata
+
 - **persona**: JSON-encoded string representing character traits, style, tone, and behavioral intent
 - **memory**: Short summary string describing the agent's default role or purpose
 - **voiceHash**: Reference ID to a stored audio profile (e.g., via IPFS or Arweave)
@@ -162,6 +169,7 @@ BEP-007 tokens include an enhanced metadata structure with:
 - **vaultHash**: Hash of the vault contents for verification
 
 ### Learning Enhancements
+
 - **learningEnabled**: Boolean flag indicating if learning is active
 - **learningModule**: Address of the learning module contract
 - **learningTreeRoot**: Merkle root of the agent's learning tree
@@ -170,12 +178,14 @@ BEP-007 tokens include an enhanced metadata structure with:
 ## Use Cases
 
 ### Traditional Agents (JSON Light Memory)
+
 - **DeFi Agents**: Autonomous portfolio managers with predefined strategies
 - **Gaming NPCs**: Characters with static personalities and behaviors
 - **DAO Participants**: Agents executing predefined governance rules
 - **IoT Integration**: Digital twins for physical devices with fixed parameters
 
 ### Learning Agents (Merkle Tree Learning)
+
 - **Adaptive DeFi Agents**: Portfolio managers that learn from market conditions and user preferences
 - **Evolving Game Characters**: NPCs that develop based on player interactions and game events
 - **Smart DAO Agents**: Governance participants that learn from proposal outcomes and community feedback
@@ -193,12 +203,14 @@ BEP-007 tokens include an enhanced metadata structure with:
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/bep007.git
 cd bep007
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
@@ -275,7 +287,7 @@ const enhancedMetadata = {
     style: "professional",
     tone: "friendly"
   }),
-  memory: "AI coding assistant specialized in blockchain development",
+  imprint: "AI coding assistant specialized in blockchain development",
   voiceHash: "bafkreigh2akiscaild...",
   animationURI: "ipfs://Qm.../agent_avatar.mp4",
   vaultURI: "ipfs://Qm.../agent_vault.json",
@@ -502,16 +514,19 @@ The system tracks comprehensive learning metrics:
 ## Migration Strategy
 
 ### Phase 1: Foundation (Current)
+
 - Enhanced metadata structure with learning flags
 - Basic Merkle tree learning implementation
 - Full backward compatibility maintained
 
 ### Phase 2: Advanced Learning (3-6 months)
+
 - Specialized learning modules for different domains
 - Cross-agent learning networks
 - Learning marketplaces and reputation systems
 
 ### Phase 3: Ecosystem Evolution (6-12 months)
+
 - Agent intelligence valuations
 - Decentralized learning protocols
 - AI agent collaboration networks

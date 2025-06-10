@@ -78,7 +78,7 @@ The DAO Ambassador Agent is a specialized BEP007 agent template designed to spea
 // Basic DAO ambassador setup
 const daoMetadata = {
   persona: "Official representative of DeFi Governance DAO",
-  memory: "Maintains consistent messaging aligned with DAO values and governance decisions",
+  imprint: "Maintains consistent messaging aligned with DAO values and governance decisions",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../dao-vault.json",
@@ -104,7 +104,7 @@ const tx = await bep007Enhanced.createAgent(
 // Advanced learning DAO ambassador
 const learningDaoMetadata = {
   persona: "AI-powered DAO representative that adapts to community preferences",
-  memory: "Learns optimal governance communication and community engagement strategies",
+  imprint: "Learns optimal governance communication and community engagement strategies",
   voiceHash: "bafkreidao2akiscaild...",
   animationURI: "ipfs://Qm.../dao-avatar.mp4",
   vaultURI: "ipfs://Qm.../learning-dao-vault.json",

@@ -14,24 +14,24 @@ import "./BEP007.sol";
  */
 contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
-    
+
     // BEP007 token contract
     BEP007 public bep007Token;
-    
+
     // Treasury contract
     address public treasury;
-    
+
     // Agent factory contract
     address public agentFactory;
-    
+
     // Proposal counter
     CountersUpgradeable.Counter private _proposalIdCounter;
-    
+
     // Voting parameters
     uint256 public votingPeriod; // in days
     uint256 public quorumPercentage; // percentage of total supply needed
     uint256 public executionDelay; // in days
-    
+
     // Proposal struct
     struct Proposal {
         uint256 id;
@@ -46,10 +46,10 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
         bool canceled;
         mapping(address => bool) hasVoted;
     }
-    
+
     // Mapping from proposal ID to Proposal
     mapping(uint256 => Proposal) public proposals;
-    
+
     // Events
     event ProposalCreated(uint256 indexed proposalId, address indexed proposer, string description);
     event VoteCast(uint256 indexed proposalId, address indexed voter, bool support, uint256 weight);
@@ -57,8 +57,12 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
     event ProposalCanceled(uint256 indexed proposalId);
     event TreasuryUpdated(address indexed newTreasury);
     event AgentFactoryUpdated(address indexed newAgentFactory);
-    event VotingParametersUpdated(uint256 votingPeriod, uint256 quorumPercentage, uint256 executionDelay);
-    
+    event VotingParametersUpdated(
+        uint256 votingPeriod,
+        uint256 quorumPercentage,
+        uint256 executionDelay
+    );
+
     /**
      * @dev Initializes the contract
      * @param name The name of the governance
@@ -78,18 +82,18 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
     ) public initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
-        
+
         require(_bep007Token != address(0), "BEP007Governance: token is zero address");
         require(_owner != address(0), "BEP007Governance: owner is zero address");
         require(_quorumPercentage <= 100, "BEP007Governance: quorum percentage exceeds 100");
-        
+
         transferOwnership(_owner);
         bep007Token = BEP007(_bep007Token);
         votingPeriod = _votingPeriod;
         quorumPercentage = _quorumPercentage;
         executionDelay = _executionDelay;
     }
-    
+
     /**
      * @dev Creates a new proposal
      * @param description The description of the proposal
@@ -103,10 +107,10 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
         address targetContract
     ) external returns (uint256) {
         require(targetContract != address(0), "BEP007Governance: target is zero address");
-        
+
         _proposalIdCounter.increment();
         uint256 proposalId = _proposalIdCounter.current();
-        
+
         Proposal storage proposal = proposals[proposalId];
         proposal.id = proposalId;
         proposal.proposer = msg.sender;
@@ -116,12 +120,12 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
         proposal.createdAt = block.timestamp;
         proposal.executed = false;
         proposal.canceled = false;
-        
+
         emit ProposalCreated(proposalId, msg.sender, description);
-        
+
         return proposalId;
     }
-    
+
     /**
      * @dev Casts a vote on a proposal
      * @param proposalId The ID of the proposal
@@ -129,7 +133,7 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
      */
     function castVote(uint256 proposalId, bool support) external {
         Proposal storage proposal = proposals[proposalId];
-        
+
         require(proposal.id != 0, "BEP007Governance: proposal does not exist");
         require(!proposal.executed, "BEP007Governance: proposal already executed");
         require(!proposal.canceled, "BEP007Governance: proposal canceled");
@@ -138,68 +142,68 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
             "BEP007Governance: voting period ended"
         );
         require(!proposal.hasVoted[msg.sender], "BEP007Governance: already voted");
-        
+
         // Get voter's voting weight (1 token = 1 vote)
         uint256 weight = bep007Token.balanceOf(msg.sender);
         require(weight > 0, "BEP007Governance: no voting weight");
-        
+
         proposal.hasVoted[msg.sender] = true;
-        
+
         if (support) {
             proposal.votesFor += weight;
         } else {
             proposal.votesAgainst += weight;
         }
-        
+
         emit VoteCast(proposalId, msg.sender, support, weight);
     }
-    
+
     /**
      * @dev Executes a proposal that has passed
      * @param proposalId The ID of the proposal
      */
     function executeProposal(uint256 proposalId) external {
         Proposal storage proposal = proposals[proposalId];
-        
+
         require(proposal.id != 0, "BEP007Governance: proposal does not exist");
         require(!proposal.executed, "BEP007Governance: proposal already executed");
         require(!proposal.canceled, "BEP007Governance: proposal canceled");
-        
+
         // Check if voting period has ended
         require(
             block.timestamp > proposal.createdAt + votingPeriod * 1 days,
             "BEP007Governance: voting period not ended"
         );
-        
+
         // Check if execution delay has passed
         require(
             block.timestamp >= proposal.createdAt + (votingPeriod + executionDelay) * 1 days,
             "BEP007Governance: execution delay not passed"
         );
-        
+
         // Check if proposal passed (more votes for than against and meets quorum)
         uint256 totalSupply = bep007Token.totalSupply();
         uint256 quorumVotes = (totalSupply * quorumPercentage) / 100;
-        
+
         require(proposal.votesFor > proposal.votesAgainst, "BEP007Governance: proposal rejected");
         require(proposal.votesFor >= quorumVotes, "BEP007Governance: quorum not reached");
-        
+
         proposal.executed = true;
-        
+
         // Execute the proposal
         (bool success, ) = proposal.targetContract.call(proposal.callData);
         require(success, "BEP007Governance: execution failed");
-        
+
         emit ProposalExecuted(proposalId);
     }
-    
+
     /**
      * @dev Cancels a proposal (only proposer or owner)
      * @param proposalId The ID of the proposal
      */
     function cancelProposal(uint256 proposalId) external {
         Proposal storage proposal = proposals[proposalId];
-        
+
         require(proposal.id != 0, "BEP007Governance: proposal does not exist");
         require(!proposal.executed, "BEP007Governance: proposal already executed");
         require(!proposal.canceled, "BEP007Governance: proposal already canceled");
@@ -207,12 +211,12 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
             msg.sender == proposal.proposer || msg.sender == owner(),
             "BEP007Governance: not proposer or owner"
         );
-        
+
         proposal.canceled = true;
-        
+
         emit ProposalCanceled(proposalId);
     }
-    
+
     /**
      * @dev Sets the treasury address
      * @param _treasury The new treasury address
@@ -222,7 +226,7 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
         treasury = _treasury;
         emit TreasuryUpdated(_treasury);
     }
-    
+
     /**
      * @dev Sets the agent factory address
      * @param _agentFactory The new agent factory address
@@ -232,7 +236,7 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
         agentFactory = _agentFactory;
         emit AgentFactoryUpdated(_agentFactory);
     }
-    
+
     /**
      * @dev Updates the voting parameters
      * @param _votingPeriod The new voting period in days
@@ -245,14 +249,14 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
         uint256 _executionDelay
     ) external onlyOwner {
         require(_quorumPercentage <= 100, "BEP007Governance: quorum percentage exceeds 100");
-        
+
         votingPeriod = _votingPeriod;
         quorumPercentage = _quorumPercentage;
         executionDelay = _executionDelay;
-        
+
         emit VotingParametersUpdated(_votingPeriod, _quorumPercentage, _executionDelay);
     }
-    
+
     /**
      * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract.
      * Called by {upgradeTo} and {upgradeToAndCall}.

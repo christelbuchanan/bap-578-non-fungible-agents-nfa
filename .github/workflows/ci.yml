@@ -1,0 +1,163 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      contracts: ${{ steps.filter.outputs.contracts }}
+      tests: ${{ steps.filter.outputs.tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            contracts:
+              - 'contracts/**'
+              - 'hardhat.config.js'
+            tests:
+              - 'test/**'
+              - 'contracts/**'
+
+  compile:
+    needs: check-changes
+    if: needs.check-changes.outputs.contracts == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile contracts
+        run: npm run compile
+
+      - name: Check contract sizes
+        run: npx hardhat size-contracts
+        continue-on-error: true
+
+      - name: Cache compiled contracts
+        uses: actions/cache@v3
+        with:
+          path: |
+            artifacts
+            cache
+          key: ${{ runner.os }}-contracts-${{ hashFiles('contracts/**/*.sol') }}
+
+  test:
+    needs: [check-changes, compile]
+    if: needs.check-changes.outputs.tests == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore compiled contracts
+        uses: actions/cache@v3
+        with:
+          path: |
+            artifacts
+            cache
+          key: ${{ runner.os }}-contracts-${{ hashFiles('contracts/**/*.sol') }}
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Generate coverage report
+        run: npx hardhat coverage
+        continue-on-error: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.json
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true
+
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Solidity linter
+        run: npm run lint
+
+      - name: Check formatting
+        run: npx prettier --check 'contracts/**/*.sol'
+
+      - name: Run ESLint on JavaScript files
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore
+        continue-on-error: true
+
+  security-analysis:
+    needs: compile
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.3.0
+        continue-on-error: true
+        with:
+          node-version: '20'
+          sarif: results.sarif
+          fail-on: none
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: results.sarif
+        continue-on-error: true
+
+  all-checks-passed:
+    needs: [compile, test, lint-and-format, security-analysis]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if all jobs passed
+        run: |
+          if [[ "${{ needs.compile.result }}" == "failure" || "${{ needs.test.result }}" == "failure" || "${{ needs.lint-and-format.result }}" == "failure" ]]; then
+            echo "One or more required checks failed"
+            exit 1
+          fi
+          echo "All checks passed!"

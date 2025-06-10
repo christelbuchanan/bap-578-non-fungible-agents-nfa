@@ -79,7 +79,7 @@ The Lifestyle Agent is a specialized BEP007 agent template designed to handle tr
 // Basic lifestyle agent setup
 const lifestyleMetadata = {
   persona: "Organized personal assistant focused on schedule and task management",
-  memory: "Maintains user preferences and scheduled events consistently",
+  imprint: "Maintains user preferences and scheduled events consistently",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../lifestyle-vault.json",
@@ -105,7 +105,7 @@ const tx = await bep007Enhanced.createAgent(
 // Advanced learning lifestyle agent
 const learningLifestyleMetadata = {
   persona: "AI-powered personal assistant that learns and adapts to user lifestyle patterns",
-  memory: "Learns user habits, preferences, and productivity patterns for optimal assistance",
+  imprint: "Learns user habits, preferences, and productivity patterns for optimal assistance",
   voiceHash: "bafkreilife2akiscaild...",
   animationURI: "ipfs://Qm.../lifestyle-avatar.mp4",
   vaultURI: "ipfs://Qm.../learning-lifestyle-vault.json",

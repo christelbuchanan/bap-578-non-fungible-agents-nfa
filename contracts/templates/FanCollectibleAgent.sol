@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "../../interfaces/ILearningModule.sol";
+import "../interfaces/ILearningModule.sol";
 
 /**
  * @title FanCollectibleAgent
@@ -12,20 +12,20 @@ import "../../interfaces/ILearningModule.sol";
  */
 contract FanCollectibleAgent is Ownable, ReentrancyGuard {
     using Strings for uint256;
-    
+
     // The address of the BEP007 token that owns this logic
     address public agentToken;
-    
+
     // Learning module integration
     address public learningModule;
     bool public learningEnabled;
-    
+
     // The character's profile
     struct CharacterProfile {
         string name;
         string universe;
         string backstory;
-        string personality;
+        string imprint;
         string[] catchphrases;
         string[] abilities;
         // Learning enhancements
@@ -34,10 +34,10 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 conversationStyle; // 0=formal, 50=balanced, 100=casual
         uint256 adaptabilityLevel; // How much the character adapts to user preferences
     }
-    
+
     // The character's profile
     CharacterProfile public profile;
-    
+
     // The character's dialogue options
     struct DialogueOption {
         uint256 id;
@@ -50,11 +50,11 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string[] emotionalTags; // Emotional context tags
         uint256 difficultyLevel; // Conversation complexity level
     }
-    
+
     // The character's dialogue options
     mapping(uint256 => DialogueOption) public dialogueOptions;
     uint256 public dialogueCount;
-    
+
     // The character's relationships
     struct Relationship {
         uint256 id;
@@ -68,11 +68,11 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string[] sharedExperiences; // Learned shared experiences
         uint256 compatibilityScore; // Learned compatibility
     }
-    
+
     // The character's relationships
     mapping(uint256 => Relationship) public relationships;
     uint256 public relationshipCount;
-    
+
     // The character's collectible items
     struct CollectibleItem {
         uint256 id;
@@ -87,11 +87,11 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string[] associatedEmotions; // Emotions associated with this item
         uint256 narrativeImportance; // Importance in character's story
     }
-    
+
     // The character's collectible items
     mapping(uint256 => CollectibleItem) public collectibleItems;
     uint256 public itemCount;
-    
+
     // The character's story arcs
     struct StoryArc {
         uint256 id;
@@ -105,11 +105,11 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string[] userChoices; // Choices users made during this arc
         uint256 replayValue; // How often users replay this arc
     }
-    
+
     // The character's story arcs
     mapping(uint256 => StoryArc) public storyArcs;
     uint256 public storyArcCount;
-    
+
     // Learning-specific data structures
     struct ConversationMetrics {
         uint256 totalConversations;
@@ -118,9 +118,9 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 emotionalResonanceScore;
         uint256 lastUpdated;
     }
-    
+
     ConversationMetrics public conversationMetrics;
-    
+
     // User interaction patterns
     struct UserInteractionPattern {
         address user;
@@ -130,9 +130,9 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 emotionalConnection; // 0-100
         uint256 lastInteraction;
     }
-    
+
     mapping(address => UserInteractionPattern) public userPatterns;
-    
+
     // Character development insights
     struct CharacterInsights {
         string[] trendingTopics;
@@ -141,34 +141,38 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 overallPopularity;
         uint256 lastUpdated;
     }
-    
+
     CharacterInsights public characterInsights;
-    
+
     // Event emitted when a dialogue is completed
     event DialogueCompleted(uint256 indexed dialogueId, address user, uint256 satisfactionScore);
-    
+
     // Event emitted when a relationship is updated
     event RelationshipUpdated(uint256 indexed relationshipId, int256 newAffinity);
-    
+
     // Event emitted when a story arc is completed
     event StoryArcCompleted(uint256 indexed storyArcId, uint256 engagementScore);
-    
+
     // Event emitted when a collectible item is awarded
     event ItemAwarded(uint256 indexed itemId, address recipient);
-    
+
     // Learning-specific events
     event LearningInsightGenerated(string insightType, bytes data, uint256 timestamp);
-    event ConversationAnalyzed(address indexed user, uint256 satisfactionScore, uint256 emotionalResonance);
+    event ConversationAnalyzed(
+        address indexed user,
+        uint256 satisfactionScore,
+        uint256 emotionalResonance
+    );
     event CharacterDevelopmentUpdated(uint256 timestamp);
     event PersonalityAdaptation(string trait, uint256 newValue, uint256 timestamp);
-    
+
     /**
      * @dev Initializes the contract
      * @param _agentToken The address of the BEP007 token
      * @param _name The character's name
      * @param _universe The character's universe
      * @param _backstory The character's backstory
-     * @param _personality The character's personality
+     * @param _imprint The character's imprint
      * @param _catchphrases The character's catchphrases
      * @param _abilities The character's abilities
      */
@@ -177,19 +181,19 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _name,
         string memory _universe,
         string memory _backstory,
-        string memory _personality,
+        string memory _imprint,
         string[] memory _catchphrases,
         string[] memory _abilities
     ) {
         require(_agentToken != address(0), "FanCollectibleAgent: agent token is zero address");
-        
+
         agentToken = _agentToken;
-        
+
         profile = CharacterProfile({
             name: _name,
             universe: _universe,
             backstory: _backstory,
-            personality: _personality,
+            imprint: _imprint,
             catchphrases: _catchphrases,
             abilities: _abilities,
             emotionalIntelligence: 50, // Default medium EI
@@ -197,7 +201,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             conversationStyle: 50, // Default balanced style
             adaptabilityLevel: 30 // Default low-medium adaptability
         });
-        
+
         // Initialize conversation metrics
         conversationMetrics = ConversationMetrics({
             totalConversations: 0,
@@ -206,7 +210,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             emotionalResonanceScore: 50,
             lastUpdated: block.timestamp
         });
-        
+
         // Initialize character insights
         characterInsights = CharacterInsights({
             trendingTopics: new string[](0),
@@ -216,7 +220,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             lastUpdated: block.timestamp
         });
     }
-    
+
     /**
      * @dev Modifier to check if the caller is the agent token
      */
@@ -224,27 +228,33 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         require(msg.sender == agentToken, "FanCollectibleAgent: caller is not agent token");
         _;
     }
-    
+
     /**
      * @dev Modifier to check if learning is enabled
      */
     modifier whenLearningEnabled() {
-        require(learningEnabled && learningModule != address(0), "FanCollectibleAgent: learning not enabled");
+        require(
+            learningEnabled && learningModule != address(0),
+            "FanCollectibleAgent: learning not enabled"
+        );
         _;
     }
-    
+
     /**
      * @dev Enables learning for this agent
      * @param _learningModule The address of the learning module
      */
     function enableLearning(address _learningModule) external onlyOwner {
-        require(_learningModule != address(0), "FanCollectibleAgent: learning module is zero address");
+        require(
+            _learningModule != address(0),
+            "FanCollectibleAgent: learning module is zero address"
+        );
         require(!learningEnabled, "FanCollectibleAgent: learning already enabled");
-        
+
         learningModule = _learningModule;
         learningEnabled = true;
     }
-    
+
     /**
      * @dev Records an interaction for learning purposes
      * @param interactionType The type of interaction
@@ -256,23 +266,25 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         bool success,
         bytes memory metadata
     ) external onlyAgentToken whenLearningEnabled {
-        try ILearningModule(learningModule).recordInteraction(
-            uint256(uint160(address(this))), // Use contract address as token ID
-            interactionType,
-            success
-        ) {
+        try
+            ILearningModule(learningModule).recordInteraction(
+                uint256(uint160(address(this))), // Use contract address as token ID
+                interactionType,
+                success
+            )
+        {
             emit LearningInsightGenerated(interactionType, metadata, block.timestamp);
         } catch {
             // Silently fail to not break agent functionality
         }
     }
-    
+
     /**
      * @dev Updates the character's profile with learning enhancements
      * @param _name The character's name
      * @param _universe The character's universe
      * @param _backstory The character's backstory
-     * @param _personality The character's personality
+     * @param _imprint The character's imprint
      * @param _catchphrases The character's catchphrases
      * @param _abilities The character's abilities
      * @param _emotionalIntelligence The character's emotional intelligence (0-100)
@@ -284,26 +296,26 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _name,
         string memory _universe,
         string memory _backstory,
-        string memory _personality,
+        string memory _imprint,
         string[] memory _catchphrases,
         string[] memory _abilities,
         uint256 _emotionalIntelligence,
         string[] memory _learningTopics,
         uint256 _conversationStyle,
         uint256 _adaptabilityLevel
-    ) 
-        external 
-        onlyOwner 
-    {
-        require(_emotionalIntelligence <= 100, "FanCollectibleAgent: emotional intelligence must be 0-100");
+    ) external onlyOwner {
+        require(
+            _emotionalIntelligence <= 100,
+            "FanCollectibleAgent: emotional intelligence must be 0-100"
+        );
         require(_conversationStyle <= 100, "FanCollectibleAgent: conversation style must be 0-100");
         require(_adaptabilityLevel <= 100, "FanCollectibleAgent: adaptability level must be 0-100");
-        
+
         profile = CharacterProfile({
             name: _name,
             universe: _universe,
             backstory: _backstory,
-            personality: _personality,
+            imprint: _imprint,
             catchphrases: _catchphrases,
             abilities: _abilities,
             emotionalIntelligence: _emotionalIntelligence,
@@ -311,13 +323,17 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             conversationStyle: _conversationStyle,
             adaptabilityLevel: _adaptabilityLevel
         });
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("profile_update", true, abi.encode(_emotionalIntelligence, _adaptabilityLevel));
+            this.recordInteraction(
+                "profile_update",
+                true,
+                abi.encode(_emotionalIntelligence, _adaptabilityLevel)
+            );
         }
     }
-    
+
     /**
      * @dev Adds a dialogue option with learning enhancements
      * @param _context The context of the dialogue
@@ -333,17 +349,16 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256[] memory _nextDialogueIds,
         string[] memory _emotionalTags,
         uint256 _difficultyLevel
-    ) 
-        external 
-        onlyOwner 
-        returns (uint256 dialogueId) 
-    {
-        require(_responses.length == _nextDialogueIds.length, "FanCollectibleAgent: responses and next dialogue IDs must have same length");
+    ) external onlyOwner returns (uint256 dialogueId) {
+        require(
+            _responses.length == _nextDialogueIds.length,
+            "FanCollectibleAgent: responses and next dialogue IDs must have same length"
+        );
         require(_difficultyLevel <= 100, "FanCollectibleAgent: difficulty level must be 0-100");
-        
+
         dialogueCount += 1;
         dialogueId = dialogueCount;
-        
+
         dialogueOptions[dialogueId] = DialogueOption({
             id: dialogueId,
             context: _context,
@@ -354,15 +369,19 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             emotionalTags: _emotionalTags,
             difficultyLevel: _difficultyLevel
         });
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("dialogue_creation", true, abi.encode(_emotionalTags, _difficultyLevel));
+            this.recordInteraction(
+                "dialogue_creation",
+                true,
+                abi.encode(_emotionalTags, _difficultyLevel)
+            );
         }
-        
+
         return dialogueId;
     }
-    
+
     /**
      * @dev Completes a dialogue with learning analytics
      * @param _dialogueId The ID of the dialogue
@@ -376,46 +395,61 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 _responseIndex,
         uint256 _userSatisfaction,
         uint256 _emotionalResonance
-    ) 
-        external 
-        onlyAgentToken 
-        returns (uint256 nextDialogueId) 
-    {
-        require(_dialogueId <= dialogueCount && _dialogueId > 0, "FanCollectibleAgent: dialogue does not exist");
+    ) external onlyAgentToken returns (uint256 nextDialogueId) {
+        require(
+            _dialogueId <= dialogueCount && _dialogueId > 0,
+            "FanCollectibleAgent: dialogue does not exist"
+        );
         require(_userSatisfaction <= 100, "FanCollectibleAgent: satisfaction must be 0-100");
-        require(_emotionalResonance <= 100, "FanCollectibleAgent: emotional resonance must be 0-100");
-        
+        require(
+            _emotionalResonance <= 100,
+            "FanCollectibleAgent: emotional resonance must be 0-100"
+        );
+
         DialogueOption storage dialogue = dialogueOptions[_dialogueId];
-        require(_responseIndex < dialogue.responses.length, "FanCollectibleAgent: response index out of bounds");
-        
+        require(
+            _responseIndex < dialogue.responses.length,
+            "FanCollectibleAgent: response index out of bounds"
+        );
+
         // Update dialogue metrics
         dialogue.popularityScore += 1;
         dialogue.satisfactionRating = (dialogue.satisfactionRating + _userSatisfaction) / 2;
-        
+
         // Update user interaction pattern
         UserInteractionPattern storage userPattern = userPatterns[tx.origin];
         userPattern.user = tx.origin;
         userPattern.totalInteractions += 1;
-        userPattern.emotionalConnection = (userPattern.emotionalConnection + _emotionalResonance) / 2;
+        userPattern.emotionalConnection =
+            (userPattern.emotionalConnection + _emotionalResonance) /
+            2;
         userPattern.lastInteraction = block.timestamp;
-        
+
         // Update conversation metrics
         conversationMetrics.totalConversations += 1;
-        conversationMetrics.userSatisfactionScore = (conversationMetrics.userSatisfactionScore + _userSatisfaction) / 2;
-        conversationMetrics.emotionalResonanceScore = (conversationMetrics.emotionalResonanceScore + _emotionalResonance) / 2;
+        conversationMetrics.userSatisfactionScore =
+            (conversationMetrics.userSatisfactionScore + _userSatisfaction) /
+            2;
+        conversationMetrics.emotionalResonanceScore =
+            (conversationMetrics.emotionalResonanceScore + _emotionalResonance) /
+            2;
         conversationMetrics.lastUpdated = block.timestamp;
-        
+
         emit DialogueCompleted(_dialogueId, tx.origin, _userSatisfaction);
         emit ConversationAnalyzed(tx.origin, _userSatisfaction, _emotionalResonance);
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("dialogue_completion", true, abi.encode(_userSatisfaction, _emotionalResonance));
+            this.recordInteraction(
+                "dialogue_completion",
+                true,
+                abi.encode(_userSatisfaction, _emotionalResonance)
+            );
         }
-        
+
         return dialogue.nextDialogueIds[_responseIndex];
     }
-    
+
     /**
      * @dev Adds a collectible item with learning enhancements
      * @param _name The name of the item
@@ -435,16 +469,15 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _imageURI,
         string[] memory _associatedEmotions,
         uint256 _narrativeImportance
-    ) 
-        external 
-        onlyOwner 
-        returns (uint256 itemId) 
-    {
-        require(_narrativeImportance <= 100, "FanCollectibleAgent: narrative importance must be 0-100");
-        
+    ) external onlyOwner returns (uint256 itemId) {
+        require(
+            _narrativeImportance <= 100,
+            "FanCollectibleAgent: narrative importance must be 0-100"
+        );
+
         itemCount += 1;
         itemId = itemCount;
-        
+
         collectibleItems[itemId] = CollectibleItem({
             id: itemId,
             name: _name,
@@ -457,15 +490,19 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             associatedEmotions: _associatedEmotions,
             narrativeImportance: _narrativeImportance
         });
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("item_creation", true, abi.encode(_associatedEmotions, _narrativeImportance));
+            this.recordInteraction(
+                "item_creation",
+                true,
+                abi.encode(_associatedEmotions, _narrativeImportance)
+            );
         }
-        
+
         return itemId;
     }
-    
+
     /**
      * @dev Awards a collectible item to a user with engagement tracking
      * @param _itemId The ID of the item
@@ -476,27 +513,24 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 _itemId,
         address _recipient,
         uint256 _userExcitement
-    ) 
-        external 
-        onlyAgentToken 
-    {
+    ) external onlyAgentToken {
         require(_itemId <= itemCount && _itemId > 0, "FanCollectibleAgent: item does not exist");
         require(_recipient != address(0), "FanCollectibleAgent: recipient is zero address");
         require(_userExcitement <= 100, "FanCollectibleAgent: excitement must be 0-100");
-        
+
         // Update item popularity based on user excitement
         CollectibleItem storage item = collectibleItems[_itemId];
         item.popularityRating = (item.popularityRating + _userExcitement) / 2;
         item.usageFrequency += 1;
-        
+
         emit ItemAwarded(_itemId, _recipient);
-        
+
         // Record learning interaction
         if (learningEnabled) {
             this.recordInteraction("item_award", true, abi.encode(_itemId, _userExcitement));
         }
     }
-    
+
     /**
      * @dev Updates character insights based on learning
      * @param _trendingTopics Current trending topics
@@ -511,7 +545,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 _overallPopularity
     ) external onlyOwner {
         require(_overallPopularity <= 100, "FanCollectibleAgent: popularity must be 0-100");
-        
+
         characterInsights = CharacterInsights({
             trendingTopics: _trendingTopics,
             popularDialoguePatterns: _popularDialoguePatterns,
@@ -519,15 +553,15 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             overallPopularity: _overallPopularity,
             lastUpdated: block.timestamp
         });
-        
+
         emit CharacterDevelopmentUpdated(block.timestamp);
-        
+
         // Record learning interaction
         if (learningEnabled) {
             this.recordInteraction("insights_update", true, abi.encode(_overallPopularity));
         }
     }
-    
+
     /**
      * @dev Adapts personality based on user interactions
      * @param _trait The personality trait to adapt
@@ -538,119 +572,112 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 _newValue
     ) external onlyAgentToken whenLearningEnabled {
         require(_newValue <= 100, "FanCollectibleAgent: trait value must be 0-100");
-        require(profile.adaptabilityLevel >= 50, "FanCollectibleAgent: insufficient adaptability level");
-        
+        require(
+            profile.adaptabilityLevel >= 50,
+            "FanCollectibleAgent: insufficient adaptability level"
+        );
+
         emit PersonalityAdaptation(_trait, _newValue, block.timestamp);
-        
+
         // Record learning interaction
         this.recordInteraction("personality_adaptation", true, abi.encode(_trait, _newValue));
     }
-    
+
     /**
      * @dev Gets personalized dialogue recommendations for a user
      * @param _user The user address
      * @return recommendations Array of recommended dialogue IDs
      */
-    function getPersonalizedDialogueRecommendations(address _user) 
-        external 
-        view 
-        returns (uint256[] memory recommendations) 
-    {
+    function getPersonalizedDialogueRecommendations(
+        address _user
+    ) external view returns (uint256[] memory recommendations) {
         UserInteractionPattern storage userPattern = userPatterns[_user];
-        
+
         // Simple recommendation logic based on user preferences and emotional connection
         uint256[] memory tempRecommendations = new uint256[](dialogueCount);
         uint256 recommendationCount = 0;
-        
+
         for (uint256 i = 1; i <= dialogueCount; i++) {
             DialogueOption storage dialogue = dialogueOptions[i];
-            
+
             // Recommend based on user's emotional connection and dialogue satisfaction
-            if (dialogue.satisfactionRating >= 70 && 
-                dialogue.difficultyLevel <= userPattern.emotionalConnection) {
+            if (
+                dialogue.satisfactionRating >= 70 &&
+                dialogue.difficultyLevel <= userPattern.emotionalConnection
+            ) {
                 tempRecommendations[recommendationCount] = i;
                 recommendationCount++;
             }
         }
-        
+
         // Create properly sized array
         recommendations = new uint256[](recommendationCount);
         for (uint256 i = 0; i < recommendationCount; i++) {
             recommendations[i] = tempRecommendations[i];
         }
-        
+
         return recommendations;
     }
-    
+
     /**
      * @dev Gets the character's learning progress
      * @return metrics The learning metrics if available
      */
-    function getLearningProgress() external view returns (ILearningModule.LearningMetrics memory metrics) {
+    function getLearningProgress()
+        external
+        view
+        returns (ILearningModule.LearningMetrics memory metrics)
+    {
         if (learningEnabled && learningModule != address(0)) {
-            try ILearningModule(learningModule).getLearningMetrics(
-                uint256(uint160(address(this)))
-            ) returns (ILearningModule.LearningMetrics memory _metrics) {
+            try
+                ILearningModule(learningModule).getLearningMetrics(uint256(uint160(address(this))))
+            returns (ILearningModule.LearningMetrics memory _metrics) {
                 return _metrics;
             } catch {
                 // Return empty metrics if call fails
             }
         }
     }
-    
+
     // Include all original functions with learning enhancements...
-    
+
     /**
      * @dev Gets the character's profile with learning data
      * @return The character's enhanced profile
      */
-    function getProfile() 
-        external 
-        view 
-        returns (CharacterProfile memory) 
-    {
+    function getProfile() external view returns (CharacterProfile memory) {
         return profile;
     }
-    
+
     /**
      * @dev Gets conversation metrics
      * @return The current conversation metrics
      */
-    function getConversationMetrics() 
-        external 
-        view 
-        returns (ConversationMetrics memory) 
-    {
+    function getConversationMetrics() external view returns (ConversationMetrics memory) {
         return conversationMetrics;
     }
-    
+
     /**
      * @dev Gets character insights
      * @return The current character insights
      */
-    function getCharacterInsights() 
-        external 
-        view 
-        returns (CharacterInsights memory) 
-    {
+    function getCharacterInsights() external view returns (CharacterInsights memory) {
         return characterInsights;
     }
-    
+
     /**
      * @dev Gets user interaction pattern
      * @param _user The user address
      * @return The user's interaction pattern
      */
-    function getUserInteractionPattern(address _user) 
-        external 
-        view 
-        returns (UserInteractionPattern memory) 
-    {
+    function getUserInteractionPattern(
+        address _user
+    ) external view returns (UserInteractionPattern memory) {
         return userPatterns[_user];
     }
-    
+
     // Include remaining original functions with appropriate learning enhancements...
-    
+
     /**
      * @dev Adds a relationship with learning enhancements
      * @param _otherCharacter The address of the other character
@@ -664,17 +691,19 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _relationshipType,
         string memory _description,
         int256 _affinity
-    ) 
-        external 
-        onlyOwner 
-        returns (uint256 relationshipId) 
-    {
-        require(_otherCharacter != address(0), "FanCollectibleAgent: other character is zero address");
-        require(_affinity >= -100 && _affinity <= 100, "FanCollectibleAgent: affinity must be between -100 and 100");
-        
+    ) external onlyOwner returns (uint256 relationshipId) {
+        require(
+            _otherCharacter != address(0),
+            "FanCollectibleAgent: other character is zero address"
+        );
+        require(
+            _affinity >= -100 && _affinity <= 100,
+            "FanCollectibleAgent: affinity must be between -100 and 100"
+        );
+
         relationshipCount += 1;
         relationshipId = relationshipCount;
-        
+
         relationships[relationshipId] = Relationship({
             id: relationshipId,
             otherCharacter: _otherCharacter,
@@ -686,15 +715,19 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             sharedExperiences: new string[](0),
             compatibilityScore: 50 // Default neutral compatibility
         });
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("relationship_creation", true, abi.encode(_relationshipType, _affinity));
+            this.recordInteraction(
+                "relationship_creation",
+                true,
+                abi.encode(_relationshipType, _affinity)
+            );
         }
-        
+
         return relationshipId;
     }
-    
+
     /**
      * @dev Updates a relationship's affinity with learning analytics
      * @param _relationshipId The ID of the relationship
@@ -705,15 +738,18 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 _relationshipId,
         int256 _affinityChange,
         uint256 _interactionQuality
-    ) 
-        external 
-        onlyAgentToken 
-    {
-        require(_relationshipId <= relationshipCount && _relationshipId > 0, "FanCollectibleAgent: relationship does not exist");
-        require(_interactionQuality <= 100, "FanCollectibleAgent: interaction quality must be 0-100");
-        
+    ) external onlyAgentToken {
+        require(
+            _relationshipId <= relationshipCount && _relationshipId > 0,
+            "FanCollectibleAgent: relationship does not exist"
+        );
+        require(
+            _interactionQuality <= 100,
+            "FanCollectibleAgent: interaction quality must be 0-100"
+        );
+
         Relationship storage relationship = relationships[_relationshipId];
-        
+
         // Update affinity, ensuring it stays within bounds
         int256 newAffinity = relationship.affinity + _affinityChange;
         if (newAffinity > 100) {
@@ -721,26 +757,32 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         } else if (newAffinity < -100) {
             newAffinity = -100;
         }
-        
+
         relationship.affinity = newAffinity;
         relationship.interactionFrequency += 1;
-        
+
         // Update relationship depth based on interaction quality
         if (_interactionQuality >= 70) {
             relationship.relationshipDepth += 1;
         }
-        
+
         // Update compatibility score
-        relationship.compatibilityScore = (relationship.compatibilityScore + _interactionQuality) / 2;
-        
+        relationship.compatibilityScore =
+            (relationship.compatibilityScore + _interactionQuality) /
+            2;
+
         emit RelationshipUpdated(_relationshipId, newAffinity);
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("relationship_update", true, abi.encode(_relationshipId, _interactionQuality));
+            this.recordInteraction(
+                "relationship_update",
+                true,
+                abi.encode(_relationshipId, _interactionQuality)
+            );
         }
     }
-    
+
     /**
      * @dev Adds a story arc with learning enhancements
      * @param _title The title of the story arc
@@ -752,16 +794,15 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _title,
         string memory _description,
         uint256[] memory _dialogueSequence
-    ) 
-        external 
-        onlyOwner 
-        returns (uint256 storyArcId) 
-    {
-        require(_dialogueSequence.length > 0, "FanCollectibleAgent: dialogue sequence cannot be empty");
-        
+    ) external onlyOwner returns (uint256 storyArcId) {
+        require(
+            _dialogueSequence.length > 0,
+            "FanCollectibleAgent: dialogue sequence cannot be empty"
+        );
+
         storyArcCount += 1;
         storyArcId = storyArcCount;
-        
+
         storyArcs[storyArcId] = StoryArc({
             id: storyArcId,
             title: _title,
@@ -773,15 +814,19 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             userChoices: new string[](0),
             replayValue: 0
         });
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("story_arc_creation", true, abi.encode(_title, _dialogueSequence.length));
+            this.recordInteraction(
+                "story_arc_creation",
+                true,
+                abi.encode(_title, _dialogueSequence.length)
+            );
         }
-        
+
         return storyArcId;
     }
-    
+
     /**
      * @dev Completes a story arc with engagement tracking
      * @param _storyArcId The ID of the story arc
@@ -792,75 +837,74 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         uint256 _storyArcId,
         uint256 _engagementScore,
         uint256 _emotionalImpact
-    ) 
-        external 
-        onlyAgentToken 
-    {
-        require(_storyArcId <= storyArcCount && _storyArcId > 0, "FanCollectibleAgent: story arc does not exist");
+    ) external onlyAgentToken {
+        require(
+            _storyArcId <= storyArcCount && _storyArcId > 0,
+            "FanCollectibleAgent: story arc does not exist"
+        );
         require(_engagementScore <= 100, "FanCollectibleAgent: engagement score must be 0-100");
         require(_emotionalImpact <= 100, "FanCollectibleAgent: emotional impact must be 0-100");
-        
+
         StoryArc storage storyArc = storyArcs[_storyArcId];
         require(!storyArc.completed, "FanCollectibleAgent: story arc already completed");
-        
+
         storyArc.completed = true;
         storyArc.engagementLevel = _engagementScore;
         storyArc.emotionalImpact = _emotionalImpact;
-        
+
         emit StoryArcCompleted(_storyArcId, _engagementScore);
-        
+
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("story_arc_completion", true, abi.encode(_storyArcId, _engagementScore));
+            this.recordInteraction(
+                "story_arc_completion",
+                true,
+                abi.encode(_storyArcId, _engagementScore)
+            );
         }
     }
-    
+
     /**
      * @dev Gets a dialogue option with learning data
      * @param _dialogueId The ID of the dialogue option
      * @return The enhanced dialogue option
      */
-    function getDialogueOption(uint256 _dialogueId) 
-        external 
-        view 
-        returns (DialogueOption memory) 
-    {
-        require(_dialogueId <= dialogueCount && _dialogueId > 0, "FanCollectibleAgent: dialogue does not exist");
+    function getDialogueOption(uint256 _dialogueId) external view returns (DialogueOption memory) {
+        require(
+            _dialogueId <= dialogueCount && _dialogueId > 0,
+            "FanCollectibleAgent: dialogue does not exist"
+        );
         return dialogueOptions[_dialogueId];
     }
-    
+
     /**
      * @dev Gets a random catchphrase with learning-based selection
      * @return The catchphrase
      */
-    function getRandomCatchphrase() 
-        external 
-        view 
-        returns (string memory) 
-    {
+    function getRandomCatchphrase() external view returns (string memory) {
         if (profile.catchphrases.length == 0) {
             return "";
         }
-        
+
         // Use a pseudo-random number based on block data and conversation metrics
-        uint256 randomIndex = uint256(keccak256(abi.encodePacked(
-            block.timestamp, 
-            block.difficulty, 
-            conversationMetrics.totalConversations
-        ))) % profile.catchphrases.length;
-        
+        uint256 randomIndex = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp,
+                    block.difficulty,
+                    conversationMetrics.totalConversations
+                )
+            )
+        ) % profile.catchphrases.length;
+
         return profile.catchphrases[randomIndex];
     }
-    
+
     /**
      * @dev Gets the active story arcs with engagement data
      * @return An array of active story arcs
      */
-    function getActiveStoryArcs() 
-        external 
-        view 
-        returns (StoryArc[] memory) 
-    {
+    function getActiveStoryArcs() external view returns (StoryArc[] memory) {
         // Count active story arcs
         uint256 activeCount = 0;
         for (uint256 i = 1; i <= storyArcCount; i++) {
@@ -868,9 +912,9 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
                 activeCount++;
             }
         }
-        
+
         StoryArc[] memory active = new StoryArc[](activeCount);
-        
+
         // Fill array with active story arcs
         uint256 index = 0;
         for (uint256 i = 1; i <= storyArcCount; i++) {
@@ -879,20 +923,18 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
                 index++;
             }
         }
-        
+
         return active;
     }
-    
+
     /**
      * @dev Gets the collectible items by rarity with popularity data
      * @param _rarity The rarity to filter by
      * @return An array of collectible items with the specified rarity
      */
-    function getItemsByRarity(string memory _rarity) 
-        external 
-        view 
-        returns (CollectibleItem[] memory) 
-    {
+    function getItemsByRarity(
+        string memory _rarity
+    ) external view returns (CollectibleItem[] memory) {
         // Count items with the specified rarity
         uint256 rarityCount = 0;
         for (uint256 i = 1; i <= itemCount; i++) {
@@ -900,9 +942,9 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
                 rarityCount++;
             }
         }
-        
+
         CollectibleItem[] memory items = new CollectibleItem[](rarityCount);
-        
+
         // Fill array with items of the specified rarity
         uint256 index = 0;
         for (uint256 i = 1; i <= itemCount; i++) {
@@ -911,39 +953,43 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
                 index++;
             }
         }
-        
+
         return items;
     }
-    
+
     /**
      * @dev Gets the relationships by type with interaction data
      * @param _relationshipType The relationship type to filter by
      * @return An array of relationships with the specified type
      */
-    function getRelationshipsByType(string memory _relationshipType) 
-        external 
-        view 
-        returns (Relationship[] memory) 
-    {
+    function getRelationshipsByType(
+        string memory _relationshipType
+    ) external view returns (Relationship[] memory) {
         // Count relationships with the specified type
         uint256 typeCount = 0;
         for (uint256 i = 1; i <= relationshipCount; i++) {
-            if (keccak256(bytes(relationships[i].relationshipType)) == keccak256(bytes(_relationshipType))) {
+            if (
+                keccak256(bytes(relationships[i].relationshipType)) ==
+                keccak256(bytes(_relationshipType))
+            ) {
                 typeCount++;
             }
         }
-        
+
         Relationship[] memory filteredRelationships = new Relationship[](typeCount);
-        
+
         // Fill array with relationships of the specified type
         uint256 index = 0;
         for (uint256 i = 1; i <= relationshipCount; i++) {
-            if (keccak256(bytes(relationships[i].relationshipType)) == keccak256(bytes(_relationshipType))) {
+            if (
+                keccak256(bytes(relationships[i].relationshipType)) ==
+                keccak256(bytes(_relationshipType))
+            ) {
                 filteredRelationships[index] = relationships[i];
                 index++;
             }
         }
-        
+
         return filteredRelationships;
     }
 }

@@ -7,6 +7,7 @@ This document explains how the enhanced BEP007 standard incorporates optional Me
 The enhanced BEP007 standard provides **two paths** for agent development:
 
 ### 🚀 **Path 1: JSON Light Memory (Default)**
+
 - **Perfect for**: Most developers and use cases
 - **Benefits**: Simple, familiar, immediate deployment
 - **Storage**: Traditional JSON metadata (like standard NFTs)
@@ -14,6 +15,7 @@ The enhanced BEP007 standard provides **two paths** for agent development:
 - **Gas Cost**: Minimal (standard ERC721 operations)
 
 ### 🧠 **Path 2: Merkle Tree Learning (Optional)**
+
 - **Perfect for**: Advanced developers wanting evolving agents
 - **Benefits**: Agents that genuinely learn and improve
 - **Storage**: Cryptographically verifiable learning trees
@@ -23,21 +25,25 @@ The enhanced BEP007 standard provides **two paths** for agent development:
 ## Key Features
 
 ### ✅ **Backward Compatibility**
+
 - All existing BEP007 agents continue working unchanged
 - Standard `createAgent()` function creates simple agents by default
 - No forced upgrades or breaking changes
 
 ### ✅ **Optional Learning from Day 1**
+
 - Savvy developers can enable learning immediately
 - Learning modules are pluggable and upgradeable
 - Multiple learning implementations can coexist
 
 ### ✅ **Gas Efficiency**
+
 - Learning agents only store 32-byte Merkle roots on-chain
 - Full learning trees stored off-chain in agent vaults
 - Batch learning updates to minimize transaction costs
 
 ### ✅ **Cryptographic Verification**
+
 - All learning claims are cryptographically provable
 - Merkle proofs ensure learning integrity
 - No possibility of fake learning history
@@ -62,7 +68,7 @@ const tx = await agentFactory.createAgent(
 // Enhanced approach - learning enabled from start
 const enhancedMetadata = {
   persona: "AI coding assistant",
-  memory: "Blockchain development specialist", 
+  imprint: "Blockchain development specialist", 
   voiceHash: "bafkreigh2akiscaild...",
   animationURI: "ipfs://Qm.../avatar.mp4",
   vaultURI: "ipfs://Qm.../vault.json",
@@ -141,15 +147,18 @@ The system tracks various learning metrics:
 ## Security Features
 
 ### Rate Limiting
+
 - Maximum 50 learning updates per day per agent
 - Prevents spam and gaming of learning metrics
 
 ### Access Control
+
 - Only agent owners can update learning
 - Authorized updaters can be delegated
 - Learning modules are upgradeable by owner
 
 ### Cryptographic Verification
+
 - All learning claims require Merkle proofs
 - Learning history is tamper-proof
 - Off-chain data integrity verified via hashes
@@ -157,16 +166,19 @@ The system tracks various learning metrics:
 ## Migration Strategy
 
 ### Phase 1: Foundation (Current)
+
 - Enhanced metadata structure with learning flags
 - Basic Merkle tree learning implementation
 - Backward compatibility maintained
 
 ### Phase 2: Advanced Learning (3-6 months)
+
 - Specialized learning modules (coding, trading, gaming)
 - Cross-agent learning networks
 - Learning marketplaces
 
 ### Phase 3: Ecosystem Evolution (6-12 months)
+
 - Agent reputation systems
 - Learning-based agent valuations
 - Decentralized learning protocols
@@ -174,24 +186,28 @@ The system tracks various learning metrics:
 ## Benefits for Different Users
 
 ### 👨‍💻 **Regular Developers**
+
 - Use familiar JSON metadata approach
 - No complexity overhead
 - Standard NFT functionality
 - Can upgrade to learning later if desired
 
 ### 🚀 **Advanced Developers**
+
 - Access cutting-edge learning capabilities from day 1
 - Build truly evolving AI agents
 - Cryptographically provable agent intelligence
 - Competitive advantage in agent marketplaces
 
 ### 🏢 **Enterprises**
+
 - Choose appropriate complexity level for use case
 - Gradual adoption path for learning features
 - Proven security and gas efficiency
 - Future-proof architecture
 
 ### 🎮 **End Users**
+
 - Agents that remember preferences and improve over time
 - Increasing agent value through learning
 - Transparent learning progress

@@ -6,7 +6,7 @@ The Memory Module Registry is a critical component of the BEP-007 Non-Fungible A
 
 ## Purpose
 
-The primary purpose of the MemoryModuleRegistry is to:
+The primary purpose of the ImprintModuleRegistry is to:
 
 1. Allow agent owners to register approved external memory modules
 2. Provide cryptographic verification for module registration
@@ -16,10 +16,10 @@ The primary purpose of the MemoryModuleRegistry is to:
 
 ## Contract Architecture
 
-The MemoryModuleRegistry is implemented as an upgradeable contract with the following key components:
+The ImprintModuleRegistry is implemented as an upgradeable contract with the following key components:
 
 ```solidity
-contract MemoryModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
+contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     // BEP007 token contract
     BEP007 public bep007Token;
     
@@ -60,7 +60,7 @@ bytes32 messageHash = keccak256(abi.encodePacked(tokenId, moduleAddress, metadat
 bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 address signer = ethSignedMessageHash.recover(signature);
 
-require(signer == owner, "MemoryModuleRegistry: invalid signature");
+require(signer == owner, "ImprintModuleRegistry: invalid signature");
 ```
 
 ### Module Approval Management
@@ -74,7 +74,7 @@ function setModuleApproval(
     bool approved
 ) external {
     // Only the token owner can approve or revoke modules
-    require(bep007Token.ownerOf(tokenId) == msg.sender, "MemoryModuleRegistry: not token owner");
+    require(bep007Token.ownerOf(tokenId) == msg.sender, "ImprintModuleRegistry: not token owner");
     
     _approvedModules[tokenId][moduleAddress] = approved;
     
@@ -93,8 +93,8 @@ function updateModuleMetadata(
     string memory metadata
 ) external {
     // Only the token owner can update module metadata
-    require(bep007Token.ownerOf(tokenId) == msg.sender, "MemoryModuleRegistry: not token owner");
-    require(_approvedModules[tokenId][moduleAddress], "MemoryModuleRegistry: module not approved");
+    require(bep007Token.ownerOf(tokenId) == msg.sender, "ImprintModuleRegistry: not token owner");
+    require(_approvedModules[tokenId][moduleAddress], "ImprintModuleRegistry: module not approved");
     
     _moduleMetadata[tokenId][moduleAddress] = metadata;
     
