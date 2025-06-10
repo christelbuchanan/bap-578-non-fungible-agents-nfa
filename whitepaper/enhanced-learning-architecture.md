@@ -15,7 +15,7 @@ The enhanced standard maintains 100% backward compatibility with existing BEP-00
 
 ### 2. Optional Adoption
 Learning capabilities are entirely optional. Developers can choose to:
-- Create simple agents with JSON light imprint (default behavior)
+- Create simple agents with JSON light experience (default behavior)
 - Enable learning from day 1 for new agents
 - Upgrade existing agents to support learning
 - Mix both approaches within the same application
@@ -40,11 +40,11 @@ All learning claims are cryptographically verifiable through:
 
 The enhanced BEP-007 standard provides two distinct development paths:
 
-#### Path 1: JSON Light Imprint (Default)
+#### Path 1: JSON Light Experience (Default)
 ```
 Agent Creation → Static Metadata → Traditional NFT Behavior
      ↓
-JSON-based persona, imprint, and attributes
+JSON-based persona, experience, and attributes
      ↓
 Familiar development patterns
 ```
@@ -71,7 +71,7 @@ Cryptographically verifiable evolution
 │  └── Metadata Management                                    │
 ├─────────────────────────────────────────────────────────────┤
 │  Enhanced Metadata Structure                                │
-│  ├── Basic Fields (persona, imprint, voice, animation)      │
+│  ├── Basic Fields (persona, experience, voice, animation)      │
 │  ├── Learning Flags (learningEnabled, learningModule)       │
 │  └── Learning Data (learningTreeRoot, learningVersion)      │
 ├─────────────────────────────────────────────────────────────┤
@@ -114,7 +114,7 @@ The enhanced metadata structure extends the original BEP-007 metadata with learn
 struct AgentMetadata {
     // Original BEP-007 fields
     string persona;           // JSON-encoded character traits
-    string imprint;            // Agent's role/purpose summary
+    string experience;            // Agent's role/purpose summary
     string voiceHash;         // Audio profile reference
     string animationURI;      // Animation/avatar URI
     string vaultURI;          // Extended data storage URI
@@ -132,7 +132,7 @@ struct AgentMetadata {
 
 #### Original Fields
 - **persona**: JSON-encoded string containing character traits, communication style, and behavioral patterns
-- **imprint**: Short summary describing the agent's primary role or purpose
+- **experience**: Short summary describing the agent's primary role or purpose
 - **voiceHash**: Reference to stored audio profile for voice synthesis
 - **animationURI**: URI pointing to avatar animation or video content
 - **vaultURI**: URI to the agent's extended data vault
@@ -316,7 +316,7 @@ const enhancedMetadata = {
     traits: ["analytical", "adaptive"],
     style: "professional"
   }),
-  imprint: "AI assistant specialized in blockchain development",
+  experience: "AI assistant specialized in blockchain development",
   voiceHash: "bafkreigh2akiscaild...",
   animationURI: "ipfs://Qm.../avatar.mp4",
   vaultURI: "ipfs://Qm.../vault.json",
@@ -352,7 +352,7 @@ await bep007Enhanced.enableLearning(
 
 ## Gas Cost Analysis
 
-### Simple Agents (JSON Light Imprint)
+### Simple Agents (JSON Light Experience)
 - **Creation**: ~200,000 gas (standard ERC721 + metadata)
 - **Action Execution**: ~100,000 gas (delegatecall + state updates)
 - **Metadata Updates**: ~50,000 gas (storage updates)

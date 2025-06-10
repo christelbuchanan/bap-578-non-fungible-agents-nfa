@@ -25,7 +25,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string name;
         string universe;
         string backstory;
-        string imprint;
+        string experience;
         string[] catchphrases;
         string[] abilities;
         // Learning enhancements
@@ -172,7 +172,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
      * @param _name The character's name
      * @param _universe The character's universe
      * @param _backstory The character's backstory
-     * @param _imprint The character's imprint
+     * @param _experience The character's experience
      * @param _catchphrases The character's catchphrases
      * @param _abilities The character's abilities
      */
@@ -181,7 +181,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _name,
         string memory _universe,
         string memory _backstory,
-        string memory _imprint,
+        string memory _experience,
         string[] memory _catchphrases,
         string[] memory _abilities
     ) {
@@ -193,7 +193,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             name: _name,
             universe: _universe,
             backstory: _backstory,
-            imprint: _imprint,
+            experience: _experience,
             catchphrases: _catchphrases,
             abilities: _abilities,
             emotionalIntelligence: 50, // Default medium EI
@@ -284,7 +284,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
      * @param _name The character's name
      * @param _universe The character's universe
      * @param _backstory The character's backstory
-     * @param _imprint The character's imprint
+     * @param _experience The character's experience
      * @param _catchphrases The character's catchphrases
      * @param _abilities The character's abilities
      * @param _emotionalIntelligence The character's emotional intelligence (0-100)
@@ -296,7 +296,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         string memory _name,
         string memory _universe,
         string memory _backstory,
-        string memory _imprint,
+        string memory _experience,
         string[] memory _catchphrases,
         string[] memory _abilities,
         uint256 _emotionalIntelligence,
@@ -315,7 +315,7 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             name: _name,
             universe: _universe,
             backstory: _backstory,
-            imprint: _imprint,
+            experience: _experience,
             catchphrases: _catchphrases,
             abilities: _abilities,
             emotionalIntelligence: _emotionalIntelligence,

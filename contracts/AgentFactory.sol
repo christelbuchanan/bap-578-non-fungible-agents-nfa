@@ -210,7 +210,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         BEP007Enhanced.EnhancedAgentMetadata memory enhancedMetadata = BEP007Enhanced
             .EnhancedAgentMetadata({
                 persona: params.extendedMetadata.persona,
-                imprint: params.extendedMetadata.imprint,
+                experience: params.extendedMetadata.experience,
                 voiceHash: params.extendedMetadata.voiceHash,
                 animationURI: params.extendedMetadata.animationURI,
                 vaultURI: params.extendedMetadata.vaultURI,
@@ -265,7 +265,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         // Create empty extended metadata
         IBEP007.AgentMetadata memory emptyMetadata = IBEP007.AgentMetadata({
             persona: "",
-            imprint: "",
+            experience: "",
             voiceHash: "",
             animationURI: "",
             vaultURI: "",

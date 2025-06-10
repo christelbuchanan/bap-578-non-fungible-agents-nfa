@@ -7,7 +7,7 @@ async function main() {
   const CircuitBreaker = await ethers.getContractFactory('CircuitBreaker');
   const BEP007Treasury = await ethers.getContractFactory('BEP007Treasury');
   const BEP007Governance = await ethers.getContractFactory('BEP007Governance');
-  const ImprintModuleRegistry = await ethers.getContractFactory('ImprintModuleRegistry');
+  const ExperienceModuleRegistry = await ethers.getContractFactory('ExperienceModuleRegistry');
   const VaultPermissionManager = await ethers.getContractFactory('VaultPermissionManager');
   const AgentFactory = await ethers.getContractFactory('AgentFactory');
 
@@ -34,11 +34,11 @@ async function main() {
   await circuitBreaker.setGovernance(governance.address);
   console.log('Governance set as admin in CircuitBreaker');
 
-  // Deploy ImprintModuleRegistry
-  console.log('Deploying ImprintModuleRegistry...');
-  const imprintRegistry = await ImprintModuleRegistry.deploy(circuitBreaker.address);
-  await imprintRegistry.deployed();
-  console.log('ImprintModuleRegistry deployed to:', imprintRegistry.address);
+  // Deploy ExperienceModuleRegistry
+  console.log('Deploying ExperienceModuleRegistry...');
+  const experienceRegistry = await ExperienceModuleRegistry.deploy(circuitBreaker.address);
+  await experienceRegistry.deployed();
+  console.log('ExperienceModuleRegistry deployed to:', experienceRegistry.address);
 
   // Deploy VaultPermissionManager
   console.log('Deploying VaultPermissionManager...');
@@ -50,7 +50,7 @@ async function main() {
   console.log('Deploying AgentFactory...');
   const agentFactory = await AgentFactory.deploy(
     circuitBreaker.address,
-    imprintRegistry.address,
+    experienceRegistry.address,
     vaultManager.address,
     treasury.address,
   );
@@ -88,7 +88,7 @@ async function main() {
   console.log('CircuitBreaker:', circuitBreaker.address);
   console.log('BEP007Treasury:', treasury.address);
   console.log('BEP007Governance:', governance.address);
-  console.log('ImprintModuleRegistry:', imprintRegistry.address);
+  console.log('ExperienceModuleRegistry:', experienceRegistry.address);
   console.log('VaultPermissionManager:', vaultManager.address);
   console.log('AgentFactory:', agentFactory.address);
   console.log('DeFiAgent Template:', defiAgent.address);

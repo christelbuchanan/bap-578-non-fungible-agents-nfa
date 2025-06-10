@@ -31,8 +31,8 @@ abstract contract BEP007 is
     // Governance contract address
     address public governance;
 
-    // Imprint module registry address
-    address public imprintModuleRegistry;
+    // Experience module registry address
+    address public experienceModuleRegistry;
 
     // Mapping from token ID to agent state
     mapping(uint256 => State) private _agentStates;
@@ -144,7 +144,7 @@ abstract contract BEP007 is
         // Create empty extended metadata
         AgentMetadata memory emptyMetadata = AgentMetadata({
             persona: "",
-            imprint: "",
+            experience: "",
             voiceHash: "",
             animationURI: "",
             vaultURI: "",
@@ -248,17 +248,20 @@ abstract contract BEP007 is
     }
 
     /**
-     * @dev Registers a imprint module for the agent
+     * @dev Registers a experience module for the agent
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the imprint module
+     * @param moduleAddress The address of the experience module
      */
-    function registerImprintModule(
+    function registerExperienceModule(
         uint256 tokenId,
         address moduleAddress
     ) external onlyAgentOwner(tokenId) {
-        require(imprintModuleRegistry != address(0), "BEP007: imprint module registry not set");
+        require(
+            experienceModuleRegistry != address(0),
+            "BEP007: experience module registry not set"
+        );
 
-        emit ImprintModuleRegistered(tokenId, moduleAddress);
+        emit ExperienceModuleRegistered(tokenId, moduleAddress);
     }
 
     /**
@@ -325,12 +328,12 @@ abstract contract BEP007 is
     }
 
     /**
-     * @dev Sets the imprint module registry address
-     * @param registry The address of the imprint module registry
+     * @dev Sets the experience module registry address
+     * @param registry The address of the experience module registry
      */
-    function setImprintModuleRegistry(address registry) external onlyGovernance {
+    function setExperienceModuleRegistry(address registry) external onlyGovernance {
         require(registry != address(0), "BEP007: registry is zero address");
-        imprintModuleRegistry = registry;
+        experienceModuleRegistry = registry;
     }
 
     /**

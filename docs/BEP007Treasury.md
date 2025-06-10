@@ -44,7 +44,7 @@ enum FeeType {
     CREATION,       // Fee for creating a new agent
     UPGRADE,        // Fee for upgrading agent logic
     TRANSACTION,    // Fee for agent transactions
-    IMPRINT_MODULE,  // Fee for registering imprint modules
+    EXPERIENCE_MODULE,  // Fee for registering experience modules
     CUSTOM          // Custom fee type defined by governance
 }
 ```

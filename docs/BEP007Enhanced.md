@@ -95,7 +95,7 @@
 // Create agent with learning capabilities
 IBEP007.AgentMetadata memory metadata = IBEP007.AgentMetadata({
     persona: '{"personality": "adaptive", "learning_style": "reinforcement"}',
-    imprint: "Trading bot that learns from market patterns",
+    experience: "Trading bot that learns from market patterns",
     voiceHash: "voice_adaptive_trader",
     animationURI: "ipfs://learning-agent-avatar",
     vaultURI: "ipfs://agent-learning-data",
@@ -195,7 +195,7 @@ bep007Enhanced.updateLearningModule(
 struct AgentMetadata {
     // Original BEP007 fields
     string persona;           // JSON-encoded personality traits, style, tone
-    string imprint;            // Short summary of agent's role/purpose
+    string experience;            // Short summary of agent's role/purpose
     string voiceHash;         // Reference ID to stored audio profile
     string animationURI;      // URI to video or animation file
     string vaultURI;          // URI to extended data storage

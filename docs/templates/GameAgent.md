@@ -78,7 +78,7 @@ The Game Agent is a specialized BEP007 agent template designed for gaming applic
 // Static NPC configuration
 const npcMetadata = {
   persona: "Friendly tavern keeper with helpful disposition and local knowledge",
-  imprint: "Remembers regular customers and maintains consistent personality",
+  experience: "Remembers regular customers and maintains consistent personality",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../npc-vault.json",
@@ -104,7 +104,7 @@ const tx = await bep007Enhanced.createAgent(
 // Adaptive NPC that learns from player interactions
 const learningNpcMetadata = {
   persona: "AI-powered companion that adapts to player style and preferences",
-  imprint: "Learns player behavior patterns and evolves gameplay strategies accordingly",
+  experience: "Learns player behavior patterns and evolves gameplay strategies accordingly",
   voiceHash: "bafkreigame2akiscaild...",
   animationURI: "ipfs://Qm.../adaptive-npc.mp4",
   vaultURI: "ipfs://Qm.../learning-npc-vault.json",
@@ -159,7 +159,7 @@ const tx = await bep007Enhanced.createAgent(
         "formality": { current: 0.3, growth: -0.08, triggers: ["casual-conversation"] }
       },
       "adaptability": 0.7,
-      "imprintRetention": 0.85,
+      "experienceRetention": 0.85,
       "confidence": 0.82
     },
     "gameKnowledge": {

@@ -61,7 +61,7 @@ async function createLearningAgent(agentFactory, merkleTreeLearning, owner) {
       style: 'professional',
       tone: 'friendly',
     }),
-    imprint: 'AI coding assistant specialized in blockchain development',
+    experience: 'AI coding assistant specialized in blockchain development',
     voiceHash: 'bafkreigh2akiscaild...', // IPFS hash for voice profile
     animationURI: 'ipfs://Qm.../agent_avatar.mp4',
     vaultURI: 'ipfs://Qm.../agent_vault.json',
@@ -110,7 +110,7 @@ async function createSimpleAgent(agentFactory, owner) {
   const agentAddress = agentCreatedEvent.args.agent;
 
   console.log(`✅ Simple agent created at: ${agentAddress}`);
-  console.log(`📚 JSON light imprint enabled by default`);
+  console.log(`📚 JSON light experience enabled by default`);
 
   return agentAddress;
 }
@@ -167,7 +167,7 @@ async function getLearningMetrics(bep007Enhanced, tokenId) {
     console.log(`⚡ Learning Velocity: ${ethers.utils.formatUnits(metrics.learningVelocity, 18)}`);
     console.log(`🎖️ Confidence Score: ${ethers.utils.formatUnits(metrics.confidenceScore, 18)}`);
   } else {
-    console.log('📚 Agent using JSON light imprint (learning disabled)');
+    console.log('📚 Agent using JSON light experience (learning disabled)');
   }
 
   return { enabled, moduleAddress, metrics };

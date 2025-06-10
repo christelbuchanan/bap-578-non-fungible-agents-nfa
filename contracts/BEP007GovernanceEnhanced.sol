@@ -12,7 +12,7 @@ import "./interfaces/ILearningModule.sol";
 /**
  * @title BEP007GovernanceEnhanced
  * @dev Enhanced governance contract for the BEP-007 ecosystem with full standard compliance
- * Supports learning systems, dual agent types, imprint models, and cross-chain metadata
+ * Supports learning systems, dual agent types, experience models, and cross-chain metadata
  */
 contract BEP007GovernanceEnhanced is
     Initializable,
@@ -80,8 +80,8 @@ contract BEP007GovernanceEnhanced is
         mapping(string => uint256) milestoneRewards;
     }
 
-    // Imprint model governance
-    struct ImprintGovernance {
+    // Experience model governance
+    struct ExperienceGovernance {
         uint256 onChainGasLimit;
         uint256 offChainGasLimit;
         uint256 onChainStorageFee;
@@ -106,7 +106,7 @@ contract BEP007GovernanceEnhanced is
     mapping(address => bool) public approvedLearningModules;
 
     LearningGovernance public learningGovernance;
-    ImprintGovernance public imprintGovernance;
+    ExperienceGovernance public experienceGovernance;
     MetadataGovernance public metadataGovernance;
 
     // Events
@@ -136,11 +136,15 @@ contract BEP007GovernanceEnhanced is
     event AgentTypeParametersUpdated(AgentType agentType, AgentTypeParameters parameters);
     event AgentTypeMigrated(uint256 indexed tokenId, AgentType fromType, AgentType toType);
 
-    // Imprint model events
-    event ImprintProviderApproved(address indexed provider, bool approved);
-    event ImprintParametersUpdated(uint256 onChainGasLimit, uint256 offChainGasLimit);
-    event ImprintFeesUpdated(uint256 onChainFee, uint256 offChainFee);
-    event AgentImprintMigrated(uint256 indexed tokenId, address fromProvider, address toProvider);
+    // Experience model events
+    event ExperienceProviderApproved(address indexed provider, bool approved);
+    event ExperienceParametersUpdated(uint256 onChainGasLimit, uint256 offChainGasLimit);
+    event ExperienceFeesUpdated(uint256 onChainFee, uint256 offChainFee);
+    event AgentExperienceMigrated(
+        uint256 indexed tokenId,
+        address fromProvider,
+        address toProvider
+    );
 
     // Metadata events
     event MetadataStandardUpdated(string version, bytes32 schemaHash);
@@ -182,11 +186,11 @@ contract BEP007GovernanceEnhanced is
         learningGovernance.rewardPool = 0;
         learningGovernance.globalLearningPaused = false;
 
-        // Initialize imprint governance
-        imprintGovernance.onChainGasLimit = 3000000;
-        imprintGovernance.offChainGasLimit = 1000000;
-        imprintGovernance.onChainStorageFee = 0.001 ether;
-        imprintGovernance.offChainStorageFee = 0.0001 ether;
+        // Initialize experience governance
+        experienceGovernance.onChainGasLimit = 3000000;
+        experienceGovernance.offChainGasLimit = 1000000;
+        experienceGovernance.onChainStorageFee = 0.001 ether;
+        experienceGovernance.offChainStorageFee = 0.0001 ether;
 
         // Initialize metadata governance
         metadataGovernance.currentVersion = "1.0.0";
@@ -378,58 +382,61 @@ contract BEP007GovernanceEnhanced is
         emit AgentTypeMigrated(tokenId, currentType, newType);
     }
 
-    // ==================== IMPRINT MODEL GOVERNANCE ====================
+    // ==================== EXPERIENCE MODEL GOVERNANCE ====================
 
     /**
-     * @dev Approves or removes a imprint provider
+     * @dev Approves or removes a experience provider
      */
-    function approveImprintProvider(address provider, bool approved) external onlyOwner {
+    function approveExperienceProvider(address provider, bool approved) external onlyOwner {
         require(provider != address(0), "BEP007Governance: provider is zero address");
 
-        if (approved && !imprintGovernance.isApprovedProvider[provider]) {
-            imprintGovernance.approvedProviders.push(provider);
+        if (approved && !experienceGovernance.isApprovedProvider[provider]) {
+            experienceGovernance.approvedProviders.push(provider);
         }
 
-        imprintGovernance.isApprovedProvider[provider] = approved;
+        experienceGovernance.isApprovedProvider[provider] = approved;
 
-        emit ImprintProviderApproved(provider, approved);
+        emit ExperienceProviderApproved(provider, approved);
     }
 
     /**
-     * @dev Updates imprint gas limits
+     * @dev Updates experience gas limits
      */
-    function setImprintGasLimits(uint256 onChainLimit, uint256 offChainLimit) external onlyOwner {
-        imprintGovernance.onChainGasLimit = onChainLimit;
-        imprintGovernance.offChainGasLimit = offChainLimit;
+    function setExperienceGasLimits(
+        uint256 onChainLimit,
+        uint256 offChainLimit
+    ) external onlyOwner {
+        experienceGovernance.onChainGasLimit = onChainLimit;
+        experienceGovernance.offChainGasLimit = offChainLimit;
 
-        emit ImprintParametersUpdated(onChainLimit, offChainLimit);
+        emit ExperienceParametersUpdated(onChainLimit, offChainLimit);
     }
 
     /**
-     * @dev Updates imprint storage fees
+     * @dev Updates experience storage fees
      */
-    function setImprintStorageFees(uint256 onChainFee, uint256 offChainFee) external onlyOwner {
-        imprintGovernance.onChainStorageFee = onChainFee;
-        imprintGovernance.offChainStorageFee = offChainFee;
+    function setExperienceStorageFees(uint256 onChainFee, uint256 offChainFee) external onlyOwner {
+        experienceGovernance.onChainStorageFee = onChainFee;
+        experienceGovernance.offChainStorageFee = offChainFee;
 
-        emit ImprintFeesUpdated(onChainFee, offChainFee);
+        emit ExperienceFeesUpdated(onChainFee, offChainFee);
     }
 
     /**
-     * @dev Migrates agent imprint to a new provider
+     * @dev Migrates agent experience to a new provider
      */
-    function migrateAgentImprint(uint256 tokenId, address newProvider) external {
+    function migrateAgentExperience(uint256 tokenId, address newProvider) external {
         address owner = bep007Token.ownerOf(tokenId);
         require(msg.sender == owner, "BEP007Governance: not token owner");
         require(
-            imprintGovernance.isApprovedProvider[newProvider],
+            experienceGovernance.isApprovedProvider[newProvider],
             "BEP007Governance: provider not approved"
         );
 
-        // Implementation would handle the actual imprint migration
+        // Implementation would handle the actual experience migration
         // This is a governance approval mechanism
 
-        emit AgentImprintMigrated(tokenId, address(0), newProvider);
+        emit AgentExperienceMigrated(tokenId, address(0), newProvider);
     }
 
     // ==================== METADATA SCHEMA GOVERNANCE ====================
@@ -514,9 +521,9 @@ contract BEP007GovernanceEnhanced is
     }
 
     /**
-     * @dev Gets imprint governance parameters
+     * @dev Gets experience governance parameters
      */
-    function getImprintGovernance()
+    function getExperienceGovernance()
         external
         view
         returns (
@@ -528,11 +535,11 @@ contract BEP007GovernanceEnhanced is
         )
     {
         return (
-            imprintGovernance.onChainGasLimit,
-            imprintGovernance.offChainGasLimit,
-            imprintGovernance.onChainStorageFee,
-            imprintGovernance.offChainStorageFee,
-            imprintGovernance.approvedProviders
+            experienceGovernance.onChainGasLimit,
+            experienceGovernance.offChainGasLimit,
+            experienceGovernance.onChainStorageFee,
+            experienceGovernance.offChainStorageFee,
+            experienceGovernance.approvedProviders
         );
     }
 

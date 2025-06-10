@@ -53,7 +53,7 @@ describe('BEP007 Non-Fungible Agent', function () {
       const metadataURI = 'ipfs://QmTest';
       const extendedMetadata = {
         persona: 'Test Persona',
-        imprint: 'Test Imprint',
+        experience: 'Test Experience',
         voiceHash: 'Test Voice Hash',
         animationURI: 'ipfs://QmTestAnimation',
         vaultURI: 'ipfs://QmTestVault',
@@ -73,7 +73,7 @@ describe('BEP007 Non-Fungible Agent', function () {
 
       const agentMetadata = await bep007.getAgentMetadata(tokenId);
       expect(agentMetadata.persona).to.equal(extendedMetadata.persona);
-      expect(agentMetadata.imprint).to.equal(extendedMetadata.imprint);
+      expect(agentMetadata.experience).to.equal(extendedMetadata.experience);
       expect(agentMetadata.voiceHash).to.equal(extendedMetadata.voiceHash);
       expect(agentMetadata.animationURI).to.equal(extendedMetadata.animationURI);
       expect(agentMetadata.vaultURI).to.equal(extendedMetadata.vaultURI);
@@ -93,7 +93,7 @@ describe('BEP007 Non-Fungible Agent', function () {
       const metadataURI = 'ipfs://QmTest';
       const extendedMetadata = {
         persona: 'Test Persona',
-        imprint: 'Test Imprint',
+        experience: 'Test Experience',
         voiceHash: 'Test Voice Hash',
         animationURI: 'ipfs://QmTestAnimation',
         vaultURI: 'ipfs://QmTestVault',
@@ -145,7 +145,7 @@ describe('BEP007 Non-Fungible Agent', function () {
     it('Should update agent metadata', async function () {
       const newMetadata = {
         persona: 'Updated Persona',
-        imprint: 'Updated Imprint',
+        experience: 'Updated Experience',
         voiceHash: 'Updated Voice Hash',
         animationURI: 'ipfs://QmUpdatedAnimation',
         vaultURI: 'ipfs://QmUpdatedVault',
@@ -158,7 +158,7 @@ describe('BEP007 Non-Fungible Agent', function () {
       // Verify the metadata was updated
       const agentMetadata = await bep007.getAgentMetadata(tokenId);
       expect(agentMetadata.persona).to.equal(newMetadata.persona);
-      expect(agentMetadata.imprint).to.equal(newMetadata.imprint);
+      expect(agentMetadata.experience).to.equal(newMetadata.experience);
       expect(agentMetadata.voiceHash).to.equal(newMetadata.voiceHash);
       expect(agentMetadata.animationURI).to.equal(newMetadata.animationURI);
       expect(agentMetadata.vaultURI).to.equal(newMetadata.vaultURI);
@@ -174,7 +174,7 @@ describe('BEP007 Non-Fungible Agent', function () {
       const metadataURI = 'ipfs://QmTest';
       const extendedMetadata = {
         persona: 'Test Persona',
-        imprint: 'Test Imprint',
+        experience: 'Test Experience',
         voiceHash: 'Test Voice Hash',
         animationURI: 'ipfs://QmTestAnimation',
         vaultURI: 'ipfs://QmTestVault',

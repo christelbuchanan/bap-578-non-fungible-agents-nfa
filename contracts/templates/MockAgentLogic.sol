@@ -18,7 +18,7 @@ contract MockAgentLogic is Ownable {
     struct AgentProfile {
         string name;
         string description;
-        string imprint;
+        string experience;
         string[] capabilities;
         string[] learningDomains;
         uint256 experienceLevel;
@@ -29,10 +29,10 @@ contract MockAgentLogic is Ownable {
     // The agent's profile
     AgentProfile public profile;
 
-    // Learning and imprint system
-    struct Imprint {
+    // Learning and experience system
+    struct Experience {
         uint256 id;
-        string imprintType; // "interaction", "pattern", "preference", "knowledge"
+        string experienceType; // "interaction", "pattern", "preference", "knowledge"
         string content;
         string context;
         uint256 importance; // 1-10 scale
@@ -41,9 +41,9 @@ contract MockAgentLogic is Ownable {
         bool isActive;
     }
 
-    // Imprint storage
-    mapping(uint256 => Imprint) public imprints;
-    uint256 public imprintCount;
+    // Experience storage
+    mapping(uint256 => Experience) public experiences;
+    uint256 public experienceCount;
 
     // Interaction patterns
     struct InteractionPattern {
@@ -124,7 +124,11 @@ contract MockAgentLogic is Ownable {
 
     // Events for learning and interaction tracking
     event InteractionRecorded(address indexed user, string interactionType, uint256 timestamp);
-    event ImprintCreated(uint256 indexed imprintId, string imprintType, uint256 importance);
+    event ExperienceCreated(
+        uint256 indexed experienceId,
+        string experienceType,
+        uint256 importance
+    );
     event PatternLearned(uint256 indexed patternId, string patternType, uint256 frequency);
     event KnowledgeUpdated(uint256 indexed knowledgeId, string category, uint256 confidence);
     event RelationshipUpdated(address indexed user, string relationshipType, int256 sentimentScore);
@@ -135,7 +139,7 @@ contract MockAgentLogic is Ownable {
      * @param _agentToken The address of the BEP007 token
      * @param _name The agent's name
      * @param _description The agent's description
-     * @param _imprint The agent's imprint
+     * @param _experience The agent's experience
      * @param _capabilities The agent's initial capabilities
      * @param _learningDomains The domains the agent can learn in
      */
@@ -143,7 +147,7 @@ contract MockAgentLogic is Ownable {
         address _agentToken,
         string memory _name,
         string memory _description,
-        string memory _imprint,
+        string memory _experience,
         string[] memory _capabilities,
         string[] memory _learningDomains
     ) {
@@ -154,7 +158,7 @@ contract MockAgentLogic is Ownable {
         profile = AgentProfile({
             name: _name,
             description: _description,
-            imprint: _imprint,
+            experience: _experience,
             capabilities: _capabilities,
             learningDomains: _learningDomains,
             experienceLevel: 1,
@@ -212,8 +216,8 @@ contract MockAgentLogic is Ownable {
         // Update or create user relationship
         _updateUserRelationship(_user, _interactionType, _sentiment);
 
-        // Create imprint from interaction
-        _createImprint("interaction", _content, _interactionType, _success ? 8 : 5);
+        // Create experience from interaction
+        _createExperience("interaction", _content, _interactionType, _success ? 8 : 5);
 
         // Learn patterns from interaction
         _learnPattern(_interactionType, _content, _success);
@@ -225,41 +229,41 @@ contract MockAgentLogic is Ownable {
     }
 
     /**
-     * @dev Creates a new imprint
-     * @param _imprintType The type of imprint
-     * @param _content The content of the imprint
-     * @param _context The context of the imprint
+     * @dev Creates a new experience
+     * @param _experienceType The type of experience
+     * @param _content The content of the experience
+     * @param _context The context of the experience
      * @param _importance The importance level (1-10)
      */
-    function createImprint(
-        string memory _imprintType,
+    function createExperience(
+        string memory _experienceType,
         string memory _content,
         string memory _context,
         uint256 _importance
-    ) external onlyOwner returns (uint256 imprintId) {
+    ) external onlyOwner returns (uint256 experienceId) {
         require(
             _importance >= 1 && _importance <= 10,
             "MockAgentLogic: importance must be between 1 and 10"
         );
 
-        return _createImprint(_imprintType, _content, _context, _importance);
+        return _createExperience(_experienceType, _content, _context, _importance);
     }
 
     /**
-     * @dev Internal function to create imprint
+     * @dev Internal function to create experience
      */
-    function _createImprint(
-        string memory _imprintType,
+    function _createExperience(
+        string memory _experienceType,
         string memory _content,
         string memory _context,
         uint256 _importance
-    ) internal returns (uint256 imprintId) {
-        imprintCount += 1;
-        imprintId = imprintCount;
+    ) internal returns (uint256 experienceId) {
+        experienceCount += 1;
+        experienceId = experienceCount;
 
-        imprints[imprintId] = Imprint({
-            id: imprintId,
-            imprintType: _imprintType,
+        experiences[experienceId] = Experience({
+            id: experienceId,
+            experienceType: _experienceType,
             content: _content,
             context: _context,
             importance: _importance,
@@ -268,9 +272,9 @@ contract MockAgentLogic is Ownable {
             isActive: true
         });
 
-        emit ImprintCreated(imprintId, _imprintType, _importance);
+        emit ExperienceCreated(experienceId, _experienceType, _importance);
 
-        return imprintId;
+        return experienceId;
     }
 
     /**
@@ -482,14 +486,14 @@ contract MockAgentLogic is Ownable {
         // Factor 1: Interaction diversity (number of known users)
         adaptationFactors += knownUsers.length * 5;
 
-        // Factor 2: Imprint retention (active imprints)
-        uint256 activeMemories = 0;
-        for (uint256 i = 1; i <= imprintCount; i++) {
-            if (imprints[i].isActive) {
-                activeMemories++;
+        // Factor 2: Experience retention (active experiences)
+        uint256 activeExperiences = 0;
+        for (uint256 i = 1; i <= experienceCount; i++) {
+            if (experiences[i].isActive) {
+                activeExperiences++;
             }
         }
-        adaptationFactors += activeMemories * 2;
+        adaptationFactors += activeExperiences * 2;
 
         // Factor 3: Pattern recognition (learned patterns)
         adaptationFactors += patternCount * 10;
@@ -512,44 +516,44 @@ contract MockAgentLogic is Ownable {
     }
 
     /**
-     * @dev Retrieves relevant imprints based on context
+     * @dev Retrieves relevant experiences based on context
      * @param _context The context to search for
-     * @param _limit The maximum number of imprints to return
-     * @return An array of relevant imprints
+     * @param _limit The maximum number of experiences to return
+     * @return An array of relevant experiences
      */
-    function getRelevantMemories(
+    function getRelevantExperiences(
         string memory _context,
         uint256 _limit
-    ) external view returns (Imprint[] memory) {
+    ) external view returns (Experience[] memory) {
         uint256 relevantCount = 0;
 
-        // Count relevant imprints
-        for (uint256 i = 1; i <= imprintCount; i++) {
+        // Count relevant experiences
+        for (uint256 i = 1; i <= experienceCount; i++) {
             if (
-                imprints[i].isActive &&
-                (keccak256(bytes(imprints[i].context)) == keccak256(bytes(_context)) ||
-                    keccak256(bytes(imprints[i].imprintType)) == keccak256(bytes(_context)))
+                experiences[i].isActive &&
+                (keccak256(bytes(experiences[i].context)) == keccak256(bytes(_context)) ||
+                    keccak256(bytes(experiences[i].experienceType)) == keccak256(bytes(_context)))
             ) {
                 relevantCount++;
             }
         }
 
         uint256 resultCount = _limit > relevantCount ? relevantCount : _limit;
-        Imprint[] memory relevantMemories = new Imprint[](resultCount);
+        Experience[] memory relevantExperiences = new Experience[](resultCount);
 
         uint256 index = 0;
-        for (uint256 i = imprintCount; i > 0 && index < resultCount; i--) {
+        for (uint256 i = experienceCount; i > 0 && index < resultCount; i--) {
             if (
-                imprints[i].isActive &&
-                (keccak256(bytes(imprints[i].context)) == keccak256(bytes(_context)) ||
-                    keccak256(bytes(imprints[i].imprintType)) == keccak256(bytes(_context)))
+                experiences[i].isActive &&
+                (keccak256(bytes(experiences[i].context)) == keccak256(bytes(_context)) ||
+                    keccak256(bytes(experiences[i].experienceType)) == keccak256(bytes(_context)))
             ) {
-                relevantMemories[index] = imprints[i];
+                relevantExperiences[index] = experiences[i];
                 index++;
             }
         }
 
-        return relevantMemories;
+        return relevantExperiences;
     }
 
     /**

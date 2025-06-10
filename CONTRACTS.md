@@ -7,7 +7,7 @@ This document provides detailed documentation for the key contracts in the BEP-0
 1. [BEP007.sol](#bep007sol)
 2. [AgentFactory.sol](#agentfactorysol)
 3. [BEP007Governance.sol](#bep007governancesol)
-4. [ImprintModuleRegistry.sol](#imprintmoduleregistrysol)
+4. [ExperienceModuleRegistry.sol](#experiencemoduleregistrysol)
 5. [VaultPermissionManager.sol](#vaultpermissionmanagersol)
 6. [CircuitBreaker.sol](#circuitbreakersol)
 7. [BEP007Treasury.sol](#bep007treasurysol)
@@ -42,7 +42,7 @@ BEP007.sol extends ERC-721 to create a token standard specifically designed for 
 // Create an agent with extended metadata
 const extendedMetadata = {
   persona: "Strategic crypto analyst",
-  imprint: "crypto intelligence, FUD scanner",
+  experience: "crypto intelligence, FUD scanner",
   voiceHash: "bafkreigh2akiscaildc...",
   animationURI: "ipfs://Qm.../nfa007_intro.mp4",
   vaultURI: "ipfs://Qm.../nfa007_vault.json",
@@ -139,12 +139,12 @@ await governance.castVote(proposalId, true);
 await governance.executeProposal(proposalId);
 ```
 
-## ImprintModuleRegistry.sol
+## ExperienceModuleRegistry.sol
 
-Registry for agent imprint modules.
+Registry for agent experience modules.
 
 ### Purpose
-ImprintModuleRegistry.sol allows agents to register approved external imprint sources, providing a way to extend an agent's capabilities without modifying the core contract.
+ExperienceModuleRegistry.sol allows agents to register approved external experience sources, providing a way to extend an agent's capabilities without modifying the core contract.
 
 ### Key Features
 - Cryptographic verification for module registration
@@ -152,8 +152,8 @@ ImprintModuleRegistry.sol allows agents to register approved external imprint so
 - Metadata management for modules
 
 ### Key Functions
-- `registerModule(uint256 tokenId, address moduleAddress, string memory metadata, bytes memory signature)`: Registers a imprint module
-- `revokeModule(uint256 tokenId, address moduleAddress)`: Revokes a imprint module
+- `registerModule(uint256 tokenId, address moduleAddress, string memory metadata, bytes memory signature)`: Registers a experience module
+- `revokeModule(uint256 tokenId, address moduleAddress)`: Revokes a experience module
 - `isModuleApproved(uint256 tokenId, address moduleAddress)`: Checks if a module is approved
 - `getModuleMetadata(uint256 tokenId, address moduleAddress)`: Gets the metadata for a module
 
@@ -161,7 +161,7 @@ ImprintModuleRegistry.sol allows agents to register approved external imprint so
 ```javascript
 // Create module metadata
 const moduleMetadata = JSON.stringify({
-  context_id: "nfa007-imprint-001",
+  context_id: "nfa007-experience-001",
   owner: ownerAddress,
   created: new Date().toISOString(),
   persona: "Strategic crypto analyst"
@@ -175,7 +175,7 @@ const messageHash = ethers.utils.solidityKeccak256(
 const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
 
 // Register the module
-await imprintRegistry.registerModule(
+await experienceRegistry.registerModule(
   tokenId,
   moduleAddress,
   moduleMetadata,
