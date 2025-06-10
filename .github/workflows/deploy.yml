@@ -1,0 +1,68 @@
+name: Deploy Smart Contracts
+
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to deploy to'
+        required: true
+        default: 'testnet'
+        type: choice
+        options:
+          - testnet
+          - mainnet
+      environment:
+        description: 'Environment name'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile contracts
+        run: npm run compile
+
+      - name: Run tests
+        run: npm test
+
+      - name: Deploy to ${{ github.event.inputs.network }}
+        run: npm run deploy:${{ github.event.inputs.network }}
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          BSC_TESTNET_RPC_URL: ${{ secrets.BSC_TESTNET_RPC_URL }}
+          BSC_MAINNET_RPC_URL: ${{ secrets.BSC_MAINNET_RPC_URL }}
+          BSCSCAN_API_KEY: ${{ secrets.BSCSCAN_API_KEY }}
+
+      - name: Verify contracts on BscScan
+        run: |
+          echo "Verifying contracts on BscScan..."
+          # Add verification commands here after deployment
+        continue-on-error: true
+
+      - name: Save deployment artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-artifacts-${{ github.event.inputs.network }}
+          path: |
+            deployments/
+            artifacts/
+          retention-days: 30

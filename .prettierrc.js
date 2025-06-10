@@ -5,23 +5,21 @@ module.exports = {
   useTabs: false,
   semi: true,
   singleQuote: true,
-  quoteProps: "as-needed",
-  trailingComma: "all",
+  quoteProps: 'as-needed',
+  trailingComma: 'all',
   bracketSpacing: true,
-  arrowParens: "always",
-  endOfLine: "lf",
+  arrowParens: 'always',
+  endOfLine: 'lf',
 
   // Solidity-specific configuration
   overrides: [
     {
-      files: "*.sol",
+      files: '*.sol',
       options: {
         tabWidth: 4,
         singleQuote: false,
+        plugins: ['prettier-plugin-solidity'],
       },
     },
   ],
-
-  // Plugin configuration
-  plugins: ["prettier-plugin-solidity"],
 };
