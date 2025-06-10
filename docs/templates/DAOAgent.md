@@ -193,7 +193,7 @@ const enhancedMetadata = {
     role: "governance-facilitator",
     specialization: "dao-operations"
   }),
-  memory: "DAO governance agent specialized in community-driven decision making",
+  imprint: "DAO governance agent specialized in community-driven decision making",
   voiceHash: "bafkreidao...",
   animationURI: "ipfs://Qm.../dao_agent.mp4",
   vaultURI: "ipfs://Qm.../dao_vault.json",

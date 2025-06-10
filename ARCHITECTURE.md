@@ -187,7 +187,7 @@ function verifyLearning(
 ) external view returns (bool);
 ```
 
-### Enhanced MemoryModuleRegistry.sol
+### Enhanced ImprintModuleRegistry.sol
 
 Registry for agent memory modules that allows agents to register approved external memory sources with learning support.
 
@@ -268,7 +268,7 @@ BEP-007 extends the standard ERC-721 metadata with additional fields specificall
 ```solidity
 struct AgentMetadata {
     string persona;       // JSON-encoded string for character traits, style, tone
-    string memory;        // Short summary string for agent's role/purpose
+    string imprint;        // Short summary string for agent's role/purpose
     string voiceHash;     // Reference ID to stored audio profile
     string animationURI;  // URI to video or animation file
     string vaultURI;      // URI to the agent's vault (extended data storage)
@@ -281,7 +281,7 @@ struct AgentMetadata {
 struct EnhancedAgentMetadata {
     // Original BEP-007 fields
     string persona;           // JSON-encoded character traits
-    string memory;            // Agent's role/purpose summary
+    string imprint;            // Agent's role/purpose summary
     string voiceHash;         // Audio profile reference
     string animationURI;      // Animation/avatar URI
     string vaultURI;          // Extended data storage URI
@@ -509,7 +509,7 @@ Memory modules are structured as JSON documents that include structured memory l
 
 1. The agent owner creates a memory module with desired functionality and learning configuration
 2. The owner signs the module data with their private key
-3. The module is registered with the MemoryModuleRegistry contract with learning specifications
+3. The module is registered with the ImprintModuleRegistry contract with learning specifications
 4. The registry verifies the signature and learning module compatibility
 5. The agent can now access and use the registered module with learning capabilities
 
@@ -747,7 +747,7 @@ await simpleAgent.deployed();
 // 2. Create basic metadata
 const basicMetadata = {
   persona: "Helpful assistant",
-  memory: "general assistance",
+  imprint: "general assistance",
   voiceHash: "bafkreigh2akiscaildc...",
   animationURI: "ipfs://Qm.../simple_intro.mp4",
   vaultURI: "ipfs://Qm.../simple_vault.json",
@@ -775,7 +775,7 @@ await learningAgent.deployed();
 // 2. Create enhanced metadata with learning fields
 const enhancedMetadata = {
   persona: "Strategic crypto analyst with adaptive capabilities",
-  memory: "crypto intelligence with learning",
+  imprint: "crypto intelligence with learning",
   voiceHash: "bafkreigh2akiscaildc...",
   animationURI: "ipfs://Qm.../learning_intro.mp4",
   vaultURI: "ipfs://Qm.../learning_vault.json",

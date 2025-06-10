@@ -7,7 +7,7 @@ async function main() {
   const CircuitBreaker = await ethers.getContractFactory("CircuitBreaker");
   const BEP007Treasury = await ethers.getContractFactory("BEP007Treasury");
   const BEP007Governance = await ethers.getContractFactory("BEP007Governance");
-  const MemoryModuleRegistry = await ethers.getContractFactory("MemoryModuleRegistry");
+  const ImprintModuleRegistry = await ethers.getContractFactory("ImprintModuleRegistry");
   const VaultPermissionManager = await ethers.getContractFactory("VaultPermissionManager");
   const AgentFactory = await ethers.getContractFactory("AgentFactory");
 
@@ -34,11 +34,11 @@ async function main() {
   await circuitBreaker.setGovernance(governance.address);
   console.log("Governance set as admin in CircuitBreaker");
 
-  // Deploy MemoryModuleRegistry
-  console.log("Deploying MemoryModuleRegistry...");
-  const memoryRegistry = await MemoryModuleRegistry.deploy(circuitBreaker.address);
+  // Deploy ImprintModuleRegistry
+  console.log("Deploying ImprintModuleRegistry...");
+  const memoryRegistry = await ImprintModuleRegistry.deploy(circuitBreaker.address);
   await memoryRegistry.deployed();
-  console.log("MemoryModuleRegistry deployed to:", memoryRegistry.address);
+  console.log("ImprintModuleRegistry deployed to:", memoryRegistry.address);
 
   // Deploy VaultPermissionManager
   console.log("Deploying VaultPermissionManager...");
@@ -88,7 +88,7 @@ async function main() {
   console.log("CircuitBreaker:", circuitBreaker.address);
   console.log("BEP007Treasury:", treasury.address);
   console.log("BEP007Governance:", governance.address);
-  console.log("MemoryModuleRegistry:", memoryRegistry.address);
+  console.log("ImprintModuleRegistry:", memoryRegistry.address);
   console.log("VaultPermissionManager:", vaultManager.address);
   console.log("AgentFactory:", agentFactory.address);
   console.log("DeFiAgent Template:", defiAgent.address);

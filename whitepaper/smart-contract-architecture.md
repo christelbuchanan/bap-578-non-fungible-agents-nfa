@@ -42,7 +42,7 @@ The extended metadata schema includes both original and learning-specific fields
 struct EnhancedAgentMetadata {
     // Original BEP-007 fields
     string persona;           // JSON-encoded character traits
-    string memory;            // Agent's role/purpose summary
+    string imprint;            // Agent's role/purpose summary
     string voiceHash;         // Audio profile reference
     string animationURI;      // Animation/avatar URI
     string vaultURI;          // Extended data storage URI
@@ -214,11 +214,11 @@ contract BEP007Treasury {
 }
 ```
 
-#### **MemoryModuleRegistry.sol**: Enhanced Registry with Learning Module Support
+#### **ImprintModuleRegistry.sol**: Enhanced Registry with Learning Module Support
 Registry for managing external memory modules with cryptographic verification and learning module registration:
 
 ```solidity
-contract MemoryModuleRegistry {
+contract ImprintModuleRegistry {
     struct LearningModule {
         address moduleAddress;
         bytes32 moduleHash;

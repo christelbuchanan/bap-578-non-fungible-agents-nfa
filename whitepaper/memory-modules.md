@@ -51,12 +51,12 @@ struct OnChainMemory {
 The standardized registry manages external memory sources and learning modules:
 
 ```solidity
-contract MemoryModuleRegistry {
+contract ImprintModuleRegistry {
     struct MemoryModule {
         address moduleAddress;
         bytes32 moduleHash;
         string specification;
-        MemoryType memoryType;
+        MemoryType imprintType;
         SecurityLevel securityLevel;
         bool active;
         uint256 registrationTime;
@@ -247,7 +247,7 @@ Advanced memory systems that evolve over time:
 
 ### 1. Secure Vault Architecture
 
-The VaultPermissionManager provides standardized access control for off-chain memory:
+The VaultPermissionManager provides standardized access control for off-chain imprint:
 
 ```solidity
 contract VaultPermissionManager {
@@ -376,7 +376,7 @@ interface IMemoryModule {
 
 ### 2. Memory Query Operations
 
-Standardized methods for retrieving agent memory:
+Standardized methods for retrieving agent imprint:
 
 ```javascript
 // Read basic memory information
@@ -401,7 +401,7 @@ const isValid = await memoryModule.verifyMemoryIntegrity(
 
 ### 3. Memory Update Operations
 
-Controlled methods for updating agent memory:
+Controlled methods for updating agent imprint:
 
 ```javascript
 // Update conversation memory
@@ -564,7 +564,7 @@ function verifyMemoryIntegrity(
     require(computedHash == expectedHash, "Memory integrity check failed");
     
     // Verify against stored memory root
-    bytes32 memoryRoot = agents[tokenId].memoryRoot;
+    bytes32 memoryRoot = agents[tokenId].imprintRoot;
     return MerkleProof.verify(
         _generateMerkleProof(memorySection, memoryData),
         memoryRoot,

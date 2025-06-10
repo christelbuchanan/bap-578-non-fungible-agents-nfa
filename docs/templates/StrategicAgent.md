@@ -73,7 +73,7 @@ The Strategic Agent is a specialized BEP007 agent template designed to monitor t
 // Basic strategic monitoring setup
 const strategicMetadata = {
   persona: "Professional monitoring system for brand reputation and market intelligence",
-  memory: "Maintains consistent monitoring parameters and alert thresholds",
+  imprint: "Maintains consistent monitoring parameters and alert thresholds",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../strategic-vault.json",
@@ -99,7 +99,7 @@ const tx = await bep007Enhanced.createAgent(
 // Advanced learning strategic agent
 const learningStrategicMetadata = {
   persona: "AI-powered strategic intelligence system that evolves monitoring capabilities",
-  memory: "Learns optimal monitoring strategies and predicts market trends and sentiment shifts",
+  imprint: "Learns optimal monitoring strategies and predicts market trends and sentiment shifts",
   voiceHash: "bafkreistrat2akiscaild...",
   animationURI: "ipfs://Qm.../strategic-avatar.mp4",
   vaultURI: "ipfs://Qm.../learning-strategic-vault.json",

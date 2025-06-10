@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build artifacts
+artifacts/
+cache/
+coverage/
+typechain/
+typechain-types/
+
+# Environment files
+.env
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+
+# Documentation
+*.md
+docs/
+
+# Other files to ignore
+*.log
+*.tmp
+.DS_Store
