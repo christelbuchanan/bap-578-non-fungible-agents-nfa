@@ -45,7 +45,7 @@ The DeFi Agent is a specialized BEP007 agent template designed for decentralized
 
 ## Learning Capabilities
 
-### Traditional DeFi Agent (JSON Light Memory)
+### Traditional DeFi Agent (JSON Light Experience)
 ```javascript
 // Static strategy configuration
 const strategy = {
@@ -165,7 +165,7 @@ const enhancedMetadata = {
     style: "conservative-aggressive",
     specialization: "defi-portfolio-management"
   }),
-  imprint: "DeFi portfolio manager specialized in yield optimization and risk management",
+  experience: "DeFi portfolio manager specialized in yield optimization and risk management",
   voiceHash: "bafkreidefi...",
   animationURI: "ipfs://Qm.../defi_agent.mp4",
   vaultURI: "ipfs://Qm.../defi_vault.json",

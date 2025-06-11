@@ -9,7 +9,7 @@ This document provides a comprehensive overview of the enhanced BEP-007 Non-Fung
 3. [Core Components](#core-components)
 4. [Enhanced Metadata Schema](#enhanced-metadata-schema)
 5. [Learning Module System](#learning-module-system)
-6. [Memory Module System](#memory-module-system)
+6. [Experience Module System](#experience-module-system)
 7. [Vault Permission System](#vault-permission-system)
 8. [Agent Templates](#agent-templates)
 9. [Security Mechanisms](#security-mechanisms)
@@ -18,7 +18,7 @@ This document provides a comprehensive overview of the enhanced BEP-007 Non-Fung
 
 ## Enhanced Smart Contract Architecture
 
-The enhanced BEP-007 token standard builds upon ERC-721 to introduce a composable framework for intelligent, evolving agents with cryptographically verifiable learning capabilities. The architecture has been designed to accommodate both static NFT functionality and dynamic extensions critical for agent behavior, media, memory, and learning progression.
+The enhanced BEP-007 token standard builds upon ERC-721 to introduce a composable framework for intelligent, evolving agents with cryptographically verifiable learning capabilities. The architecture has been designed to accommodate both static NFT functionality and dynamic extensions critical for agent behavior, media, experience, and learning progression.
 
 ### Design Principles
 
@@ -30,7 +30,7 @@ The enhanced BEP-007 token standard builds upon ERC-721 to introduce a composabl
 
 3. **Modularity**: The system is designed with separate components that can be upgraded or replaced independently, including pluggable learning modules.
 
-4. **Hybrid Storage**: Essential agent identity attributes and learning tree roots are committed on-chain to optimize gas usage. Full persona trees, voice samples, extended memory, and detailed learning data reside off-chain in vaults, referenced by URI and validated using hash checks.
+4. **Hybrid Storage**: Essential agent identity attributes and learning tree roots are committed on-chain to optimize gas usage. Full persona trees, voice samples, extended experience, and detailed learning data reside off-chain in vaults, referenced by URI and validated using hash checks.
 
 5. **Security First**: Granular access control and cryptographic verification ensure that only authorized parties can modify agent data, access sensitive information, or update learning states.
 
@@ -40,11 +40,11 @@ The enhanced BEP-007 token standard builds upon ERC-721 to introduce a composabl
 
 The enhanced BEP-007 standard provides developers with two distinct development paths while maintaining 100% backward compatibility:
 
-### Path 1: Simple Agents (JSON Light Memory)
+### Path 1: Simple Agents (JSON Light Experience)
 ```
 Agent Creation → Static Metadata → Traditional NFT Behavior
      ↓
-JSON-based persona, memory, and attributes
+JSON-based persona, experience, and attributes
      ↓
 Familiar development patterns
      ↓
@@ -187,9 +187,9 @@ function verifyLearning(
 ) external view returns (bool);
 ```
 
-### Enhanced ImprintModuleRegistry.sol
+### Enhanced ExperienceModuleRegistry.sol
 
-Registry for agent memory modules that allows agents to register approved external memory sources with learning support.
+Registry for agent experience modules that allows agents to register approved external experience sources with learning support.
 
 Key features:
 - Cryptographic verification for module registration
@@ -198,7 +198,7 @@ Key features:
 - Learning module performance tracking
 
 ```solidity
-// Example: Registering a learning-enabled memory module
+// Example: Registering a learning-enabled experience module
 function registerLearningModule(
     uint256 tokenId,
     address moduleAddress,
@@ -268,7 +268,7 @@ BEP-007 extends the standard ERC-721 metadata with additional fields specificall
 ```solidity
 struct AgentMetadata {
     string persona;       // JSON-encoded string for character traits, style, tone
-    string imprint;        // Short summary string for agent's role/purpose
+    string experience;        // Short summary string for agent's role/purpose
     string voiceHash;     // Reference ID to stored audio profile
     string animationURI;  // URI to video or animation file
     string vaultURI;      // URI to the agent's vault (extended data storage)
@@ -281,7 +281,7 @@ struct AgentMetadata {
 struct EnhancedAgentMetadata {
     // Original BEP-007 fields
     string persona;           // JSON-encoded character traits
-    string imprint;            // Agent's role/purpose summary
+    string experience;            // Agent's role/purpose summary
     string voiceHash;         // Audio profile reference
     string animationURI;      // Animation/avatar URI
     string vaultURI;          // Extended data storage URI
@@ -301,7 +301,7 @@ struct EnhancedAgentMetadata {
 #### Original Fields
 - **persona**: A JSON-encoded string representing character traits, style, tone, and behavioral intent. This defines how the agent should behave and interact.
 
-- **memory**: A short summary string describing the agent's default role or purpose. This provides context for the agent's actions.
+- **experience**: A short summary string describing the agent's default role or purpose. This provides context for the agent's actions.
 
 - **voiceHash**: A reference ID to a stored audio profile (e.g., via IPFS or Arweave). This allows agents to have consistent voice characteristics.
 
@@ -437,23 +437,23 @@ Learning data is organized in a hierarchical tree structure stored off-chain wit
 4. **Registry Addition**: Approved modules added to registry
 5. **Agent Integration**: Agents can enable learning with approved modules
 
-## Memory Module System
+## Experience Module System
 
-The Memory Module system allows agents to register and manage external memory sources, providing a way to extend an agent's capabilities without modifying the core contract. The enhanced system includes support for learning-enabled memory modules.
+The Experience Module system allows agents to register and manage external experience sources, providing a way to extend an agent's capabilities without modifying the core contract. The enhanced system includes support for learning-enabled experienceexperience modules.
 
-### Enhanced Memory Module Schema
+### Enhanced Experience Module Schema
 
-Memory modules are structured as JSON documents that include structured memory layers, custom prompts, modular behaviors, and learning capabilities:
+Experience modules are structured as JSON documents that include structured experience layers, custom prompts, modular behaviors, and learning capabilities:
 
 ```json
 {
-  "context_id": "nfa007-memory-001",
+  "context_id": "nfa007-experience-001",
   "owner": "0xUserWalletAddress",
   "created": "2025-01-20T10:00:00Z",
   "persona": "Strategic crypto analyst with learning capabilities",
   "learning_enabled": true,
-  "learning_type": "adaptive_memory",
-  "memory_slots": [
+  "learning_type": "adaptive_experience",
+  "experience_slots": [
     {
       "type": "alert_keywords",
       "data": ["FUD", "rugpull", "hack", "$BNB", "scam"],
@@ -507,9 +507,9 @@ Memory modules are structured as JSON documents that include structured memory l
 
 ### Enhanced Registration Process
 
-1. The agent owner creates a memory module with desired functionality and learning configuration
+1. The agent owner creates a experience module with desired functionality and learning configuration
 2. The owner signs the module data with their private key
-3. The module is registered with the ImprintModuleRegistry contract with learning specifications
+3. The module is registered with the ExperienceModuleRegistry contract with learning specifications
 4. The registry verifies the signature and learning module compatibility
 5. The agent can now access and use the registered module with learning capabilities
 
@@ -557,7 +557,7 @@ Template for DeFi-focused agents with adaptive trading strategies:
 
 ```solidity
 contract DeFiAgent is BEP007Enhanced {
-    struct TradingMemory {
+    struct TradingExperience {
         mapping(address => uint256) tokenPerformance;
         mapping(bytes32 => uint256) strategySuccess;
         uint256 totalTrades;
@@ -566,7 +566,7 @@ contract DeFiAgent is BEP007Enhanced {
         bytes32 adaptiveStrategyRoot;
     }
     
-    mapping(uint256 => TradingMemory) public tradingMemory;
+    mapping(uint256 => TradingExperience) public tradingExperience;
     
     function executeTrade(uint256 tokenId, address tokenIn, address tokenOut, uint256 amountIn) external returns (uint256);
     function updateTradingStrategy(uint256 tokenId, bytes32 strategyHash, bytes calldata strategyData) external;
@@ -579,7 +579,7 @@ Template for gaming-focused agents with evolving NPCs and adaptive behavior:
 
 ```solidity
 contract GameAgent is BEP007Enhanced {
-    struct GameMemory {
+    struct GameExperience {
         mapping(bytes32 => uint256) skillLevels;
         mapping(address => uint256) playerInteractions;
         uint256 experiencePoints;
@@ -588,7 +588,7 @@ contract GameAgent is BEP007Enhanced {
         bytes32 behaviorLearningRoot;
     }
     
-    mapping(uint256 => GameMemory) public gameMemory;
+    mapping(uint256 => GameExperience) public gameExperience;
     
     function levelUpSkill(uint256 tokenId, bytes32 skillId) external;
     function adaptToPlayer(uint256 tokenId, address player, bytes calldata behaviorData) external;
@@ -601,7 +601,7 @@ Template for DAO-focused agents with adaptive governance participation:
 
 ```solidity
 contract DAOAgent is BEP007Enhanced {
-    struct GovernanceMemory {
+    struct GovernanceExperience {
         mapping(uint256 => bool) proposalVotes;
         mapping(bytes32 => uint256) topicExpertise;
         uint256 participationScore;
@@ -610,7 +610,7 @@ contract DAOAgent is BEP007Enhanced {
         bytes32 expertiseLearningRoot;
     }
     
-    mapping(uint256 => GovernanceMemory) public governanceMemory;
+    mapping(uint256 => GovernanceExperience) public governanceExperience;
     
     function voteOnProposal(uint256 tokenId, uint256 proposalId, bool support) external;
     function updateExpertise(uint256 tokenId, bytes32 topic, uint256 expertiseLevel) external;
@@ -709,7 +709,7 @@ modifier onlyApprovedLearningModule(uint256 tokenId) {
 
 ### Enhanced Cryptographic Verification
 
-Signature-based verification for memory module registration, vault access, and learning updates:
+Signature-based verification for experience module registration, vault access, and learning updates:
 
 ```solidity
 // Verify learning update signature
@@ -747,7 +747,7 @@ await simpleAgent.deployed();
 // 2. Create basic metadata
 const basicMetadata = {
   persona: "Helpful assistant",
-  imprint: "general assistance",
+  experience: "general assistance",
   voiceHash: "bafkreigh2akiscaildc...",
   animationURI: "ipfs://Qm.../simple_intro.mp4",
   vaultURI: "ipfs://Qm.../simple_vault.json",
@@ -775,7 +775,7 @@ await learningAgent.deployed();
 // 2. Create enhanced metadata with learning fields
 const enhancedMetadata = {
   persona: "Strategic crypto analyst with adaptive capabilities",
-  imprint: "crypto intelligence with learning",
+  experience: "crypto intelligence with learning",
   voiceHash: "bafkreigh2akiscaildc...",
   animationURI: "ipfs://Qm.../learning_intro.mp4",
   vaultURI: "ipfs://Qm.../learning_vault.json",
@@ -809,18 +809,18 @@ await agent.executeAction(data);
 await merkleTreeLearning.recordInteraction(tokenId, "swap_execution", true);
 ```
 
-### Working with Enhanced Memory Modules
+### Working with Enhanced Experience Modules
 
 ```javascript
 // 1. Create enhanced module metadata with learning support
 const enhancedModuleMetadata = JSON.stringify({
-  context_id: "nfa007-memory-001",
+  context_id: "nfa007-experience-001",
   owner: ownerAddress,
   created: new Date().toISOString(),
   persona: "Strategic crypto analyst with learning",
   learning_enabled: true,
-  learning_type: "adaptive_memory",
-  memory_slots: [
+  learning_type: "adaptive_experience",
+  experience_slots: [
     {
       type: "alert_keywords",
       data: ["FUD", "rugpull", "hack"],
@@ -837,7 +837,7 @@ const messageHash = ethers.utils.solidityKeccak256(
 const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
 
 // 3. Register the enhanced module
-await memoryRegistry.registerLearningModule(
+await experienceRegistry.registerLearningModule(
   tokenId,
   moduleAddress,
   enhancedModuleMetadata,

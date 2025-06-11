@@ -8,17 +8,17 @@ import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.
 import "./BEP007.sol";
 
 /**
- * @title ImprintModuleRegistry
- * @dev Registry for agent imprint modules
- * Allows agents to register approved external imprint sources
+ * @title ExperienceModuleRegistry
+ * @dev Registry for agent experience modules
+ * Allows agents to register approved external experience sources
  */
-contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
+contract ExperienceModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     using ECDSAUpgradeable for bytes32;
 
     // BEP007 token contract
     BEP007 public bep007Token;
 
-    // Mapping from token ID to registered imprint modules
+    // Mapping from token ID to registered experience modules
     mapping(uint256 => address[]) private _registeredModules;
 
     // Mapping from token ID to module address to approval status
@@ -44,15 +44,15 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
         __Ownable_init();
         __ReentrancyGuard_init();
 
-        require(_bep007Token != address(0), "ImprintModuleRegistry: token is zero address");
+        require(_bep007Token != address(0), "ExperienceModuleRegistry: token is zero address");
         bep007Token = BEP007(_bep007Token);
     }
 
     /**
-     * @dev Registers a new imprint module for an agent
+     * @dev Registers a new experience module for an agent
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the imprint module
-     * @param metadata The metadata of the imprint module
+     * @param moduleAddress The address of the experience module
+     * @param metadata The metadata of the experience module
      * @param signature The signature of the agent owner
      */
     function registerModule(
@@ -61,16 +61,16 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
         string memory metadata,
         bytes memory signature
     ) external nonReentrant {
-        require(moduleAddress != address(0), "ImprintModuleRegistry: module is zero address");
+        require(moduleAddress != address(0), "ExperienceModuleRegistry: module is zero address");
         require(
             !_approvedModules[tokenId][moduleAddress],
-            "ImprintModuleRegistry: module already registered"
+            "ExperienceModuleRegistry: module already registered"
         );
 
         // Verify that the token exists
         require(
             bep007Token.ownerOf(tokenId) != address(0),
-            "ImprintModuleRegistry: token does not exist"
+            "ExperienceModuleRegistry: token does not exist"
         );
 
         // Get the owner of the token
@@ -81,7 +81,7 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
         bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
         address signer = ethSignedMessageHash.recover(signature);
 
-        require(signer == owner, "ImprintModuleRegistry: invalid signature");
+        require(signer == owner, "ExperienceModuleRegistry: invalid signature");
 
         // Register the module
         _registeredModules[tokenId].push(moduleAddress);
@@ -92,16 +92,16 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
     }
 
     /**
-     * @dev Approves or revokes a imprint module
+     * @dev Approves or revokes a experience module
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the imprint module
+     * @param moduleAddress The address of the experience module
      * @param approved Whether the module is approved
      */
     function setModuleApproval(uint256 tokenId, address moduleAddress, bool approved) external {
         // Only the token owner can approve or revoke modules
         require(
             bep007Token.ownerOf(tokenId) == msg.sender,
-            "ImprintModuleRegistry: not token owner"
+            "ExperienceModuleRegistry: not token owner"
         );
 
         _approvedModules[tokenId][moduleAddress] = approved;
@@ -110,10 +110,10 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
     }
 
     /**
-     * @dev Updates the metadata of a imprint module
+     * @dev Updates the metadata of a experience module
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the imprint module
-     * @param metadata The new metadata of the imprint module
+     * @param moduleAddress The address of the experience module
+     * @param metadata The new metadata of the experience module
      */
     function updateModuleMetadata(
         uint256 tokenId,
@@ -123,11 +123,11 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
         // Only the token owner can update module metadata
         require(
             bep007Token.ownerOf(tokenId) == msg.sender,
-            "ImprintModuleRegistry: not token owner"
+            "ExperienceModuleRegistry: not token owner"
         );
         require(
             _approvedModules[tokenId][moduleAddress],
-            "ImprintModuleRegistry: module not approved"
+            "ExperienceModuleRegistry: module not approved"
         );
 
         _moduleMetadata[tokenId][moduleAddress] = metadata;
@@ -147,7 +147,7 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
     /**
      * @dev Checks if a module is approved for an agent
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the imprint module
+     * @param moduleAddress The address of the experience module
      * @return Whether the module is approved
      */
     function isModuleApproved(uint256 tokenId, address moduleAddress) external view returns (bool) {
@@ -155,10 +155,10 @@ contract ImprintModuleRegistry is Initializable, OwnableUpgradeable, ReentrancyG
     }
 
     /**
-     * @dev Gets the metadata of a imprint module
+     * @dev Gets the metadata of a experience module
      * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the imprint module
-     * @return The metadata of the imprint module
+     * @param moduleAddress The address of the experience module
+     * @return The metadata of the experience module
      */
     function getModuleMetadata(
         uint256 tokenId,

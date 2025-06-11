@@ -124,7 +124,7 @@ Retrieves learning metrics for test validation.
 // Deploy basic mock agent for testing
 const mockMetadata = {
   persona: "Test agent for validation and debugging",
-  imprint: "Stores test data and performs basic operations",
+  experience: "Stores test data and performs basic operations",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../test-vault.json",
@@ -155,7 +155,7 @@ const result = await mockAgent.retrieveData("test_key");
 // Deploy learning mock agent for advanced testing
 const learningMockMetadata = {
   persona: "Advanced test agent with learning capabilities",
-  imprint: "Tests learning mechanisms and data integrity validation",
+  experience: "Tests learning mechanisms and data integrity validation",
   voiceHash: "bafkreimock2akiscaild...",
   animationURI: "ipfs://Qm.../test-avatar.mp4",
   vaultURI: "ipfs://Qm.../learning-test-vault.json",

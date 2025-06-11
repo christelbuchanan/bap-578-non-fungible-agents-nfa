@@ -34,7 +34,7 @@ contract GameAgent is Ownable {
         uint256 level;
         // Learning enhancements
         uint256 adaptability; // How quickly the agent learns (0-100)
-        uint256 memoryCapacity; // How much the agent can remember (0-100)
+        uint256 experienceCapacity; // How much the agent can remember (0-100)
         uint256 strategicThinking; // Strategic planning ability (0-100)
         uint256 socialIntelligence; // Understanding of player behavior (0-100)
     }
@@ -220,7 +220,7 @@ contract GameAgent is Ownable {
             experience: 0,
             level: 1,
             adaptability: 50,
-            memoryCapacity: 50,
+            experienceCapacity: 50,
             strategicThinking: 50,
             socialIntelligence: 50
         });
@@ -588,7 +588,7 @@ contract GameAgent is Ownable {
      * @param _charisma The new charisma value
      * @param _luck The new luck value
      * @param _adaptability The new adaptability value
-     * @param _memoryCapacity The new memory capacity value
+     * @param _experienceCapacity The new experience capacity value
      * @param _strategicThinking The new strategic thinking value
      * @param _socialIntelligence The new social intelligence value
      */
@@ -599,7 +599,7 @@ contract GameAgent is Ownable {
         uint256 _charisma,
         uint256 _luck,
         uint256 _adaptability,
-        uint256 _memoryCapacity,
+        uint256 _experienceCapacity,
         uint256 _strategicThinking,
         uint256 _socialIntelligence
     ) external onlyOwner {
@@ -609,7 +609,7 @@ contract GameAgent is Ownable {
         attributes.charisma = _charisma;
         attributes.luck = _luck;
         attributes.adaptability = _adaptability;
-        attributes.memoryCapacity = _memoryCapacity;
+        attributes.experienceCapacity = _experienceCapacity;
         attributes.strategicThinking = _strategicThinking;
         attributes.socialIntelligence = _socialIntelligence;
     }
@@ -652,8 +652,8 @@ contract GameAgent is Ownable {
                 attributes.adaptability = attributes.adaptability < 95
                     ? attributes.adaptability + 1
                     : 100;
-                attributes.memoryCapacity = attributes.memoryCapacity < 95
-                    ? attributes.memoryCapacity + 1
+                attributes.experienceCapacity = attributes.experienceCapacity < 95
+                    ? attributes.experienceCapacity + 1
                     : 100;
                 attributes.strategicThinking = attributes.strategicThinking < 95
                     ? attributes.strategicThinking + 1

@@ -32,8 +32,8 @@ abstract contract BEP007Enhanced is
     // Governance contract address
     address public governance;
 
-    // Imprint module registry address
-    address public imprintModuleRegistry;
+    // Experience module registry address
+    address public experienceModuleRegistry;
 
     // Mapping from token ID to agent state
     mapping(uint256 => State) private _agentStates;
@@ -58,7 +58,7 @@ abstract contract BEP007Enhanced is
      */
     struct EnhancedAgentMetadata {
         string persona; // JSON-encoded string for character traits, style, tone
-        string imprint; // Short summary string for agent's role/purpose
+        string experience; // Short summary string for agent's role/purpose
         string voiceHash; // Reference ID to stored audio profile
         string animationURI; // URI to video or animation file
         string vaultURI; // URI to the agent's vault (extended data storage)
@@ -185,7 +185,7 @@ abstract contract BEP007Enhanced is
         // Create empty enhanced metadata (learning disabled by default)
         EnhancedAgentMetadata memory basicMetadata = EnhancedAgentMetadata({
             persona: "",
-            imprint: "",
+            experience: "",
             voiceHash: "",
             animationURI: "",
             vaultURI: "",
@@ -400,7 +400,7 @@ abstract contract BEP007Enhanced is
         return
             IBEP007.AgentMetadata({
                 persona: enhanced.persona,
-                imprint: enhanced.imprint,
+                experience: enhanced.experience,
                 voiceHash: enhanced.voiceHash,
                 animationURI: enhanced.animationURI,
                 vaultURI: enhanced.vaultURI,
@@ -432,7 +432,7 @@ abstract contract BEP007Enhanced is
         // Update only the base metadata fields
         EnhancedAgentMetadata storage enhanced = _agentExtendedMetadata[tokenId];
         enhanced.persona = metadata.persona;
-        enhanced.imprint = metadata.imprint;
+        enhanced.experience = metadata.experience;
         enhanced.voiceHash = metadata.voiceHash;
         enhanced.animationURI = metadata.animationURI;
         enhanced.vaultURI = metadata.vaultURI;

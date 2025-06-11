@@ -148,7 +148,7 @@ Agent vaults are structured as encrypted JSON documents that contain sensitive a
       "iv": "initialization_vector_here",
       "tag": "authentication_tag_here"
     },
-    "private_memory": {
+    "private_experience": {
       "cipher": "aes-256-gcm",
       "data": "encrypted_data_here",
       "iv": "initialization_vector_here",
@@ -265,7 +265,7 @@ The Vault Permission Manager integrates with the BEP-007 ecosystem in the follow
 
 1. **Agent Creation**: When an agent is created, its vault URI and hash are stored in the agent's metadata.
 2. **Agent Logic**: Agent logic contracts can use the vault to store sensitive data needed for operation.
-3. **Memory Modules**: Memory modules can access the vault to retrieve or store data with proper authorization.
+3. **Experience Modules**: Experience modules can access the vault to retrieve or store data with proper authorization.
 4. **Agent Governance**: The governance system can set policies for vault access and delegation.
 
 ## Use Cases
@@ -274,9 +274,9 @@ The Vault Permission Manager integrates with the BEP-007 ecosystem in the follow
 
 Agents often need to interact with external APIs that require authentication. The vault can securely store API keys and credentials, and the permission manager can control which services can access these credentials.
 
-### Private Memory Storage
+### Private Experience Storage
 
-Agents may accumulate private memory that should not be publicly accessible. The vault can store this private memory, and the permission manager can control who can access it.
+Agents may accumulate private experience that should not be publicly accessible. The vault can store this private experience, and the permission manager can control who can access it.
 
 ### Collaborative Agent Development
 

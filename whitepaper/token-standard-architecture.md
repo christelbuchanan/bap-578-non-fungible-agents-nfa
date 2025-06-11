@@ -6,13 +6,13 @@ BEP-007 defines an enhanced metadata structure for NFTs that supports both tradi
 
 The enhanced BEP-007 standard provides two distinct development paths while maintaining full backward compatibility:
 
-### Path 1: Simple Agents (JSON Light Memory)
+### Path 1: Simple Agents (JSON Light Experience)
 Traditional NFT functionality with agent-specific extensions:
 
 1. **Image or video identity**: Visual representation of the agent
 2. **Audio voice file**: Voice synthesis and personality audio
 3. **A structured persona schema**: JSON-encoded behavioral traits
-4. **A light memory string**: Basic role and purpose description
+4. **A light experience string**: Basic role and purpose description
 
 ### Path 2: Learning Agents (Merkle Tree Learning)
 Advanced agents with cryptographically verifiable learning capabilities:
@@ -51,7 +51,7 @@ The enhanced metadata structure extends the original BEP-007 specification with 
       "value": "analytical, adaptive, professional"
     },
     {
-      "trait_type": "memory",
+      "trait_type": "experience",
       "value": "AI assistant specialized in blockchain development"
     },
     {
@@ -86,26 +86,26 @@ The enhanced BEP-007 standard carefully balances which components belong on-chai
 
 ### On-Chain Components
 
-| Component | Storage Location | Rationale |
-|-----------|------------------|-----------|
-| **Agent Identity** | Smart Contract | Core identity must be immutable and universally accessible |
-| **Ownership & Permissions** | Smart Contract | Security and access control require consensus verification |
-| **Basic Metadata** | Smart Contract | Essential for marketplace display and basic interactions |
-| **Logic Address** | Smart Contract | Determines how the agent behaves when actions are executed |
-| **Learning Tree Root** | Smart Contract | 32-byte Merkle root enables cryptographic verification |
-| **Learning Module Address** | Smart Contract | Determines learning implementation and capabilities |
-| **Learning Metrics Summary** | Smart Contract | Key performance indicators for agent intelligence |
+| Component                    | Storage Location | Rationale                                                  |
+| ---------------------------- | ---------------- | ---------------------------------------------------------- |
+| **Agent Identity**           | Smart Contract   | Core identity must be immutable and universally accessible |
+| **Ownership & Permissions**  | Smart Contract   | Security and access control require consensus verification |
+| **Basic Metadata**           | Smart Contract   | Essential for marketplace display and basic interactions   |
+| **Logic Address**            | Smart Contract   | Determines how the agent behaves when actions are executed |
+| **Learning Tree Root**       | Smart Contract   | 32-byte Merkle root enables cryptographic verification     |
+| **Learning Module Address**  | Smart Contract   | Determines learning implementation and capabilities        |
+| **Learning Metrics Summary** | Smart Contract   | Key performance indicators for agent intelligence          |
 
 ### Off-Chain Components (with Cryptographic Verification)
 
-| Component | Storage Location | Verification Method |
-|-----------|------------------|---------------------|
-| **Extended Memory** | User Vault | Hash verification against vault_hash |
-| **Learning Tree Data** | User Vault | Merkle proof verification against learning_tree_root |
-| **Complex Behaviors** | User Vault | Cryptographic signatures and hash verification |
-| **Voice/Animation Assets** | IPFS/Arweave | Content addressing and hash verification |
-| **Conversation History** | User Vault | Encrypted storage with access control |
-| **Cross-Agent Learning Data** | Distributed Vaults | Federated verification and privacy preservation |
+| Component                     | Storage Location   | Verification Method                                  |
+| ----------------------------- | ------------------ | ---------------------------------------------------- |
+| **Extended Experience**       | User Vault         | Hash verification against vault_hash                 |
+| **Learning Tree Data**        | User Vault         | Merkle proof verification against learning_tree_root |
+| **Complex Behaviors**         | User Vault         | Cryptographic signatures and hash verification       |
+| **Voice/Animation Assets**    | IPFS/Arweave       | Content addressing and hash verification             |
+| **Conversation History**      | User Vault         | Encrypted storage with access control                |
+| **Cross-Agent Learning Data** | Distributed Vaults | Federated verification and privacy preservation      |
 
 ### Hybrid Architecture Benefits
 
@@ -161,18 +161,18 @@ interface ILearningModule {
 }
 ```
 
-### 3. Enhanced Memory Module Interface
+### 3. Enhanced Experience Module Interface
 
 ```solidity
-interface IEnhancedMemoryModule {
-    // Traditional memory functions
-    function readMemory(uint256 tokenId, bytes32 memoryKey) external view returns (bytes memory);
-    function writeMemory(uint256 tokenId, bytes32 memoryKey, bytes calldata memoryData) external;
+interface IEnhancedExperienceModule {
+    // Traditional experience functions
+    function readExperience(uint256 tokenId, bytes32 experienceKey) external view returns (bytes memory);
+    function writeExperience(uint256 tokenId, bytes32 experienceKey, bytes calldata experienceData) external;
     
-    // Learning memory functions
-    function readLearningMemory(uint256 tokenId, bytes32 learningKey) external view returns (bytes memory);
-    function updateLearningMemory(uint256 tokenId, bytes32 learningKey, bytes calldata learningData, bytes32[] calldata proof) external;
-    function verifyLearningMemory(uint256 tokenId, bytes32 memoryHash, bytes32[] calldata proof) external view returns (bool);
+    // Learning experience functions
+    function readLearningExperience(uint256 tokenId, bytes32 learningKey) external view returns (bytes memory);
+    function updateLearningExperience(uint256 tokenId, bytes32 learningKey, bytes calldata learningData, bytes32[] calldata proof) external;
+    function verifyLearningExperience(uint256 tokenId, bytes32 experienceHash, bytes32[] calldata proof) external view returns (bool);
 }
 ```
 
@@ -211,7 +211,7 @@ interface IEnhancedVaultPermission {
       "style": "professional and concise",
       "capabilities": ["scheduling", "reminders", "basic queries"]
     },
-    "memory": {
+    "experience": {
       "type": "static",
       "role": "personal assistant",
       "knowledge_base": "general assistance"
@@ -239,7 +239,7 @@ interface IEnhancedVaultPermission {
       "style": "evolving based on user preferences",
       "capabilities": ["learning", "adaptation", "personalization", "complex reasoning"]
     },
-    "memory": {
+    "experience": {
       "type": "merkle_tree_learning",
       "role": "adaptive AI companion",
       "learning_areas": ["user preferences", "task optimization", "communication style"]
@@ -276,7 +276,7 @@ interface IEnhancedVaultPermission {
       "style": "adaptive with collective intelligence",
       "capabilities": ["individual learning", "knowledge sharing", "collaborative intelligence"]
     },
-    "memory": {
+    "experience": {
       "type": "federated_merkle_learning",
       "role": "collaborative AI agent",
       "learning_areas": ["individual adaptation", "collective knowledge", "cross-agent insights"]
@@ -303,7 +303,7 @@ interface IEnhancedVaultPermission {
 ### 1. Simple Agent Data Flow
 
 ```
-User Interaction → Agent Logic → Static Memory → Response
+User Interaction → Agent Logic → Static Experience → Response
                       ↓
                  Metadata Update (if needed)
                       ↓
@@ -313,7 +313,7 @@ User Interaction → Agent Logic → Static Memory → Response
 ### 2. Learning Agent Data Flow
 
 ```
-User Interaction → Agent Logic → Learning Module → Memory Update
+User Interaction → Agent Logic → Learning Module → Experience Update
                       ↓              ↓               ↓
                  Action Response  Learning Tree   Metrics Update
                       ↓              ↓               ↓
@@ -360,15 +360,15 @@ Local Interaction → Individual Learning → Knowledge Aggregation
 
 ### 2. Enhanced Access Control Matrix
 
-| Operation | Owner | Delegate | Learning Module | Platform | Public |
-|-----------|-------|----------|-----------------|----------|--------|
-| **Read Basic Metadata** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Update Metadata** | ✅ | ⚠️ | ❌ | ❌ | ❌ |
-| **Execute Actions** | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Read Learning Data** | ✅ | ⚠️ | ✅ | ⚠️ | ❌ |
-| **Update Learning** | ✅ | ❌ | ✅ | ❌ | ❌ |
-| **Enable Learning** | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Emergency Controls** | ✅ | ❌ | ❌ | ⚠️ | ❌ |
+| Operation               | Owner | Delegate | Learning Module | Platform | Public |
+| ----------------------- | ----- | -------- | --------------- | -------- | ------ |
+| **Read Basic Metadata** | ✅     | ✅        | ✅               | ✅        | ✅      |
+| **Update Metadata**     | ✅     | ⚠️        | ❌               | ❌        | ❌      |
+| **Execute Actions**     | ✅     | ✅        | ✅               | ✅        | ❌      |
+| **Read Learning Data**  | ✅     | ⚠️        | ✅               | ⚠️        | ❌      |
+| **Update Learning**     | ✅     | ❌        | ✅               | ❌        | ❌      |
+| **Enable Learning**     | ✅     | ❌        | ❌               | ❌        | ❌      |
+| **Emergency Controls**  | ✅     | ❌        | ❌               | ⚠️        | ❌      |
 
 **Legend**: ✅ Allowed | ❌ Denied | ⚠️ Conditional
 

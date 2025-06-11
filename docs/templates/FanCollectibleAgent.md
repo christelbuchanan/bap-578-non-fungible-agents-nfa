@@ -80,7 +80,7 @@ The Fan Collectible Agent is a specialized BEP007 agent template designed to rep
 // Basic character agent setup
 const characterMetadata = {
   persona: "Brave warrior from the Kingdom of Eldoria with unwavering loyalty",
-  imprint: "Remembers key story events and maintains consistent personality traits",
+  experience: "Remembers key story events and maintains consistent personality traits",
   voiceHash: "",
   animationURI: "",
   vaultURI: "ipfs://Qm.../character-vault.json",
@@ -106,7 +106,7 @@ const tx = await bep007Enhanced.createAgent(
 // Advanced evolving character agent
 const evolvingCharacterMetadata = {
   persona: "AI-powered character that grows and develops through fan interactions",
-  imprint: "Learns fan preferences and develops unique personality traits over time",
+  experience: "Learns fan preferences and develops unique personality traits over time",
   voiceHash: "bafkreichar2akiscaild...",
   animationURI: "ipfs://Qm.../character-avatar.mp4",
   vaultURI: "ipfs://Qm.../evolving-character-vault.json",

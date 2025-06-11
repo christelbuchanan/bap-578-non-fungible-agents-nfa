@@ -14,7 +14,7 @@ For a comprehensive technical breakdown, read the [Whitepaper](https://github.co
 
 BEP-007 now offers **two development paths** to accommodate different use cases and developer preferences:
 
-### **Path 1: JSON Light Memory (Default)**
+### **Path 1: JSON Light Experience (Default)**
 
 Perfect for most developers and immediate deployment:
 
@@ -50,7 +50,7 @@ While traditional NFTs (BEP-721) provide uniqueness and ownership, they lack the
 
 2. **Interoperability Framework**: Common patterns for how agents interact with other contracts, services, and each other, creating an ecosystem where agents from different developers can work together.
 
-3. **Hybrid On-Chain/Off-Chain Architecture**: Clear separation between on-chain identity and permissions versus off-chain extended memory and complex behaviors, optimizing for both gas efficiency and rich functionality.
+3. **Hybrid On-Chain/Off-Chain Architecture**: Clear separation between on-chain identity and permissions versus off-chain extended experience and complex behaviors, optimizing for both gas efficiency and rich functionality.
 
 4. **Optional Learning System**: Standardized interfaces for agent learning and evolution, allowing developers to choose between simple static agents or sophisticated learning agents.
 
@@ -60,17 +60,17 @@ While traditional NFTs (BEP-721) provide uniqueness and ownership, they lack the
 
 BEP-007 carefully balances which components belong on-chain versus off-chain:
 
-| Component | Storage | Rationale |
-|-----------|---------|-----------|
-| Agent Identity | On-chain | Core identity must be immutable and universally accessible |
-| Ownership & Permissions | On-chain | Security and access control require consensus verification |
-| Basic Metadata | On-chain | Essential for marketplace display and basic interactions |
-| Logic Address | On-chain | Determines how the agent behaves when actions are executed |
-| Learning Tree Root | On-chain | Cryptographic proof of learning state (32 bytes only) |
-| Extended Memory | Off-chain (with hash verification) | Rich memory would be prohibitively expensive on-chain |
-| Learning Tree Data | Off-chain (with Merkle verification) | Detailed learning data with cryptographic integrity |
-| Complex Behaviors | Off-chain | Advanced AI behaviors require off-chain computation |
-| Voice/Animation | Off-chain (with URI reference) | Media assets are too large for on-chain storage |
+| Component               | Storage                              | Rationale                                                  |
+| ----------------------- | ------------------------------------ | ---------------------------------------------------------- |
+| Agent Identity          | On-chain                             | Core identity must be immutable and universally accessible |
+| Ownership & Permissions | On-chain                             | Security and access control require consensus verification |
+| Basic Metadata          | On-chain                             | Essential for marketplace display and basic interactions   |
+| Logic Address           | On-chain                             | Determines how the agent behaves when actions are executed |
+| Learning Tree Root      | On-chain                             | Cryptographic proof of learning state (32 bytes only)      |
+| Extended Experience     | Off-chain (with hash verification)   | Rich experience would be prohibitively expensive on-chain  |
+| Learning Tree Data      | Off-chain (with Merkle verification) | Detailed learning data with cryptographic integrity        |
+| Complex Behaviors       | Off-chain                            | Advanced AI behaviors require off-chain computation        |
+| Voice/Animation         | Off-chain (with URI reference)       | Media assets are too large for on-chain storage            |
 
 This hybrid approach ensures that:
 
@@ -87,7 +87,7 @@ Standardization through BEP-007 enables:
 
 2. **Marketplace Integration**: Platforms can display, trade, and interact with agents using standardized methods, regardless of the agent's specific purpose or learning capabilities.
 
-3. **Cross-Platform Compatibility**: Agents can move between applications while maintaining their identity, memory, and learned behaviors.
+3. **Cross-Platform Compatibility**: Agents can move between applications while maintaining their identity, experience, and learned behaviors.
 
 4. **User Ownership**: Clear separation of on-chain and off-chain components ensures users maintain control of their agents' data and behavior.
 
@@ -105,8 +105,8 @@ Standardization through BEP-007 enables:
 - **Governance**: Protocol-level governance for parameter updates and improvements
 - **Security**: Robust circuit breaker system for emergency pauses at both global and contract-specific levels
 - **Extensibility**: Template system for creating specialized agent types
-- **Enhanced Metadata**: Rich metadata structure with persona, memory, voice, and animation capabilities
-- **Memory Modules**: Support for external memory sources with cryptographic verification
+- **Enhanced Metadata**: Rich metadata structure with persona, experience, voice, and animation capabilities
+- **Experience Modules**: Support for external experience sources with cryptographic verification
 - **Vault System**: Secure access control for off-chain data with delegated permissions
 - **Learning Metrics**: Track agent evolution with verifiable learning statistics
 
@@ -130,7 +130,7 @@ The BEP-007 standard consists of the following components:
 - **`AgentFactory.sol`**: Factory contract for deploying new agent tokens with customizable templates
 - **`BEP007Governance.sol`**: Governance contract for protocol-level decisions
 - **`BEP007Treasury.sol`**: Treasury management for fee collection and distribution
-- **`ImprintModuleRegistry.sol`**: Registry for managing external memory modules with cryptographic verification
+- **`ExperienceModuleRegistry.sol`**: Registry for managing external experience modules with cryptographic verification
 - **`VaultPermissionManager.sol`**: Manages secure access to off-chain data vaults with time-based delegation
 
 ### Learning System
@@ -162,7 +162,7 @@ BEP-007 tokens include an enhanced metadata structure with:
 ### Basic Metadata
 
 - **persona**: JSON-encoded string representing character traits, style, tone, and behavioral intent
-- **memory**: Short summary string describing the agent's default role or purpose
+- **experience**: Short summary string describing the agent's default role or purpose
 - **voiceHash**: Reference ID to a stored audio profile (e.g., via IPFS or Arweave)
 - **animationURI**: URI to a video or Lottie-compatible animation file
 - **vaultURI**: URI to the agent's vault (extended data storage)
@@ -177,7 +177,7 @@ BEP-007 tokens include an enhanced metadata structure with:
 
 ## Use Cases
 
-### Traditional Agents (JSON Light Memory)
+### Traditional Agents (JSON Light Experience)
 
 - **DeFi Agents**: Autonomous portfolio managers with predefined strategies
 - **Gaming NPCs**: Characters with static personalities and behaviors
@@ -243,7 +243,7 @@ npx hardhat run scripts/deploy.js --network testnet
 
 ## Usage
 
-### Creating a Simple Agent (JSON Light Memory)
+### Creating a Simple Agent (JSON Light Experience)
 
 To create a traditional agent with static metadata:
 
@@ -287,7 +287,7 @@ const enhancedMetadata = {
     style: "professional",
     tone: "friendly"
   }),
-  imprint: "AI coding assistant specialized in blockchain development",
+  experience: "AI coding assistant specialized in blockchain development",
   voiceHash: "bafkreigh2akiscaild...",
   animationURI: "ipfs://Qm.../agent_avatar.mp4",
   vaultURI: "ipfs://Qm.../agent_vault.json",
@@ -369,7 +369,7 @@ if (enabled) {
   console.log(`⚡ Learning Velocity: ${ethers.utils.formatUnits(metrics.learningVelocity, 18)}`);
   console.log(`🎖️ Confidence Score: ${ethers.utils.formatUnits(metrics.confidenceScore, 18)}`);
 } else {
-  console.log("📚 Agent using JSON light memory (learning disabled)");
+  console.log("📚 Agent using JSON light experience (learning disabled)");
 }
 ```
 
@@ -405,14 +405,14 @@ await newAgentLogic.deployed();
 await agent.setLogicAddress(newAgentLogic.address);
 ```
 
-### Working with Memory Modules
+### Working with Experience Modules
 
-To register a memory module:
+To register a experience module:
 
 ```javascript
 // Create module metadata
 const moduleMetadata = JSON.stringify({
-  context_id: "nfa007-memory-001",
+  context_id: "nfa007-experience-001",
   owner: ownerAddress,
   created: new Date().toISOString(),
   persona: "Strategic crypto analyst"
@@ -426,7 +426,7 @@ const messageHash = ethers.utils.solidityKeccak256(
 const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
 
 // Register the module
-await memoryRegistry.registerModule(
+await experienceRegistry.registerModule(
   tokenId,
   moduleAddress,
   moduleMetadata,
@@ -541,7 +541,7 @@ The system tracks comprehensive learning metrics:
 - **Gas Limits**: Delegatecall operations have gas limits to prevent out-of-gas attacks
 - **Access Control**: Strict access control for sensitive operations
 - **Balance Management**: Agents maintain their own balance for gas fees
-- **Cryptographic Verification**: Signature-based verification for memory module registration and vault access
+- **Cryptographic Verification**: Signature-based verification for experience module registration and vault access
 - **Time-based Permissions**: Delegated vault access with expiry times
 - **Learning Security**: Rate limiting, access control, and cryptographic verification for all learning operations
 

@@ -31,7 +31,7 @@ interface IBEP007 {
      */
     struct AgentMetadata {
         string persona; // JSON-encoded string for character traits, style, tone
-        string imprint; // Short summary string for agent's role/purpose
+        string experience; // Short summary string for agent's role/purpose
         string voiceHash; // Reference ID to stored audio profile
         string animationURI; // URI to video or animation file
         string vaultURI; // URI to the agent's vault (extended data storage)
@@ -64,9 +64,9 @@ interface IBEP007 {
     event MetadataUpdated(uint256 indexed tokenId, string metadataURI);
 
     /**
-     * @dev Emitted when a memory module is registered
+     * @dev Emitted when a experience module is registered
      */
-    event MemoryModuleRegistered(uint256 indexed tokenId, address indexed moduleAddress);
+    event ExperienceModuleRegistered(uint256 indexed tokenId, address indexed moduleAddress);
 
     /**
      * @dev Executes an action using the agent's logic

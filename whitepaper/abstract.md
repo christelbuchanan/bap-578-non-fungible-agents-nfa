@@ -2,7 +2,7 @@
 
 Non-Fungible Agents (NFAs) represent a revolutionary advancement in tokenized intelligence, introducing the first standardized framework for autonomous, learning-capable digital entities on blockchain networks. As an extension of the ERC-721 standard, NFAs embed agentic logic, evolving personas, and rich media identity into the innovative BEP-007 token framework on BNB Chain.
 
-This paper outlines the comprehensive architecture, diverse use cases, sustainable revenue model, and transformative long-term vision for NFAs as the foundational infrastructure for memory-native applications and composable on-chain agents. The BEP-007 standard addresses critical gaps in existing token frameworks by providing standardized interfaces for autonomous behavior, cross-platform agent interactions, and secure hybrid on-chain/off-chain architectures with optional learning capabilities.
+This paper outlines the comprehensive architecture, diverse use cases, sustainable revenue model, and transformative long-term vision for NFAs as the foundational infrastructure for experience-native applications and composable on-chain agents. The BEP-007 standard addresses critical gaps in existing token frameworks by providing standardized interfaces for autonomous behavior, cross-platform agent interactions, and secure hybrid on-chain/off-chain architectures with optional learning capabilities.
 
 ## Key Innovations
 

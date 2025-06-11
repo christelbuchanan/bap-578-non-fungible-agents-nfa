@@ -46,7 +46,7 @@ The DAO Agent is a specialized BEP007 agent template designed for decentralized 
 
 ## Learning Capabilities
 
-### Traditional DAO Agent (JSON Light Memory)
+### Traditional DAO Agent (JSON Light Experience)
 ```javascript
 // Static governance configuration
 const daoConfig = {
@@ -193,7 +193,7 @@ const enhancedMetadata = {
     role: "governance-facilitator",
     specialization: "dao-operations"
   }),
-  imprint: "DAO governance agent specialized in community-driven decision making",
+  experience: "DAO governance agent specialized in community-driven decision making",
   voiceHash: "bafkreidao...",
   animationURI: "ipfs://Qm.../dao_agent.mp4",
   vaultURI: "ipfs://Qm.../dao_vault.json",
