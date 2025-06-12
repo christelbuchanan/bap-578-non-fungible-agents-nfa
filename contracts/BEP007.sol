@@ -14,7 +14,7 @@ import "./interfaces/IBEP007.sol";
  * @title BEP007 - Non-Fungible Agent (NFA) Token Standard
  * @dev Implementation of the BEP-007 standard for autonomous agent tokens
  */
-abstract contract BEP007 is
+contract BEP007 is
     IBEP007,
     ERC721Upgradeable,
     ERC721EnumerableUpgradeable,
@@ -178,9 +178,7 @@ abstract contract BEP007 is
         agentState.lastActionTimestamp = block.timestamp;
 
         // Execute the action via delegatecall with gas limit
-        (bool success, bytes memory result) = agentState.logicAddress.delegatecall{
-            gas: MAX_GAS_FOR_DELEGATECALL
-        }(data);
+        (bool success, bytes memory result) = agentState.logicAddress.call{gas: MAX_GAS_FOR_DELEGATECALL}(data);
 
         require(success, "BEP007: action execution failed");
 
