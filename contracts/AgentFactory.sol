@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./BEP007Enhanced.sol";
 import "./interfaces/IBEP007.sol";
 import "./interfaces/ILearningModule.sol";
@@ -14,7 +15,7 @@ import "./interfaces/ILearningModule.sol";
  * @title AgentFactory
  * @dev Enhanced factory contract for deploying Non-Fungible Agent (NFA) tokens with learning capabilities
  */
-contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
+contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, UUPSUpgradeable {
     using ECDSAUpgradeable for bytes32;
 
     // The address of the BEP007Enhanced implementation contract
@@ -620,4 +621,6 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         learningConfig.learningEnabledByDefault = !paused;
         emit LearningConfigUpdated(block.timestamp);
     }
+
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 }

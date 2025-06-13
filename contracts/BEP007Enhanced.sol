@@ -428,7 +428,7 @@ abstract contract BEP007Enhanced is
     function updateAgentMetadata(
         uint256 tokenId,
         IBEP007.AgentMetadata memory metadata
-    ) external override onlyAgentOwner(tokenId) {
+    ) external override onlyAgentOwner(tokenId) virtual{
         // Update only the base metadata fields
         EnhancedAgentMetadata storage enhanced = _agentExtendedMetadata[tokenId];
         enhanced.persona = metadata.persona;
