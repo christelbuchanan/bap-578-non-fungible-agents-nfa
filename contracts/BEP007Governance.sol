@@ -74,7 +74,7 @@ contract BEP007Governance is Initializable, OwnableUpgradeable, UUPSUpgradeable 
      */
     function initialize(
         string memory name,
-        address _bep007Token,
+        address payable _bep007Token,
         address _owner,
         uint256 _votingPeriod,
         uint256 _quorumPercentage,
