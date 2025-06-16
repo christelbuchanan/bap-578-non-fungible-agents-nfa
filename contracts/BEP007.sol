@@ -9,6 +9,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import "./interfaces/IBEP007.sol";
+import "./interfaces/ICircuitBreaker.sol";
 
 /**
  * @title BEP007 - Non-Fungible Agent (NFA) Token Standard
@@ -45,6 +46,8 @@ contract BEP007 is
 
     // Circuit breaker for emergency pause
     bool public globalPause;
+
+    ICircuitBreaker public circuitBreaker;
 
     // Gas limit for delegatecall to prevent out-of-gas attacks
     uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3000000;
@@ -90,6 +93,7 @@ contract BEP007 is
         __UUPSUpgradeable_init();
 
         governance = governanceAddress;
+        circuitBreaker = ICircuitBreaker(governanceAddress);
         globalPause = false;
     }
 
@@ -164,6 +168,8 @@ contract BEP007 is
         bytes calldata data
     ) external nonReentrant whenAgentActive(tokenId) {
         State storage agentState = _agentStates[tokenId];
+
+        require(circuitBreaker.globalPause() == false, "CircuitBreaker: globally paused");
 
         // Only the owner or the logic contract itself can execute actions
         require(
@@ -415,4 +421,6 @@ contract BEP007 is
      * Called by {upgradeTo} and {upgradeToAndCall}.
      */
     function _authorizeUpgrade(address) internal override onlyGovernance {}
+
+    receive() external payable { }
 }
