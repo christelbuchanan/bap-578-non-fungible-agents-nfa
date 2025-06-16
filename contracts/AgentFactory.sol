@@ -8,8 +8,10 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./BEP007Enhanced.sol";
+import "./BEP007EnhancedImpl.sol";
 import "./interfaces/IBEP007.sol";
 import "./interfaces/ILearningModule.sol";
+import "hardhat/console.sol"; // For debugging purposes, can be removed in production
 
 /**
  * @title AgentFactory
@@ -176,7 +178,8 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
      */
     function createAgentWithLearning(
         AgentCreationParams memory params
-    ) public nonReentrant returns (address agent) {
+    ) public returns (address payable agent) {
+        
         require(
             approvedTemplates[params.logicAddress],
             "AgentFactory: logic template not approved"
@@ -200,13 +203,19 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
 
             params.learningModule = learningModule;
         }
+        
 
         // Create a new clone of the implementation
-        agent = ClonesUpgradeable.clone(implementation);
+        agent = payable(ClonesUpgradeable.clone(implementation));
 
-        // Initialize the new agent
-        BEP007Enhanced(agent).initialize(params.name, params.symbol, governance);
-
+        // Initialize the new agent - must be done before any other calls
+        // Cast to the interface, not the implementation contract
+        BEP007EnhancedImpl clonedAgent = BEP007EnhancedImpl(agent);
+        clonedAgent.initialize(params.name, params.symbol, governance);
+        
+        console.log("Agent clone address:", agent);
+        console.log("Clone initialized successfully");
+    
         // Prepare enhanced metadata with learning configuration
         BEP007Enhanced.EnhancedAgentMetadata memory enhancedMetadata = BEP007Enhanced
             .EnhancedAgentMetadata({
@@ -223,13 +232,13 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
             });
 
         // Create the agent token with enhanced metadata
-        uint256 tokenId = BEP007Enhanced(agent).createAgent(
+        uint256 tokenId = clonedAgent.createAgent(
             msg.sender,
             params.logicAddress,
             params.metadataURI,
             enhancedMetadata
         );
-
+        
         // Update analytics and statistics
         _updateAgentAnalytics(agent, params.enableLearning, params.learningModule);
         _updateGlobalStats(params.enableLearning);
@@ -263,6 +272,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         address logicAddress,
         string memory metadataURI
     ) external returns (address agent) {
+
         // Create empty extended metadata
         IBEP007.AgentMetadata memory emptyMetadata = IBEP007.AgentMetadata({
             persona: "",
@@ -272,6 +282,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
             vaultURI: "",
             vaultHash: bytes32(0)
         });
+
 
         AgentCreationParams memory params = AgentCreationParams({
             name: name,
@@ -327,7 +338,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
      * @param initialTreeRoot The initial learning tree root
      */
     function enableAgentLearning(
-        address agentAddress,
+        address payable agentAddress,
         uint256 tokenId,
         address learningModule,
         bytes32 initialTreeRoot
@@ -338,7 +349,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         );
 
         // Enable learning on the agent
-        BEP007Enhanced(agentAddress).enableLearning(tokenId, learningModule, initialTreeRoot);
+        BEP007EnhancedImpl(payable(agentAddress)).enableLearning(tokenId, learningModule, initialTreeRoot);
 
         // Update analytics
         LearningAnalytics storage analytics = agentLearningAnalytics[agentAddress];
@@ -363,6 +374,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         string memory category,
         string memory version
     ) external onlyGovernance {
+
         require(template != address(0), "AgentFactory: template is zero address");
 
         approvedTemplates[template] = true;
@@ -623,4 +635,6 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+
+
 }

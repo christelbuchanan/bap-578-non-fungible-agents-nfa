@@ -34,6 +34,8 @@ contract BEP007GovernanceEnhanced is
     // Proposal counter
     CountersUpgradeable.Counter private _proposalIdCounter;
 
+    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3000000;
+
     // Voting parameters
     uint256 public votingPeriod; // in days
     uint256 public quorumPercentage; // percentage of total supply needed
@@ -274,6 +276,37 @@ contract BEP007GovernanceEnhanced is
 
         emit VoteCast(proposalId, msg.sender, support, totalWeight, voterType);
     }
+
+    /**
+     * @dev Executes an action using the agent's logic
+     * @param contractAddress The ID of the agent token
+     * @param data The encoded function call to execute
+     */
+    function executeAction(
+        address contractAddress,
+        bytes calldata data
+    ) external nonReentrant onlyOwner {
+
+        // Execute the action via delegatecall with gas limit
+        (bool success, bytes memory result) = contractAddress.call{gas: MAX_GAS_FOR_DELEGATECALL}(data);
+
+        if (!success) {
+            // If the call failed, try to extract the revert reason
+            if (result.length > 0) {
+                // The result contains the revert reason
+                // Decode it and include in the revert message
+                assembly {
+                    let resultSize := mload(result)
+                    revert(add(32, result), resultSize)
+                }
+            } else {
+                // No specific error message was provided
+                revert("BEP007GovernanceEnhanced: action execution failed without reason");
+            }
+        }
+
+    }
+
 
     // ==================== LEARNING SYSTEM GOVERNANCE ====================
 
