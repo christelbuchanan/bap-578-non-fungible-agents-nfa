@@ -253,6 +253,4 @@ contract BEP007EnhancedImpl is BEP007Enhanced {
             }
         }
     }
-
-
 }
