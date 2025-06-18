@@ -10,8 +10,8 @@ interface IBEP007 {
      * @dev Enum representing the current status of an agent
      */
     enum Status {
-        Paused,
         Active,
+        Paused,
         Terminated
     }
 

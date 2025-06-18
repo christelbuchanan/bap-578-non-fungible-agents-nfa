@@ -3,13 +3,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./interfaces/ICircuitBreaker.sol";
 
 /**
  * @title CircuitBreaker
  * @dev Emergency shutdown mechanism for the BEP-007 ecosystem
  */
-contract CircuitBreaker is ICircuitBreaker, Initializable, OwnableUpgradeable {
+contract CircuitBreaker is Initializable, OwnableUpgradeable {
     // The address of the governance contract
     address public governance;
 
