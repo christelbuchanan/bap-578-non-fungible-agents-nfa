@@ -50,7 +50,7 @@ abstract contract BEP007Enhanced is
     bool public globalPause;
 
     // Gas limit for delegatecall to prevent out-of-gas attacks
-    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3000000;
+    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3_000_000;
 
     /**
      * @dev Enhanced AgentMetadata structure with learning capabilities

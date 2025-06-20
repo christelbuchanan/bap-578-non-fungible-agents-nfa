@@ -34,7 +34,7 @@ contract BEP007GovernanceEnhanced is
     // Proposal counter
     CountersUpgradeable.Counter private _proposalIdCounter;
 
-    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3000000;
+    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3_000_000;
 
     // Voting parameters
     uint256 public votingPeriod; // in days
@@ -189,8 +189,8 @@ contract BEP007GovernanceEnhanced is
         learningGovernance.globalLearningPaused = false;
 
         // Initialize experience governance
-        experienceGovernance.onChainGasLimit = 3000000;
-        experienceGovernance.offChainGasLimit = 1000000;
+        experienceGovernance.onChainGasLimit = 3_000_000;
+        experienceGovernance.offChainGasLimit = 1_000_000;
         experienceGovernance.onChainStorageFee = 0.001 ether;
         experienceGovernance.offChainStorageFee = 0.0001 ether;
 
@@ -620,7 +620,7 @@ contract BEP007GovernanceEnhanced is
         // Simple agent parameters
         agentTypeParameters[AgentType.Simple] = AgentTypeParameters({
             creationFee: 0.01 ether,
-            gasLimit: 1000000,
+            gasLimit: 1_000_000,
             votingWeight: 100, // 1x voting power
             proposalThreshold: 1000 * 1e18, // 1000 tokens
             canCreateProposals: true,
@@ -630,7 +630,7 @@ contract BEP007GovernanceEnhanced is
         // Learning agent parameters
         agentTypeParameters[AgentType.Learning] = AgentTypeParameters({
             creationFee: 0.05 ether,
-            gasLimit: 3000000,
+            gasLimit: 3_000_000,
             votingWeight: 150, // 1.5x voting power
             proposalThreshold: 500 * 1e18, // 500 tokens (lower threshold)
             canCreateProposals: true,

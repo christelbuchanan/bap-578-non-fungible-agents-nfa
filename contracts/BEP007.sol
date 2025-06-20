@@ -50,7 +50,7 @@ contract BEP007 is
     ICircuitBreaker public circuitBreaker;
 
     // Gas limit for delegatecall to prevent out-of-gas attacks
-    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3000000;
+    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3_000_000;
 
     /**
      * @dev Modifier to check if the caller is the governance contract

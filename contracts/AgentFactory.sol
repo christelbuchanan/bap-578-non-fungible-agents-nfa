@@ -136,7 +136,7 @@ contract AgentFactory is
         address _implementation,
         address _governance,
         address _defaultLearningModule
-    ) public initializer {
+    ) public initializer onlyOwner() {
         __Ownable_init();
         __ReentrancyGuard_init();
 
