@@ -7,7 +7,6 @@ import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "./BEP007Enhanced.sol";
 import "./BEP007EnhancedImpl.sol";
 import "./interfaces/IBEP007.sol";
@@ -204,18 +203,12 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
             params.learningModule = learningModule;
         }
         
-
-        //  bytes memory data = abi.encodeWithSignature("initialize(string,string,address)", params.name, params.symbol, governance);
-
-        // ERC1967Proxy proxy = new ERC1967Proxy(implementation, data);
-
-
         // Create a new clone of the implementation
         // agent = payable(ClonesUpgradeable.clone(implementation));
 
+        BEP007EnhancedImpl clonedAgent = BEP007EnhancedImpl(payable(implementation));
         // Initialize the new agent - must be done before any other calls
         // Cast to the interface, not the implementation contract
-        BEP007EnhancedImpl clonedAgent = BEP007EnhancedImpl(payable(implementation));
         // clonedAgent.initialize(params.name, params.symbol, governance);
         
         // Prepare enhanced metadata with learning configuration
