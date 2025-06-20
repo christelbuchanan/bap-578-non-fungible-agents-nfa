@@ -110,12 +110,15 @@ abstract contract BEP007Enhanced is
 
     /**
      * @dev Initializes the contract
+     * @dev This function can only be called once due to the initializer modifier
      */
     function initialize(
         string memory name,
         string memory symbol,
         address governanceAddress
     ) public virtual initializer {
+        require(governanceAddress != address(0), "BEP007Enhanced: governance address is zero");
+
         __ERC721_init(name, symbol);
         __ERC721Enumerable_init();
         __ERC721URIStorage_init();
@@ -125,6 +128,9 @@ abstract contract BEP007Enhanced is
 
         governance = governanceAddress;
         globalPause = false;
+
+        // Transfer ownership to governance for additional security
+        _transferOwnership(governanceAddress);
     }
 
     /**

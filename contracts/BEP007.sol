@@ -79,12 +79,15 @@ contract BEP007 is
 
     /**
      * @dev Initializes the contract
+     * @dev This function can only be called once due to the initializer modifier
      */
     function initialize(
         string memory name,
         string memory symbol,
         address governanceAddress
     ) public initializer {
+        require(governanceAddress != address(0), "BEP007: governance address is zero");
+
         __ERC721_init(name, symbol);
         __ERC721Enumerable_init();
         __ERC721URIStorage_init();
@@ -95,6 +98,9 @@ contract BEP007 is
         governance = governanceAddress;
         circuitBreaker = ICircuitBreaker(governanceAddress);
         globalPause = false;
+
+        // Transfer ownership to governance for additional security
+        _transferOwnership(governanceAddress);
     }
 
     /**

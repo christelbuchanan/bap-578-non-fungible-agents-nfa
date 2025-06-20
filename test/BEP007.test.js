@@ -43,7 +43,8 @@ describe('BEP007 Non-Fungible Agent', function () {
 
   describe('Deployment', function () {
     it('Should set the right owner', async function () {
-      expect(await bep007.owner()).to.equal(owner.address);
+      // After our security fix, ownership is transferred to governance (CircuitBreaker)
+      expect(await bep007.owner()).to.equal(circuitBreaker.address);
     });
 
     it('Should set the right name and symbol', async function () {

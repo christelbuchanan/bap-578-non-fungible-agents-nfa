@@ -128,6 +128,7 @@ contract AgentFactory is
 
     /**
      * @dev Initializes the contract
+     * @dev This function can only be called once due to the initializer modifier
      * @param _implementation The address of the BEP007Enhanced implementation contract
      * @param _governance The address of the governance contract
      * @param _defaultLearningModule The default learning module address
@@ -137,11 +138,12 @@ contract AgentFactory is
         address _governance,
         address _defaultLearningModule
     ) public initializer {
-        __Ownable_init();
-        __ReentrancyGuard_init();
-
         require(_implementation != address(0), "AgentFactory: implementation is zero address");
         require(_governance != address(0), "AgentFactory: governance is zero address");
+
+        __Ownable_init();
+        __ReentrancyGuard_init();
+        __UUPSUpgradeable_init();
 
         implementation = _implementation;
         governance = _governance;
@@ -165,6 +167,9 @@ contract AgentFactory is
             averageGlobalConfidence: 0,
             lastStatsUpdate: block.timestamp
         });
+
+        // Transfer ownership to governance for additional security
+        _transferOwnership(_governance);
     }
 
     /**
@@ -634,5 +639,15 @@ contract AgentFactory is
         emit LearningConfigUpdated(block.timestamp);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    /**
+     * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract.
+     * Called by {upgradeTo} and {upgradeToAndCall}.
+     * @dev Only governance can authorize upgrades for enhanced security
+     */
+    function _authorizeUpgrade(address newImplementation) internal override onlyGovernance {
+        require(
+            newImplementation != address(0),
+            "AgentFactory: new implementation is zero address"
+        );
+    }
 }
