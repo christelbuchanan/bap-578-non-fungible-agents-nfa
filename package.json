@@ -29,7 +29,7 @@
     "@openzeppelin/contracts": "^4.9.6",
     "@openzeppelin/contracts-upgradeable": "^4.9.6",
     "@openzeppelin/hardhat-upgrades": "1.20.0",
-    "chai": "4",
+    "chai": "4.3.7",
     "dotenv": "^16.5.0",
     "ethereum-waffle": "^4.0.10",
     "ethers": "^5.6.0",
@@ -40,5 +40,9 @@
     "prettier-plugin-solidity": "^2.0.0",
     "solhint": "^5.1.0",
     "solidity-coverage": "^0.8.13"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "merkletreejs": "^0.5.2"
   }
 }

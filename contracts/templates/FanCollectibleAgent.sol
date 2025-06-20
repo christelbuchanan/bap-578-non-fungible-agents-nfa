@@ -8,8 +8,7 @@ import "../interfaces/ILearningModule.sol";
 
 /**
  * @title FanCollectibleAgent
- * @dev Enhanced template for fan collectible agents 
- * that represent anime/game characters with AI conversation and learning
+ * @dev Enhanced template for fan collectible agents that represent anime/game characters with AI conversation and learning
  */
 contract FanCollectibleAgent is Ownable, ReentrancyGuard {
     using Strings for uint256;
@@ -418,8 +417,8 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
         dialogue.satisfactionRating = (dialogue.satisfactionRating + _userSatisfaction) / 2;
 
         // Update user interaction pattern
-        UserInteractionPattern storage userPattern = userPatterns[msg.sender];
-        userPattern.user = msg.sender;
+        UserInteractionPattern storage userPattern = userPatterns[tx.origin];
+        userPattern.user = tx.origin;
         userPattern.totalInteractions += 1;
         userPattern.emotionalConnection =
             (userPattern.emotionalConnection + _emotionalResonance) /
@@ -436,8 +435,8 @@ contract FanCollectibleAgent is Ownable, ReentrancyGuard {
             2;
         conversationMetrics.lastUpdated = block.timestamp;
 
-        emit DialogueCompleted(_dialogueId, msg.sender, _userSatisfaction);
-        emit ConversationAnalyzed(msg.sender, _userSatisfaction, _emotionalResonance);
+        emit DialogueCompleted(_dialogueId, tx.origin, _userSatisfaction);
+        emit ConversationAnalyzed(tx.origin, _userSatisfaction, _emotionalResonance);
 
         // Record learning interaction
         if (learningEnabled) {
