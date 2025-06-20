@@ -872,7 +872,7 @@ contract DeFiAgent is Ownable {
             payable(recipient).transfer(amount);
         } else {
             // Withdraw tokens
-            IERC20(token).transfer(recipient, amount);
+            require(IERC20(token).transfer(recipient, amount), "DeFiAgent: token transfer failed");
         }
     }
 
