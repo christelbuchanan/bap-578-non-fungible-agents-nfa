@@ -9,7 +9,6 @@ import "./interfaces/ILearningModule.sol";
  * @dev This contract provides concrete implementations for all abstract functions with upgradeability
  */
 contract BEP007EnhancedImpl is BEP007Enhanced {
-
     /**
      * @dev Initializes the upgradeable contract
      * @param name The name of the agent token collection
@@ -24,7 +23,7 @@ contract BEP007EnhancedImpl is BEP007Enhanced {
         // Call parent initialize function
         super.initialize(name, symbol, governanceAddress);
     }
-    
+
     /**
      * @dev Creates a new agent token with extended metadata (IBEP007 interface implementation)
      * @param to The address that will own the agent
@@ -63,7 +62,10 @@ contract BEP007EnhancedImpl is BEP007Enhanced {
      * @param tokenId The ID of the agent token
      * @param newLogic The address of the new logic contract
      */
-    function setLogicAddress(uint256 tokenId, address newLogic) external override onlyAgentOwner(tokenId) {
+    function setLogicAddress(
+        uint256 tokenId,
+        address newLogic
+    ) external override onlyAgentOwner(tokenId) {
         require(newLogic != address(0), "BEP007EnhancedImpl: new logic address is zero");
 
         address oldLogic = _agentStates[tokenId].logicAddress;
@@ -99,7 +101,10 @@ contract BEP007EnhancedImpl is BEP007Enhanced {
      * @param tokenId The ID of the agent token
      */
     function pause(uint256 tokenId) external override onlyAgentOwner(tokenId) {
-        require(_agentStates[tokenId].status == Status.Active, "BEP007EnhancedImpl: agent not active");
+        require(
+            _agentStates[tokenId].status == Status.Active,
+            "BEP007EnhancedImpl: agent not active"
+        );
 
         _agentStates[tokenId].status = Status.Paused;
 
@@ -111,7 +116,10 @@ contract BEP007EnhancedImpl is BEP007Enhanced {
      * @param tokenId The ID of the agent token
      */
     function unpause(uint256 tokenId) external override onlyAgentOwner(tokenId) {
-        require(_agentStates[tokenId].status == Status.Paused, "BEP007EnhancedImpl: agent not paused");
+        require(
+            _agentStates[tokenId].status == Status.Paused,
+            "BEP007EnhancedImpl: agent not paused"
+        );
 
         _agentStates[tokenId].status = Status.Active;
 
@@ -183,8 +191,14 @@ contract BEP007EnhancedImpl is BEP007Enhanced {
      * @param tokenId The ID of the agent token
      * @param amount The amount to withdraw
      */
-    function withdrawFromAgent(uint256 tokenId, uint256 amount) external override onlyAgentOwner(tokenId) {
-        require(amount <= _agentStates[tokenId].balance, "BEP007EnhancedImpl: insufficient balance");
+    function withdrawFromAgent(
+        uint256 tokenId,
+        uint256 amount
+    ) external override onlyAgentOwner(tokenId) {
+        require(
+            amount <= _agentStates[tokenId].balance,
+            "BEP007EnhancedImpl: insufficient balance"
+        );
 
         _agentStates[tokenId].balance -= amount;
         payable(msg.sender).transfer(amount);

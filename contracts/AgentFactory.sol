@@ -16,7 +16,12 @@ import "./interfaces/ILearningModule.sol";
  * @title AgentFactory
  * @dev Enhanced factory contract for deploying Non-Fungible Agent (NFA) tokens with learning capabilities
  */
-contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, UUPSUpgradeable {
+contract AgentFactory is
+    Initializable,
+    OwnableUpgradeable,
+    ReentrancyGuardUpgradeable,
+    UUPSUpgradeable
+{
     using ECDSAUpgradeable for bytes32;
 
     // The address of the BEP007Enhanced implementation contract
@@ -178,7 +183,6 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
     function createAgentWithLearning(
         AgentCreationParams memory params
     ) public returns (address payable agent) {
-        
         require(
             approvedTemplates[params.logicAddress],
             "AgentFactory: logic template not approved"
@@ -202,7 +206,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
 
             params.learningModule = learningModule;
         }
-        
+
         // Create a new clone of the implementation
         // agent = payable(ClonesUpgradeable.clone(implementation));
 
@@ -210,7 +214,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         // Initialize the new agent - must be done before any other calls
         // Cast to the interface, not the implementation contract
         // clonedAgent.initialize(params.name, params.symbol, governance);
-        
+
         // Prepare enhanced metadata with learning configuration
         BEP007Enhanced.EnhancedAgentMetadata memory enhancedMetadata = BEP007Enhanced
             .EnhancedAgentMetadata({
@@ -233,7 +237,7 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
             params.metadataURI,
             enhancedMetadata
         );
-        
+
         // Update analytics and statistics
         _updateAgentAnalytics(agent, params.enableLearning, params.learningModule);
         _updateGlobalStats(params.enableLearning);
@@ -267,7 +271,6 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         address logicAddress,
         string memory metadataURI
     ) external returns (address agent) {
-
         // Create empty extended metadata
         IBEP007.AgentMetadata memory emptyMetadata = IBEP007.AgentMetadata({
             persona: "",
@@ -277,7 +280,6 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
             vaultURI: "",
             vaultHash: bytes32(0)
         });
-
 
         AgentCreationParams memory params = AgentCreationParams({
             name: name,
@@ -344,7 +346,11 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         );
 
         // Enable learning on the agent
-        BEP007EnhancedImpl(payable(agentAddress)).enableLearning(tokenId, learningModule, initialTreeRoot);
+        BEP007EnhancedImpl(payable(agentAddress)).enableLearning(
+            tokenId,
+            learningModule,
+            initialTreeRoot
+        );
 
         // Update analytics
         LearningAnalytics storage analytics = agentLearningAnalytics[agentAddress];
@@ -369,7 +375,6 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
         string memory category,
         string memory version
     ) external onlyGovernance {
-
         require(template != address(0), "AgentFactory: template is zero address");
 
         approvedTemplates[template] = true;
@@ -630,6 +635,4 @@ contract AgentFactory is Initializable, OwnableUpgradeable, ReentrancyGuardUpgra
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
-
-
 }

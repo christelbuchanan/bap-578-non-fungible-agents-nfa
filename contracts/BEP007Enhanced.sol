@@ -405,7 +405,7 @@ abstract contract BEP007Enhanced is
      */
     function getAgentMetadata(
         uint256 tokenId
-    ) external virtual view override returns (IBEP007.AgentMetadata memory) {
+    ) external view virtual override returns (IBEP007.AgentMetadata memory) {
         require(_exists(tokenId), "BEP007Enhanced: agent does not exist");
         EnhancedAgentMetadata storage enhanced = _agentExtendedMetadata[tokenId];
         return
@@ -426,7 +426,7 @@ abstract contract BEP007Enhanced is
      */
     function getAgentEnhancedMetadata(
         uint256 tokenId
-    ) external virtual view returns (EnhancedAgentMetadata memory) {
+    ) external view virtual returns (EnhancedAgentMetadata memory) {
         require(_exists(tokenId), "BEP007Enhanced: agent does not exist");
         return _agentExtendedMetadata[tokenId];
     }
@@ -439,7 +439,7 @@ abstract contract BEP007Enhanced is
     function updateAgentMetadata(
         uint256 tokenId,
         IBEP007.AgentMetadata memory metadata
-    ) external override onlyAgentOwner(tokenId) virtual{
+    ) external virtual override onlyAgentOwner(tokenId) {
         // Update only the base metadata fields
         EnhancedAgentMetadata storage enhanced = _agentExtendedMetadata[tokenId];
         enhanced.persona = metadata.persona;
@@ -480,7 +480,10 @@ abstract contract BEP007Enhanced is
      * @param tokenId The ID of the agent token
      * @param newLogic The address of the new logic contract
      */
-    function setLogicAddress(uint256 tokenId, address newLogic) external virtual onlyAgentOwner(tokenId) {
+    function setLogicAddress(
+        uint256 tokenId,
+        address newLogic
+    ) external virtual onlyAgentOwner(tokenId) {
         require(newLogic != address(0), "BEP007Enhanced: new logic address is zero");
 
         address oldLogic = _agentStates[tokenId].logicAddress;
@@ -579,7 +582,10 @@ abstract contract BEP007Enhanced is
      * @param tokenId The ID of the agent token
      * @param amount The amount to withdraw
      */
-    function withdrawFromAgent(uint256 tokenId, uint256 amount) external virtual onlyAgentOwner(tokenId) {
+    function withdrawFromAgent(
+        uint256 tokenId,
+        uint256 amount
+    ) external virtual onlyAgentOwner(tokenId) {
         require(amount <= _agentStates[tokenId].balance, "BEP007Enhanced: insufficient balance");
 
         _agentStates[tokenId].balance -= amount;
@@ -634,7 +640,8 @@ abstract contract BEP007Enhanced is
         bytes4 interfaceId
     )
         public
-        virtual view
+        view
+        virtual
         override(ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable)
         returns (bool)
     {
@@ -672,7 +679,13 @@ abstract contract BEP007Enhanced is
      */
     function tokenURI(
         uint256 tokenId
-    ) public virtual view override(ERC721Upgradeable, ERC721URIStorageUpgradeable) returns (string memory) {
+    )
+        public
+        view
+        virtual
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
+        returns (string memory)
+    {
         return super.tokenURI(tokenId);
     }
 
@@ -682,5 +695,5 @@ abstract contract BEP007Enhanced is
      */
     function _authorizeUpgrade(address) internal virtual override onlyGovernance {}
 
-    receive() external payable { }
+    receive() external payable {}
 }

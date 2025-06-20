@@ -184,7 +184,9 @@ contract BEP007 is
         agentState.lastActionTimestamp = block.timestamp;
 
         // Execute the action via delegatecall with gas limit
-        (bool success, bytes memory result) = agentState.logicAddress.call{gas: MAX_GAS_FOR_DELEGATECALL}(data);
+        (bool success, bytes memory result) = agentState.logicAddress.call{
+            gas: MAX_GAS_FOR_DELEGATECALL
+        }(data);
 
         require(success, "BEP007: action execution failed");
 
@@ -422,5 +424,5 @@ contract BEP007 is
      */
     function _authorizeUpgrade(address) internal override onlyGovernance {}
 
-    receive() external payable { }
+    receive() external payable {}
 }

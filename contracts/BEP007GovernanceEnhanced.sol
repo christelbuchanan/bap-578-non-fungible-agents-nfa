@@ -286,9 +286,10 @@ contract BEP007GovernanceEnhanced is
         address contractAddress,
         bytes calldata data
     ) external nonReentrant onlyOwner {
-
         // Execute the action via delegatecall with gas limit
-        (bool success, bytes memory result) = contractAddress.call{gas: MAX_GAS_FOR_DELEGATECALL}(data);
+        (bool success, bytes memory result) = contractAddress.call{ gas: MAX_GAS_FOR_DELEGATECALL }(
+            data
+        );
 
         if (!success) {
             // If the call failed, try to extract the revert reason
@@ -304,9 +305,7 @@ contract BEP007GovernanceEnhanced is
                 revert("BEP007GovernanceEnhanced: action execution failed without reason");
             }
         }
-
     }
-
 
     // ==================== LEARNING SYSTEM GOVERNANCE ====================
 

@@ -8,7 +8,7 @@ import "../interfaces/ILearningModule.sol";
 
 /**
  * @title FanCollectibleAgent
- * @dev Enhanced template for fan collectible agents that represent anime/game characters 
+ * @dev Enhanced template for fan collectible agents that represent anime/game characters
  *       with AI conversation and learning
  */
 contract FanCollectibleAgent is Ownable, ReentrancyGuard {
