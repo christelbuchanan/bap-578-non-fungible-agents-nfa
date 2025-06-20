@@ -428,7 +428,7 @@ contract BEP007 is
      * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract.
      * Called by {upgradeTo} and {upgradeToAndCall}.
      */
-    function _authorizeUpgrade(address) internal override onlyGovernance {}
+    function _authorizeUpgrade(address) internal override onlyOwner {}
 
     receive() external payable {}
 }

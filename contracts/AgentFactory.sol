@@ -644,10 +644,5 @@ contract AgentFactory is
      * Called by {upgradeTo} and {upgradeToAndCall}.
      * @dev Only governance can authorize upgrades for enhanced security
      */
-    function _authorizeUpgrade(address newImplementation) internal override onlyGovernance {
-        require(
-            newImplementation != address(0),
-            "AgentFactory: new implementation is zero address"
-        );
-    }
+    function _authorizeUpgrade(address newImplementation) internal view override onlyOwner {}
 }

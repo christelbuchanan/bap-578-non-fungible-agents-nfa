@@ -699,7 +699,7 @@ abstract contract BEP007Enhanced is
      * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract.
      * Called by {upgradeTo} and {upgradeToAndCall}.
      */
-    function _authorizeUpgrade(address) internal virtual override onlyGovernance {}
+    function _authorizeUpgrade(address) internal virtual override onlyOwner {}
 
     receive() external payable {}
 }
