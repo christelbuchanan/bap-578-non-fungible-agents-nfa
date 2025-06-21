@@ -61,7 +61,12 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
-          allow-licenses: MIT, Apache-2.0, BSD-3-Clause, ISC, LGPL-3.0, AGPL-3.0
+          allow-licenses: >
+            MIT, Apache-2.0, BSD-3-Clause, BSD-2-Clause, ISC,
+            LGPL-3.0, AGPL-3.0, Unlicense, CC0-1.0, MPL-2.0,
+            Python-2.0, (MIT OR Apache-2.0), (MIT OR CC0-1.0),
+            WTFPL, 0BSD, (Apache-2.0 WITH LLVM-exception),
+            CC-BY-3.0, (AFL-2.1 OR BSD-3-Clause)
           comment-summary-in-pr: always
 
   update-dependencies:
