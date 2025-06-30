@@ -911,6 +911,8 @@ contract DeFiLearningModule is
             learning.avgSuccessRate = wasAccurate ? 100 : 0;
         } else {
             uint256 totalScore = learning.avgSuccessRate * (learning.sampleSize - 1);
+            totalScore += wasAccurate ? 100 : 0;
+            learning.avgSuccessRate = totalScore / learning.sampleSize;
         }
 
         emit MarketConditionLearningUpdated(
@@ -921,5 +923,91 @@ contract DeFiLearningModule is
         );
     }
 
-    
+    /**
+     * @dev Internal function to check trading milestones
+     */
+    function _checkTradingMilestones(uint256 tokenId, DeFiLearningMetrics memory metrics) internal {
+        if (metrics.totalTrades == MILESTONE_TRADES_10) {
+            emit DeFiMilestoneAchieved(tokenId, "trader_10", 10, block.timestamp);
+        } else if (metrics.totalTrades == MILESTONE_TRADES_100) {
+            emit DeFiMilestoneAchieved(tokenId, "trader_100", 100, block.timestamp);
+        } else if (metrics.totalTrades == MILESTONE_TRADES_1000) {
+            emit DeFiMilestoneAchieved(tokenId, "trader_1000", 1000, block.timestamp);
+        }
+
+        if (metrics.profitabilityScore >= MILESTONE_PROFITABLE_TRADER) {
+            emit DeFiMilestoneAchieved(
+                tokenId,
+                "profitable_trader",
+                metrics.profitabilityScore,
+                block.timestamp
+            );
+        }
+    }
+
+    /**
+     * @dev Internal function to check analysis milestones
+     */
+    function _checkAnalysisMilestones(
+        uint256 tokenId,
+        DeFiLearningMetrics memory metrics
+    ) internal {
+        if (metrics.marketTimingScore >= MILESTONE_MARKET_ANALYST) {
+            emit DeFiMilestoneAchieved(
+                tokenId,
+                "market_analyst",
+                metrics.marketTimingScore,
+                block.timestamp
+            );
+        }
+    }
+
+    /**
+     * @dev Internal function to check risk management milestones
+     */
+    function _checkRiskManagementMilestones(uint256 tokenId) internal {
+        DeFiLearningMetrics memory metrics = _defiMetrics[tokenId];
+
+        if (metrics.riskManagementScore >= MILESTONE_RISK_MASTER) {
+            emit DeFiMilestoneAchieved(
+                tokenId,
+                "risk_master",
+                metrics.riskManagementScore,
+                block.timestamp
+            );
+        }
+
+        if (metrics.strategyAdaptationScore >= MILESTONE_STRATEGY_EXPERT) {
+            emit DeFiMilestoneAchieved(
+                tokenId,
+                "strategy_expert",
+                metrics.strategyAdaptationScore,
+                block.timestamp
+            );
+        }
+    }
+
+    /**
+     * @dev Internal function to update confidence score
+     */
+    function _updateConfidence(uint256 currentScore, bool success) internal pure returns (uint256) {
+        if (success) {
+            uint256 gap = 1e18 - currentScore;
+            return currentScore + (gap / 100); // 1% of remaining gap
+        } else {
+            uint256 decrease = currentScore / 50; // 2% decrease
+            return currentScore > decrease ? currentScore - decrease : 0;
+        }
+    }
+
+    /**
+     * @dev Disables learning for an agent (emergency function)
+     * @param tokenId The ID of the agent token
+     */
+    function disableLearning(uint256 tokenId) external {
+        address owner = bep007Token.ownerOf(tokenId);
+        require(msg.sender == owner, "DeFiLearningModule: not token owner");
+
+        _learningEnabled[tokenId] = false;
+    }
 }
