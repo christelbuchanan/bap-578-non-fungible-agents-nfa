@@ -950,6 +950,42 @@ contract DeFiLearningModule is
     function _checkRiskManagementMilestones(uint256 tokenId) internal {
         DeFiLearningMetrics memory metrics = _defiMetrics[tokenId];
 
+if (_riskLearningCount[tokenId] == 0) {
+            metrics.riskManagementScore = 50;
+            return;
+        }
+
+        // Get recent risk management data
+        uint256 recentIndex = _riskLearningCount[tokenId] - 1;
+        RiskManagementData memory recentData = _riskLearningData[tokenId][recentIndex];
+
+
+        uint256 drawdownScore = recentData.maxDrawdown < 1000
+            ? 90 
+            : recentData.maxDrawdown < 2000
+                ? 70 
+                : recentData.maxDrawdown < 3000
+                    ? 50
+                    : 30;
+
+        uint256 diversificationScore = recentData.diversificationScore;
+        uint256 stopLossScore = recentData.stopLossEffectiveness;
+
+        // Combine scores
+        metrics.riskManagementScore = (drawdownScore + diversificationScore + stopLossScore) / 3;
+        if (metrics.riskManagementScore > 100) {
+            metrics.riskManagementScore = 100;
+        }
+
+        if (learning.avgSuccessRate == 0) {
+            learning.avgSuccessRate = wasAccurate ? 100 : 0;
+        } else {
+            uint256 totalScore = learning.avgSuccessRate * (learning.sampleSize - 1);
+            totalScore += wasAccurate ? 100 : 0;
+            
+        }
+
+
         if (metrics.riskManagementScore >= MILESTONE_RISK_MASTER) {
             emit DeFiMilestoneAchieved(
                 tokenId,
