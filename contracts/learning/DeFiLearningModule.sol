@@ -935,14 +935,7 @@ contract DeFiLearningModule is
             emit DeFiMilestoneAchieved(tokenId, "trader_1000", 1000, block.timestamp);
         }
 
-        if (metrics.profitabilityScore >= MILESTONE_PROFITABLE_TRADER) {
-            emit DeFiMilestoneAchieved(
-                tokenId,
-                "profitable_trader",
-                metrics.profitabilityScore,
-                block.timestamp
-            );
-        }
+        
     }
 
     /**
@@ -977,14 +970,6 @@ contract DeFiLearningModule is
             );
         }
 
-        if (metrics.strategyAdaptationScore >= MILESTONE_STRATEGY_EXPERT) {
-            emit DeFiMilestoneAchieved(
-                tokenId,
-                "strategy_expert",
-                metrics.strategyAdaptationScore,
-                block.timestamp
-            );
-        }
     }
 
     /**
