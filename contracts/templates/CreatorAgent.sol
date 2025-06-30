@@ -4,8 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "../interfaces/ILearningModule.sol";
-
+import "../interfaces/ICreatorLearningModule.sol";
 /**
  * @title CreatorAgent
  * @dev Enhanced template for creator agents with learning capabilities
@@ -75,6 +74,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
     // The creator's scheduled content
     struct ScheduledContent {
         uint256 id;
+        uint256 tokenId;
         string contentType;
         string title;
         string summary;
@@ -175,10 +175,13 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Modifier to check if the caller is the agent token
+     * @dev Modifier to check if the caller is the agent token or the contract itself (for learning interactions)
      */
     modifier onlyAgentToken() {
-        require(msg.sender == agentToken, "CreatorAgent: caller is not agent token");
+        require(
+            msg.sender == agentToken || msg.sender == address(this),
+            "CreatorAgent: caller is not agent token"
+        );
         _;
     }
 
@@ -212,21 +215,13 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @param metadata Additional metadata about the interaction
      */
     function recordInteraction(
+        uint256 tokenId,
         string memory interactionType,
         bool success,
         bytes memory metadata
     ) external onlyAgentToken whenLearningEnabled {
-        try
-            ILearningModule(learningModule).recordInteraction(
-                uint256(uint160(address(this))), // Use contract address as token ID
-                interactionType,
-                success
-            )
-        {
-            emit LearningInsightGenerated(interactionType, metadata, block.timestamp);
-        } catch {
-            // Silently fail to not break agent functionality
-        }
+        ICreatorLearningModule(learningModule).recordInteraction(tokenId, interactionType, success);
+        emit LearningInsightGenerated(interactionType, metadata, block.timestamp);
     }
 
     /**
@@ -242,6 +237,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @param _creativityLevel The creator's creativity level (0-100)
      */
     function updateProfile(
+        uint256 tokenId,
         string memory _name,
         string memory _bio,
         string memory _niche,
@@ -269,6 +265,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
         // Record learning interaction
         if (learningEnabled) {
             this.recordInteraction(
+                tokenId,
                 "profile_update",
                 true,
                 abi.encode(_preferredTopics, _learningGoals)
@@ -287,13 +284,14 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @return contentId The ID of the new content item
      */
     function addContent(
+        uint256 tokenId,
         string memory _contentType,
         string memory _title,
         string memory _summary,
         string memory _contentURI,
         bool _featured,
         string[] memory _tags
-    ) external onlyOwner returns (uint256 contentId) {
+    ) external onlyAgentToken returns (uint256 contentId) {
         contentCount += 1;
         contentId = contentCount;
 
@@ -314,7 +312,13 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
 
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("content_creation", true, abi.encode(_contentType, _tags));
+            ICreatorLearningModule(learningModule).recordContentLearning(
+                tokenId,
+                contentId,
+                _contentType,
+                0,
+                _tags
+            );
         }
 
         return contentId;
@@ -329,6 +333,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @param _comments Number of comments
      */
     function recordContentPerformance(
+        uint256 tokenId,
         uint256 _contentId,
         uint256 _views,
         uint256 _likes,
@@ -363,10 +368,12 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
 
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction(
-                "performance_analysis",
-                true,
-                abi.encode(_contentId, engagementRate)
+            ICreatorLearningModule(learningModule).recordContentLearning(
+                tokenId,
+                _contentId,
+                contentLibrary[_contentId].contentType,
+                engagementRate,
+                contentLibrary[_contentId].tags
             );
         }
     }
@@ -380,6 +387,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @return segmentId The ID of the new segment
      */
     function createAudienceSegment(
+        uint256 tokenId,
         string memory _name,
         string memory _description,
         string[] memory _interests,
@@ -403,7 +411,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
 
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("segment_creation", true, abi.encode(_interests));
+            this.recordInteraction(tokenId, "segment_creation", true, abi.encode(_interests));
         }
 
         return segmentId;
@@ -417,6 +425,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @param _averageEngagementRate Average engagement rate
      */
     function updateAudienceInsights(
+        uint256 tokenId,
         string[] memory _trendingTopics,
         uint256[] memory _optimalPostingTimes,
         string[] memory _preferredContentFormats,
@@ -434,7 +443,12 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
 
         // Record learning interaction
         if (learningEnabled) {
-            this.recordInteraction("insights_update", true, abi.encode(_averageEngagementRate));
+            this.recordInteraction(
+                tokenId,
+                "insights_update",
+                true,
+                abi.encode(_averageEngagementRate)
+            );
         }
     }
 
@@ -450,6 +464,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @return scheduleId The ID of the scheduled content
      */
     function scheduleContent(
+        uint256 tokenId,
         string memory _contentType,
         string memory _title,
         string memory _summary,
@@ -472,6 +487,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
 
         scheduledContent[scheduleId] = ScheduledContent({
             id: scheduleId,
+            tokenId: tokenId,
             contentType: _contentType,
             title: _title,
             summary: _summary,
@@ -488,6 +504,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
         // Record learning interaction
         if (learningEnabled) {
             this.recordInteraction(
+                tokenId,
                 "content_scheduling",
                 true,
                 abi.encode(_useAIOptimization, predictedEngagement)
@@ -540,15 +557,13 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
      * @dev Gets the creator's learning progress
      * @return metrics The learning metrics if available
      */
-    function getLearningProgress()
-        external
-        view
-        returns (ILearningModule.LearningMetrics memory metrics)
-    {
+    function getLearningProgress(
+        uint256 tokenId
+    ) external view returns (ICreatorLearningModule.LearningMetrics memory metrics) {
         if (learningEnabled && learningModule != address(0)) {
-            try
-                ILearningModule(learningModule).getLearningMetrics(uint256(uint160(address(this))))
-            returns (ILearningModule.LearningMetrics memory _metrics) {
+            try ICreatorLearningModule(learningModule).getLearningMetrics(tokenId) returns (
+                ICreatorLearningModule.LearningMetrics memory _metrics
+            ) {
                 return _metrics;
             } catch {
                 // Return empty metrics if call fails
@@ -648,6 +663,7 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
         // Record learning interaction
         if (learningEnabled) {
             this.recordInteraction(
+                content.tokenId,
                 "scheduled_publish",
                 true,
                 abi.encode(contentId, content.predictedEngagement)
