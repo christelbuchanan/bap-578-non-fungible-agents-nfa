@@ -7,8 +7,7 @@ import "./ILearningModule.sol";
  * @dev Interface for learning modules in the BEP007 ecosystem
  */
 interface ICreatorLearningModule is ILearningModule {
-   
-     /**
+    /**
      * @dev Records content creation and performance learning
      * @param tokenId The ID of the agent token
      * @param contentId The ID of the content
@@ -24,7 +23,7 @@ interface ICreatorLearningModule is ILearningModule {
         string[] calldata tags
     ) external;
 
-     /**
+    /**
      * @dev Records audience segment learning data
      * @param tokenId The ID of the agent token
      * @param segmentId The ID of the audience segment
