@@ -817,12 +817,6 @@ contract DeFiLearningModule is
         if (metrics.totalTrades > 0) {
             recentTradeSuccess = (metrics.successfulTrades * 100) / metrics.totalTrades;
         }
-
-        // Combine analysis accuracy and trade success
-        metrics.marketTimingScore = (accuracyRate + recentTradeSuccess) / 2;
-        if (metrics.marketTimingScore > 100) {
-            metrics.marketTimingScore = 100;
-        }
     }
 
     /**
@@ -865,8 +859,7 @@ contract DeFiLearningModule is
     function _updateStrategyPerformance(
         uint256 tokenId,
         string memory strategyName,
-        bool wasSuccessful,
-        uint256 profitLoss
+        bool wasSuccessful
     ) internal {
         StrategyPerformanceData storage strategy = _strategyPerformance[tokenId][strategyName];
 
@@ -912,7 +905,7 @@ contract DeFiLearningModule is
         } else {
             uint256 totalScore = learning.avgSuccessRate * (learning.sampleSize - 1);
             totalScore += wasAccurate ? 100 : 0;
-            learning.avgSuccessRate = totalScore / learning.sampleSize;
+            
         }
 
         emit MarketConditionLearningUpdated(
@@ -931,11 +924,7 @@ contract DeFiLearningModule is
             emit DeFiMilestoneAchieved(tokenId, "trader_10", 10, block.timestamp);
         } else if (metrics.totalTrades == MILESTONE_TRADES_100) {
             emit DeFiMilestoneAchieved(tokenId, "trader_100", 100, block.timestamp);
-        } else if (metrics.totalTrades == MILESTONE_TRADES_1000) {
-            emit DeFiMilestoneAchieved(tokenId, "trader_1000", 1000, block.timestamp);
         }
-
-        
     }
 
     /**
