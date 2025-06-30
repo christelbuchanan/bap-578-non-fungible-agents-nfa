@@ -7,7 +7,6 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 import "../interfaces/ICreatorLearningModule.sol";
 import "../BEP007.sol";
-import "hardhat/console.sol";
 /**
  * @title CreatorLearningModule
  * @dev Specialized learning module for CreatorAgent templates
@@ -141,7 +140,9 @@ contract CreatorLearningModule is
     modifier onlyAuthorized(uint256 tokenId) {
         address owner = bep007Token.ownerOf(tokenId);
         require(
-            tx.origin == owner || _authorizedUpdaters[tokenId][msg.sender],
+            address(bep007Token) == msg.sender ||
+                msg.sender == owner ||
+                _authorizedUpdaters[tokenId][msg.sender],
             "CreatorLearningModule: not authorized"
         );
         _;
@@ -353,7 +354,6 @@ contract CreatorLearningModule is
         uint256 limit
     ) external view returns (ContentLearningData[] memory) {
         uint256 count = _contentLearningCount[tokenId];
-        console.log(count);
         uint256 returnCount = count > limit ? limit : count;
 
         ContentLearningData[] memory insights = new ContentLearningData[](returnCount);
