@@ -334,9 +334,6 @@ contract DeFiLearningModule is
         _updateStrategyPerformance(tokenId, strategy, false, 0); // Initial record
 
         emit TradeLearningRecorded(tokenId, tradeId, false, 0, confidenceLevel);
-
-        // Record as general interaction
-        _recordGeneralInteraction(tokenId, "trade_execution", true);
     }
 
     /**
@@ -360,6 +357,7 @@ contract DeFiLearningModule is
             if (_tradeLearningData[tokenId][i].tradeId == tradeId) {
                 _tradeLearningData[tokenId][i].wasSuccessful = wasSuccessful;
                 _tradeLearningData[tokenId][i].profitLoss = profitLoss;
+                _tradeLearningData[tokenId][i].metrics = _defiMetrics[tokenId];
 
                 // Update strategy performance
                 _updateStrategyPerformance(
@@ -483,11 +481,6 @@ contract DeFiLearningModule is
         }
 
         require(found, "DeFiLearningModule: analysis not found");
-
-        // Update accurate analysis count
-        if (wasAccurate) {
-            metrics.accurateAnalyses++;
-        }
 
         // Update market timing score based on analysis accuracy
         _updateMarketTimingScore(tokenId);
@@ -681,6 +674,14 @@ contract DeFiLearningModule is
         uint256 tokenId
     ) external view override returns (LearningMetrics memory) {
         DeFiLearningMetrics memory defiMetrics = _defiMetrics[tokenId];
+
+        uint256 accuracyRate = (metrics.accurateAnalyses * 100) / metrics.totalAnalyses;
+
+        // Factor in recent trade success in relation to analysis
+        uint256 recentTradeSuccess = 50; // Default
+        if (metrics.totalTrades > 0) {
+            recentTradeSuccess = (metrics.successfulTrades * 100) / metrics.totalTrades;
+        }
 
         return
             LearningMetrics({
@@ -950,7 +951,7 @@ contract DeFiLearningModule is
     function _checkRiskManagementMilestones(uint256 tokenId) internal {
         DeFiLearningMetrics memory metrics = _defiMetrics[tokenId];
 
-if (_riskLearningCount[tokenId] == 0) {
+      if (_riskLearningCount[tokenId] == 0) {
             metrics.riskManagementScore = 50;
             return;
         }
