@@ -334,6 +334,9 @@ contract DeFiLearningModule is
         _updateStrategyPerformance(tokenId, strategy, false, 0); // Initial record
 
         emit TradeLearningRecorded(tokenId, tradeId, false, 0, confidenceLevel);
+
+        // Record as general interaction
+        _recordGeneralInteraction(tokenId, "trade_execution", true);
     }
 
     /**
@@ -357,7 +360,6 @@ contract DeFiLearningModule is
             if (_tradeLearningData[tokenId][i].tradeId == tradeId) {
                 _tradeLearningData[tokenId][i].wasSuccessful = wasSuccessful;
                 _tradeLearningData[tokenId][i].profitLoss = profitLoss;
-                _tradeLearningData[tokenId][i].metrics = _defiMetrics[tokenId];
 
                 // Update strategy performance
                 _updateStrategyPerformance(
@@ -481,6 +483,11 @@ contract DeFiLearningModule is
         }
 
         require(found, "DeFiLearningModule: analysis not found");
+
+        // Update accurate analysis count
+        if (wasAccurate) {
+            metrics.accurateAnalyses++;
+        }
 
         // Update market timing score based on analysis accuracy
         _updateMarketTimingScore(tokenId);
@@ -675,14 +682,6 @@ contract DeFiLearningModule is
     ) external view override returns (LearningMetrics memory) {
         DeFiLearningMetrics memory defiMetrics = _defiMetrics[tokenId];
 
-        uint256 accuracyRate = (metrics.accurateAnalyses * 100) / metrics.totalAnalyses;
-
-        // Factor in recent trade success in relation to analysis
-        uint256 recentTradeSuccess = 50; // Default
-        if (metrics.totalTrades > 0) {
-            recentTradeSuccess = (metrics.successfulTrades * 100) / metrics.totalTrades;
-        }
-
         return
             LearningMetrics({
                 totalInteractions: defiMetrics.totalInteractions,
@@ -818,6 +817,12 @@ contract DeFiLearningModule is
         if (metrics.totalTrades > 0) {
             recentTradeSuccess = (metrics.successfulTrades * 100) / metrics.totalTrades;
         }
+
+        // Combine analysis accuracy and trade success
+        metrics.marketTimingScore = (accuracyRate + recentTradeSuccess) / 2;
+        if (metrics.marketTimingScore > 100) {
+            metrics.marketTimingScore = 100;
+        }
     }
 
     /**
@@ -860,7 +865,8 @@ contract DeFiLearningModule is
     function _updateStrategyPerformance(
         uint256 tokenId,
         string memory strategyName,
-        bool wasSuccessful
+        bool wasSuccessful,
+        uint256 profitLoss
     ) internal {
         StrategyPerformanceData storage strategy = _strategyPerformance[tokenId][strategyName];
 
@@ -906,7 +912,7 @@ contract DeFiLearningModule is
         } else {
             uint256 totalScore = learning.avgSuccessRate * (learning.sampleSize - 1);
             totalScore += wasAccurate ? 100 : 0;
-            
+            learning.avgSuccessRate = totalScore / learning.sampleSize;
         }
 
         emit MarketConditionLearningUpdated(
@@ -925,6 +931,17 @@ contract DeFiLearningModule is
             emit DeFiMilestoneAchieved(tokenId, "trader_10", 10, block.timestamp);
         } else if (metrics.totalTrades == MILESTONE_TRADES_100) {
             emit DeFiMilestoneAchieved(tokenId, "trader_100", 100, block.timestamp);
+        } else if (metrics.totalTrades == MILESTONE_TRADES_1000) {
+            emit DeFiMilestoneAchieved(tokenId, "trader_1000", 1000, block.timestamp);
+        }
+
+        if (metrics.profitabilityScore >= MILESTONE_PROFITABLE_TRADER) {
+            emit DeFiMilestoneAchieved(
+                tokenId,
+                "profitable_trader",
+                metrics.profitabilityScore,
+                block.timestamp
+            );
         }
     }
 
@@ -951,42 +968,6 @@ contract DeFiLearningModule is
     function _checkRiskManagementMilestones(uint256 tokenId) internal {
         DeFiLearningMetrics memory metrics = _defiMetrics[tokenId];
 
-      if (_riskLearningCount[tokenId] == 0) {
-            metrics.riskManagementScore = 50;
-            return;
-        }
-
-        // Get recent risk management data
-        uint256 recentIndex = _riskLearningCount[tokenId] - 1;
-        RiskManagementData memory recentData = _riskLearningData[tokenId][recentIndex];
-
-
-        uint256 drawdownScore = recentData.maxDrawdown < 1000
-            ? 90 
-            : recentData.maxDrawdown < 2000
-                ? 70 
-                : recentData.maxDrawdown < 3000
-                    ? 50
-                    : 30;
-
-        uint256 diversificationScore = recentData.diversificationScore;
-        uint256 stopLossScore = recentData.stopLossEffectiveness;
-
-        // Combine scores
-        metrics.riskManagementScore = (drawdownScore + diversificationScore + stopLossScore) / 3;
-        if (metrics.riskManagementScore > 100) {
-            metrics.riskManagementScore = 100;
-        }
-
-        if (learning.avgSuccessRate == 0) {
-            learning.avgSuccessRate = wasAccurate ? 100 : 0;
-        } else {
-            uint256 totalScore = learning.avgSuccessRate * (learning.sampleSize - 1);
-            totalScore += wasAccurate ? 100 : 0;
-            
-        }
-
-
         if (metrics.riskManagementScore >= MILESTONE_RISK_MASTER) {
             emit DeFiMilestoneAchieved(
                 tokenId,
@@ -996,6 +977,14 @@ contract DeFiLearningModule is
             );
         }
 
+        if (metrics.strategyAdaptationScore >= MILESTONE_STRATEGY_EXPERT) {
+            emit DeFiMilestoneAchieved(
+                tokenId,
+                "strategy_expert",
+                metrics.strategyAdaptationScore,
+                block.timestamp
+            );
+        }
     }
 
     /**
