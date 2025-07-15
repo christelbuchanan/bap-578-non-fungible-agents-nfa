@@ -97,13 +97,6 @@ interface IBEP007 {
     ) external returns (uint256 tokenId);
 
     /**
-     * @dev Executes an action using the agent's logic
-     * @param tokenId The ID of the agent token
-     * @param data The encoded function call to execute
-     */
-    function executeAction(uint256 tokenId, bytes calldata data) external;
-
-    /**
      * @dev Updates the logic address for the agent
      * @param tokenId The ID of the agent token
      * @param newLogic The address of the new logic contract
