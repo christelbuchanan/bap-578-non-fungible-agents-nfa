@@ -86,16 +86,4 @@ interface ILearningModule {
      * @return The version string
      */
     function getVersion() external pure returns (string memory);
-
-    /**
-     * @dev Records an interaction for learning metrics
-     * @param tokenId The ID of the agent token
-     * @param interactionType The type of interaction
-     * @param success Whether the interaction was successful
-     */
-    function recordInteraction(
-        uint256 tokenId,
-        string calldata interactionType,
-        bool success
-    ) external;
 }

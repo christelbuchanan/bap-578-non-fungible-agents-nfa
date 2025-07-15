@@ -164,41 +164,7 @@ contract BEP007 is
         return this.createAgent(to, logicAddress, metadataURI, emptyMetadata);
     }
 
-    /**
-     * @dev Executes an action using the agent's logic
-     * @param tokenId The ID of the agent token
-     * @param data The encoded function call to execute
-     */
-    function executeAction(
-        uint256 tokenId,
-        bytes calldata data
-    ) external nonReentrant whenAgentActive(tokenId) {
-        State storage agentState = _agentStates[tokenId];
-
-        require(circuitBreaker.globalPause() == false, "CircuitBreaker: globally paused");
-
-        // Only the owner or the logic contract itself can execute actions
-        require(
-            msg.sender == ownerOf(tokenId) || msg.sender == agentState.logicAddress,
-            "BEP007: unauthorized caller"
-        );
-
-        // Ensure the agent has enough balance for gas
-        require(agentState.balance > 0, "BEP007: insufficient balance for gas");
-
-        // Update the last action timestamp
-        agentState.lastActionTimestamp = block.timestamp;
-
-        // Execute the action via delegatecall with gas limit
-        (bool success, bytes memory result) = agentState.logicAddress.call{
-            gas: MAX_GAS_FOR_DELEGATECALL
-        }(data);
-
-        require(success, "BEP007: action execution failed");
-
-        emit ActionExecuted(address(this), result);
-    }
-
+   
     /**
      * @dev Updates the logic address for the agent
      * @param tokenId The ID of the agent token
