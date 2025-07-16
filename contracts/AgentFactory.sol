@@ -25,9 +25,6 @@ contract AgentFactory is
     // The address of the BEP007Enhanced implementation contract
     address public implementation;
 
-    // The address of the governance contract
-    address public governance;
-
     // Default learning module for new agents
     address public defaultLearningModule;
 
@@ -91,23 +88,22 @@ contract AgentFactory is
      * @dev Initializes the contract
      * @dev This function can only be called once due to the initializer modifier
      * @param _implementation The address of the BEP007Enhanced implementation contract
-     * @param _governance The address of the governance contract
+     * @param _owner The address of contract
      * @param _defaultLearningModule The default learning module address
      */
     function initialize(
         address _implementation,
-        address _governance,
+        address _owner,
         address _defaultLearningModule
     ) public initializer {
         require(_implementation != address(0), "AgentFactory: implementation is zero address");
-        require(_governance != address(0), "AgentFactory: governance is zero address");
+        require(_owner != address(0), "AgentFactory: owner is zero address");
 
         __Ownable_init();
         __ReentrancyGuard_init();
         __UUPSUpgradeable_init();
 
         implementation = _implementation;
-        governance = _governance;
         defaultLearningModule = _defaultLearningModule;
 
         // Initialize global stats
@@ -120,16 +116,8 @@ contract AgentFactory is
             lastStatsUpdate: block.timestamp
         });
 
-        // Transfer ownership to governance for additional security
-        _transferOwnership(_governance);
-    }
-
-    /**
-     * @dev Modifier to check if the caller is the governance contract
-     */
-    modifier onlyGovernance() {
-        require(msg.sender == governance, "AgentFactory: caller is not governance");
-        _;
+        // Transfer ownership to owner
+        _transferOwnership(_owner);
     }
 
     /**
@@ -171,7 +159,7 @@ contract AgentFactory is
                     BEP007(payable(implementation)).initialize.selector,
                     params.name,
                     params.symbol,
-                    governance
+                    owner()
                 )
             )
         );
@@ -208,7 +196,7 @@ contract AgentFactory is
         address template,
         string calldata category,
         string calldata version
-    ) external onlyGovernance {
+    ) external onlyOwner {
         require(template != address(0), "AgentFactory: template is zero address");
 
         approvedTemplates[template] = true;
@@ -227,7 +215,7 @@ contract AgentFactory is
         address module,
         string calldata category,
         string calldata version
-    ) external onlyGovernance {
+    ) external onlyOwner {
         require(module != address(0), "AgentFactory: learning module is zero address");
 
         approvedLearningModules[module] = true;
@@ -241,7 +229,7 @@ contract AgentFactory is
      * @dev Revokes approval for a template
      * @param template The address of the template contract
      */
-    function revokeTemplate(address template) external onlyGovernance {
+    function revokeTemplate(address template) external onlyOwner {
         require(approvedTemplates[template], "AgentFactory: template not approved");
         approvedTemplates[template] = false;
     }
@@ -250,7 +238,7 @@ contract AgentFactory is
      * @dev Revokes approval for a learning module
      * @param module The address of the learning module contract
      */
-    function revokeLearningModule(address module) external onlyGovernance {
+    function revokeLearningModule(address module) external onlyOwner {
         require(approvedLearningModules[module], "AgentFactory: learning module not approved");
         approvedLearningModules[module] = false;
         globalLearningStats.totalLearningModules--;
@@ -260,7 +248,7 @@ contract AgentFactory is
      * @dev Updates the default learning module
      * @param newDefaultModule The new default learning module address
      */
-    function setDefaultLearningModule(address newDefaultModule) external onlyGovernance {
+    function setDefaultLearningModule(address newDefaultModule) external onlyOwner {
         require(newDefaultModule != address(0), "AgentFactory: module is zero address");
         require(approvedLearningModules[newDefaultModule], "AgentFactory: module not approved");
 
@@ -271,18 +259,9 @@ contract AgentFactory is
      * @dev Updates the implementation address
      * @param newImplementation The address of the new implementation contract
      */
-    function setImplementation(address newImplementation) external onlyGovernance {
+    function setImplementation(address newImplementation) external onlyOwner {
         require(newImplementation != address(0), "AgentFactory: implementation is zero address");
         implementation = newImplementation;
-    }
-
-    /**
-     * @dev Updates the governance address
-     * @param newGovernance The address of the new governance contract
-     */
-    function setGovernance(address newGovernance) external onlyGovernance {
-        require(newGovernance != address(0), "AgentFactory: governance is zero address");
-        governance = newGovernance;
     }
 
     /**
@@ -368,7 +347,7 @@ contract AgentFactory is
     /**
      * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract.
      * Called by {upgradeTo} and {upgradeToAndCall}.
-     * @dev Only governance can authorize upgrades for enhanced security
+     * @dev Only owner can authorize upgrades for enhanced security
      */
     function _authorizeUpgrade(address) internal override onlyOwner {}
 }
