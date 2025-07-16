@@ -43,7 +43,6 @@ contract AgentFactory is
     // Mapping of learning module categories to their latest version
     mapping(string => address) public learningModuleVersions;
 
-   
     // Global learning statistics
     LearningGlobalStats public globalLearningStats;
     /**
@@ -58,9 +57,6 @@ contract AgentFactory is
         uint256 lastStatsUpdate;
     }
 
-    /**
-     * @dev Struct for learning configuration
-     */
     /**
      * @dev Struct for enhanced agent creation parameters
      */
@@ -114,8 +110,6 @@ contract AgentFactory is
         governance = _governance;
         defaultLearningModule = _defaultLearningModule;
 
-   
-
         // Initialize global stats
         globalLearningStats = LearningGlobalStats({
             totalAgentsCreated: 0,
@@ -137,8 +131,6 @@ contract AgentFactory is
         require(msg.sender == governance, "AgentFactory: caller is not governance");
         _;
     }
-
-
 
     /**
      * @dev Creates a new agent with basic metadata (backward compatibility)
@@ -172,35 +164,40 @@ contract AgentFactory is
             extendedMetadata: emptyMetadata
         });
 
-       agent = address(new ERC1967Proxy(implementation, abi.encodeWithSelector(BEP007(payable(implementation)).initialize.selector, params.name, params.symbol, governance)));
+        agent = address(
+            new ERC1967Proxy(
+                implementation,
+                abi.encodeWithSelector(
+                    BEP007(payable(implementation)).initialize.selector,
+                    params.name,
+                    params.symbol,
+                    governance
+                )
+            )
+        );
 
-          // Prepare enhanced metadata with learning configuration
+        // Prepare enhanced metadata with learning configuration
         IBEP007.AgentMetadata memory enhancedMetadata = IBEP007.AgentMetadata({
-                persona: params.extendedMetadata.persona,
-                experience: params.extendedMetadata.experience,
-                voiceHash: params.extendedMetadata.voiceHash,
-                animationURI: params.extendedMetadata.animationURI,
-                vaultURI: params.extendedMetadata.vaultURI,
-                vaultHash: params.extendedMetadata.vaultHash
-            });
+            persona: params.extendedMetadata.persona,
+            experience: params.extendedMetadata.experience,
+            voiceHash: params.extendedMetadata.voiceHash,
+            animationURI: params.extendedMetadata.animationURI,
+            vaultURI: params.extendedMetadata.vaultURI,
+            vaultHash: params.extendedMetadata.vaultHash
+        });
 
         uint256 tokenId = BEP007(payable(agent)).createAgent(
             msg.sender,
             params.logicAddress,
-            params.metadataURI
+            params.metadataURI,
+            enhancedMetadata
         );
 
-        emit AgentCreated(
-            agent,
-            msg.sender,
-            tokenId,
-            params.logicAddress
-        );
+        emit AgentCreated(agent, msg.sender, tokenId, params.logicAddress);
 
         return agent;
     }
 
-  
     /**
      * @dev Approves a new template
      * @param template The address of the template contract
@@ -293,7 +290,10 @@ contract AgentFactory is
      * @param category The category of the template
      * @return The address of the latest template
      */
-    function getTemplateVersion(string calldata category, string calldata version) external view returns (address) {
+    function getTemplateVersion(
+        string calldata category,
+        string calldata version
+    ) external view returns (address) {
         address template = templateVersions[category][version];
         require(template != address(0), "AgentFactory: no template for category");
         return template;
@@ -342,8 +342,6 @@ contract AgentFactory is
 
         emit GlobalLearningStatsUpdated(block.timestamp);
     }
-
-    
 
     /**
      * @dev Upgrades the contract to a new implementation and calls a function on the new implementation.

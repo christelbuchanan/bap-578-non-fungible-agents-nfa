@@ -32,25 +32,13 @@ contract BEP007 is
     // Governance contract address
     address public governance;
 
-    // Experience module registry address
-    address public experienceModuleRegistry;
-
     // Mapping from token ID to agent state
     mapping(uint256 => State) private _agentStates;
-
-    // Mapping from token ID to agent metadata URI
-    mapping(uint256 => string) private _agentMetadataURIs;
 
     // Mapping from token ID to extended agent metadata
     mapping(uint256 => AgentMetadata) private _agentExtendedMetadata;
 
-    // Circuit breaker for emergency pause
-    bool public globalPause;
-
     ICircuitBreaker public circuitBreaker;
-
-    // Gas limit for delegatecall to prevent out-of-gas attacks
-    uint256 public constant MAX_GAS_FOR_DELEGATECALL = 3_000_000;
 
     /**
      * @dev Modifier to check if the caller is the governance contract
@@ -72,7 +60,7 @@ contract BEP007 is
      * @dev Modifier to check if the agent is active
      */
     modifier whenAgentActive(uint256 tokenId) {
-        require(!globalPause, "BEP007: global pause active");
+        require(!ICircuitBreaker(circuitBreaker).globalPause(), "BEP007: global pause active");
         require(_agentStates[tokenId].status == Status.Active, "BEP007: agent not active");
         _;
     }
@@ -97,7 +85,6 @@ contract BEP007 is
 
         governance = governanceAddress;
         circuitBreaker = ICircuitBreaker(governanceAddress);
-        globalPause = false;
 
         // Transfer ownership to governance for additional security
         _transferOwnership(governanceAddress);
@@ -133,7 +120,6 @@ contract BEP007 is
             lastActionTimestamp: block.timestamp
         });
 
-        _agentMetadataURIs[tokenId] = metadataURI;
         _agentExtendedMetadata[tokenId] = extendedMetadata;
 
         return tokenId;
@@ -164,7 +150,6 @@ contract BEP007 is
         return this.createAgent(to, logicAddress, metadataURI, emptyMetadata);
     }
 
-   
     /**
      * @dev Updates the logic address for the agent
      * @param tokenId The ID of the agent token
@@ -209,37 +194,6 @@ contract BEP007 is
     function getAgentMetadata(uint256 tokenId) external view returns (AgentMetadata memory) {
         require(_exists(tokenId), "BEP007: agent does not exist");
         return _agentExtendedMetadata[tokenId];
-    }
-
-    /**
-     * @dev Updates the agent's extended metadata
-     * @param tokenId The ID of the agent token
-     * @param metadata The new metadata
-     */
-    function updateAgentMetadata(
-        uint256 tokenId,
-        AgentMetadata memory metadata
-    ) external onlyAgentOwner(tokenId) {
-        _agentExtendedMetadata[tokenId] = metadata;
-
-        emit MetadataUpdated(tokenId, _agentMetadataURIs[tokenId]);
-    }
-
-    /**
-     * @dev Registers a experience module for the agent
-     * @param tokenId The ID of the agent token
-     * @param moduleAddress The address of the experience module
-     */
-    function registerExperienceModule(
-        uint256 tokenId,
-        address moduleAddress
-    ) external onlyAgentOwner(tokenId) {
-        require(
-            experienceModuleRegistry != address(0),
-            "BEP007: experience module registry not set"
-        );
-
-        emit ExperienceModuleRegistered(tokenId, moduleAddress);
     }
 
     /**
@@ -289,29 +243,12 @@ contract BEP007 is
     }
 
     /**
-     * @dev Sets the global pause state (emergency circuit breaker)
-     * @param paused The new pause state
-     */
-    function setGlobalPause(bool paused) external onlyGovernance {
-        globalPause = paused;
-    }
-
-    /**
      * @dev Updates the governance address
      * @param newGovernance The address of the new governance contract
      */
     function setGovernance(address newGovernance) external onlyGovernance {
         require(newGovernance != address(0), "BEP007: new governance address is zero");
         governance = newGovernance;
-    }
-
-    /**
-     * @dev Sets the experience module registry address
-     * @param registry The address of the experience module registry
-     */
-    function setExperienceModuleRegistry(address registry) external onlyGovernance {
-        require(registry != address(0), "BEP007: registry is zero address");
-        experienceModuleRegistry = registry;
     }
 
     /**
@@ -324,21 +261,6 @@ contract BEP007 is
 
         _agentStates[tokenId].balance -= amount;
         payable(msg.sender).transfer(amount);
-    }
-
-    /**
-     * @dev Updates the agent's metadata URI
-     * @param tokenId The ID of the agent token
-     * @param newMetadataURI The new metadata URI
-     */
-    function setAgentMetadataURI(
-        uint256 tokenId,
-        string memory newMetadataURI
-    ) external onlyAgentOwner(tokenId) {
-        _agentMetadataURIs[tokenId] = newMetadataURI;
-        _setTokenURI(tokenId, newMetadataURI);
-
-        emit MetadataUpdated(tokenId, newMetadataURI);
     }
 
     /**

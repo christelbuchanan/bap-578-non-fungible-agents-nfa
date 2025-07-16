@@ -53,7 +53,6 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
             niche: _niche,
             creativityLevel: 50 // Default medium creativity
         });
-
     }
 
     /**
@@ -87,7 +86,6 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
         learningEnabled = true;
     }
 
-   
     /**
      * @dev Updates the creator's profile with learning enhancements
      * @param _name The creator's name
@@ -109,17 +107,5 @@ contract CreatorAgent is Ownable, ReentrancyGuard {
             niche: _niche,
             creativityLevel: _creativityLevel
         });
-
     }
-
-
-    /**
-     * @dev Gets the creator's profile with learning data
-     * @return The creator's enhanced profile
-     */
-    function getProfile() external view returns (CreatorProfile memory) {
-        return profile;
-    }
-
-   
 }
