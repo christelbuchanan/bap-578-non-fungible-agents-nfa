@@ -29,9 +29,6 @@ contract BEP007 is
     // Token ID counter
     CountersUpgradeable.Counter private _tokenIdCounter;
 
-    // Governance contract address
-    address public governance;
-
     // Mapping from token ID to agent state
     mapping(uint256 => State) private _agentStates;
 
@@ -39,14 +36,6 @@ contract BEP007 is
     mapping(uint256 => AgentMetadata) private _agentExtendedMetadata;
 
     ICircuitBreaker public circuitBreaker;
-
-    /**
-     * @dev Modifier to check if the caller is the governance contract
-     */
-    modifier onlyGovernance() {
-        require(msg.sender == governance, "BEP007: caller is not governance");
-        _;
-    }
 
     /**
      * @dev Modifier to check if the caller is the owner of the token
@@ -72,9 +61,9 @@ contract BEP007 is
     function initialize(
         string memory name,
         string memory symbol,
-        address governanceAddress
+        address circuitBreakerAddress
     ) public initializer {
-        require(governanceAddress != address(0), "BEP007: governance address is zero");
+        require(circuitBreakerAddress != address(0), "BEP007: Circuit Breaker address is zero");
 
         __ERC721_init(name, symbol);
         __ERC721Enumerable_init();
@@ -83,11 +72,10 @@ contract BEP007 is
         __Ownable_init();
         __UUPSUpgradeable_init();
 
-        governance = governanceAddress;
-        circuitBreaker = ICircuitBreaker(governanceAddress);
+        circuitBreaker = ICircuitBreaker(circuitBreakerAddress);
 
         // Transfer ownership to governance for additional security
-        _transferOwnership(governanceAddress);
+        _transferOwnership(circuitBreakerAddress);
     }
 
     /**
@@ -240,15 +228,6 @@ contract BEP007 is
         }
 
         emit StatusChanged(address(this), Status.Terminated);
-    }
-
-    /**
-     * @dev Updates the governance address
-     * @param newGovernance The address of the new governance contract
-     */
-    function setGovernance(address newGovernance) external onlyGovernance {
-        require(newGovernance != address(0), "BEP007: new governance address is zero");
-        governance = newGovernance;
     }
 
     /**
